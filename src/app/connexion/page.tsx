@@ -1,9 +1,11 @@
 import { login, signup } from './actions'
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/server";
 import LoginButton from '../components/LoginButton';
+import { cookies } from 'next/headers';
 
 export default async function LoginPage() {
-    const supabase = createClient();
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
 
     const {data} = await supabase.auth.getUser();
   return (

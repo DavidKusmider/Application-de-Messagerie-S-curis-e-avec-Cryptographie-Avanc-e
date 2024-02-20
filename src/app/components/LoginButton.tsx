@@ -8,18 +8,18 @@ import Link from "next/link";
 export default function LoginButton({ user }: {user: User | null} ) {
 
     const router = useRouter();
-
     const loginGithub = async () => {
         const supa = createClient();
         await supa.auth.signInWithOAuth({
             provider: "github",
             options:{
-                redirectTo: location.origin + "auth/callback"
+                redirectTo: location.origin + "/auth/callback"
             }
         })
     }
 
     const logout = async () => {
+        console.log(user);
         const supa = createClient();
         await supa.auth.signOut();
         router.refresh();
@@ -29,7 +29,7 @@ export default function LoginButton({ user }: {user: User | null} ) {
         router.push("/connexion")
     }
 
-    console.log(user);
+    
 
     return (
         <div>
