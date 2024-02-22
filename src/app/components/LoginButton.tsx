@@ -2,8 +2,7 @@
 import React from "react";
 import { User } from "@supabase/supabase-js"
 import { createClient } from "@/utils/supabase/client";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { redirect, useRouter } from "next/navigation";
 
 export default function LoginButton({ user }: {user: User | null} ) {
 
@@ -26,7 +25,7 @@ export default function LoginButton({ user }: {user: User | null} ) {
     }
 
     const login = () => {
-        router.push("/connexion")
+        redirect("/connexion")
     }
 
     
