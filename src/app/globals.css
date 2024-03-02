@@ -31,3 +31,10 @@ body {
     text-wrap: balance;
   }
 }
+
+
+html,
+body,
+:root {
+  height: 100%;
+}
