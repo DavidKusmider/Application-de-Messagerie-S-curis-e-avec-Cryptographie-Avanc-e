@@ -4,7 +4,6 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
-import { User } from '@prisma/client';
 import { CldUploadButton } from 'next-cloudinary';
 
 import Input from "../inputs/Input";
@@ -12,6 +11,7 @@ import Modal from '../modals/Modal';
 import Button from '../Button';
 import Image from 'next/image';
 import { toast } from 'react-hot-toast';
+import { User } from '@/app/types';
 
 interface SettingsModalProps {
   isOpen?: boolean;
