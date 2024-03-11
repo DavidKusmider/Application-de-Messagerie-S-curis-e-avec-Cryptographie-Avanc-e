@@ -19,6 +19,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({
   data, 
   isLast
 }) => {
+  console.log('Rendering MessageBox for message:', data);
   //const session = useSession();
   const [imageModalOpen, setImageModalOpen] = useState(false);
 

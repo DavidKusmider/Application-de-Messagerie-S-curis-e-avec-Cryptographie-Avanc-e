@@ -30,16 +30,21 @@ const Form = () => {
     }
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    setValue('message', '', { shouldValidate: true });
-    axios.post('/api/messages', {
-      ...data,
-      conversationId: conversationId
-    })
-  }
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    try {
+      setValue('message', '', { shouldValidate: true });
+      const response = await axios.post('http://localhost:3001/api/messages', {
+        ...data,
+        conversationId: conversationId,
+      });
+      console.log('Message sent:', response.data);
+    } catch (error: any) {
+      console.error('Error sending message:', error.response?.data || error.message);
+    }
+  };
 
   const handleUpload = (result: any) => {
-    axios.post('/api/messages', {
+    axios.post('http://localhost:3001/api/messages', {
       image: result.info.secure_url,
       conversationId: conversationId
     })

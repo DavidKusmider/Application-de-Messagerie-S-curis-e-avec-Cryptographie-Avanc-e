@@ -19,10 +19,12 @@ const Body: React.FC<BodyProps> = ({ initialMessages = [] }) => {
   const { conversationId } = useConversation();
 
   useEffect(() => {
+    console.log('useEffect triggered with messages:', messages);
     //pusherClient.subscribe(conversationId)
     bottomRef?.current?.scrollIntoView();
 
     const messageHandler = (message: FullMessageType) => {
+      console.log('Message handler called:', message);
       //axios.post(`/api/conversations/${conversationId}/seen`);
 
       setMessages((current) => {
@@ -55,7 +57,7 @@ const Body: React.FC<BodyProps> = ({ initialMessages = [] }) => {
       //pusherClient.unbind('messages:new', messageHandler)
       //pusherClient.unbind('message:update', updateMessageHandler)
     }
-  }, [conversationId]);
+  }, [conversationId, messages]);
 
   return ( 
     <div className="flex-1 overflow-y-auto">
