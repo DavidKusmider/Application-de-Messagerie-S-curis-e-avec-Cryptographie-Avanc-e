@@ -5,9 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 import LoginButton from '../components/LoginButton';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
-     
-       
-        
+
 /*const Auth = () => {
   return (
     <div 
@@ -50,7 +48,7 @@ import Link from 'next/link';
 }
 
 export default Auth;
- */
+*/
 
 export default async function LoginPage() {
     const cookieStore = cookies();
