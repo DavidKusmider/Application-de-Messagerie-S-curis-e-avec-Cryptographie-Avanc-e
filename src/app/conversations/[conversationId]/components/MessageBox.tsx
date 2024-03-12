@@ -2,10 +2,11 @@
 
 import clsx from "clsx";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from 'react';
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import { FullMessageType } from "@/app/types";
+import { io } from 'socket.io-client';
 
 import Avatar from "@/app/components/Avatar";
 import ImageModal from "./ImageModal";
@@ -15,12 +16,8 @@ interface MessageBoxProps {
   isLast?: boolean;
 }
 
-const MessageBox: React.FC<MessageBoxProps> = ({ 
-  data, 
-  isLast
-}) => {
+const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
   console.log('Rendering MessageBox for message:', data);
-  //const session = useSession();
   const [imageModalOpen, setImageModalOpen] = useState(false);
 
 
@@ -38,6 +35,18 @@ const MessageBox: React.FC<MessageBoxProps> = ({
     isOwn ? 'bg-sky-500 text-white' : 'bg-gray-100', 
     data.image ? 'rounded-md p-0' : 'rounded-full py-2 px-3'
   );
+
+  useEffect(() => {
+    const socket = io('http://localhost:3001');
+    socket.on('message', (newMessage) => {
+      console.log('New message received:', newMessage);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+}, []);
+  
 
   return ( 
     <div className={container}>

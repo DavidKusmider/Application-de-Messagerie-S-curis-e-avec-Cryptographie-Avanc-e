@@ -2,11 +2,10 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const { broadcastMessage } = require('./socket'); // Import the broadcastMessage function from your socket file
 
 router.use(bodyParser.json());
 router.use(cors());
-
-let messages = [];
 
 // API endpoint for posting a new message
 router.post('/', (req, res) => {
@@ -18,21 +17,18 @@ router.post('/', (req, res) => {
     }
 
     const newMessage = {
-        id: messages.length + 1,
+        id: Date.now().toString(), // unique identifier for the message, TODO find a better one
         message,
         image,
         conversationId,
         timestamp: new Date().toISOString(),
     };
 
-    messages.push(newMessage);
-
-    // You might want to broadcast this message to other clients in the conversation using a WebSocket or similar
-    // Example: pusher.trigger('messages', 'new', newMessage);
+    broadcastMessage(newMessage);
 
     res.status(201).json(newMessage);
 });
 
-// TODO more API endpoints for editing, deleting messages etc.
+// TODO more API endpoints for editing, deleting messages, etc.
 
 module.exports = router;

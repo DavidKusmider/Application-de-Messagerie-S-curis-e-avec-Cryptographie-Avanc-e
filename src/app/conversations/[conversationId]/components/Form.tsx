@@ -1,54 +1,59 @@
 'use client';
 
-import { 
-  HiPaperAirplane, 
-  HiPhoto
-} from "react-icons/hi2";
+import { useEffect, useMemo } from 'react';
+import { HiPaperAirplane, HiPhoto } from 'react-icons/hi2';
 import MessageInput from "./MessageInput";
-import { 
-  FieldValues, 
-  SubmitHandler, 
-  useForm 
-} from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import axios from "axios";
 import { CldUploadButton } from "next-cloudinary";
 import useConversation from "@/app/hooks/useConversation";
+import { io } from 'socket.io-client';
 
 const Form = () => {
   const { conversationId } = useConversation();
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: {
-      errors,
-    }
-  } = useForm<FieldValues>({
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FieldValues>({
     defaultValues: {
       message: ''
     }
   });
 
+  const socket = useMemo(() => io('http://localhost:3001'), []);
+
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
       setValue('message', '', { shouldValidate: true });
-      const response = await axios.post('http://localhost:3001/api/messages', {
-        ...data,
+
+      const newMessage = {
+        id: Date.now().toString(),
+        message: data.message,
         conversationId: conversationId,
-      });
-      console.log('Message sent:', response.data);
+        timestamp: new Date().toISOString(),
+      };
+
+      socket.emit('message', newMessage);
+
+      console.log('Message sent:', newMessage);
     } catch (error: any) {
-      console.error('Error sending message:', error.response?.data || error.message);
+      console.error('Error sending message:', error.message);
     }
   };
 
   const handleUpload = (result: any) => {
-    axios.post('http://localhost:3001/api/messages', {
+    const newMessage = {
+      id: Date.now().toString(),
       image: result.info.secure_url,
-      conversationId: conversationId
-    })
+      conversationId: conversationId,
+      timestamp: new Date().toISOString(),
+    };
+
+    socket.emit('message', newMessage);
   }
+
+  useEffect(() => {
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   return ( 
     <div 
