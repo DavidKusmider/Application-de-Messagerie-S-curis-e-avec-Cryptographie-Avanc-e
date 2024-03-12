@@ -39,6 +39,8 @@ const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
     const socket = io('http://localhost:3001');
     socket.on('message', (newMessage) => {
       console.log('New message received:', newMessage);
+      // TODO DB : save message
+      // TODO Front-end : display new message
     });
 
     return () => {
