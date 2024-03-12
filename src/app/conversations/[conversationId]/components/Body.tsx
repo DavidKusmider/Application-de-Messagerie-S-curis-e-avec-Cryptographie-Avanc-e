@@ -7,8 +7,10 @@ import MessageBox from "./MessageBox";
 import { FullMessageType } from "@/app/types";
 import { find } from "lodash";
 import useConversation from "@/app/hooks/useConversation";
+import {User} from '@supabase/supabase-js';
 
 interface BodyProps {
+  userData : User;
   initialMessages: FullMessageType[];
 }
 
