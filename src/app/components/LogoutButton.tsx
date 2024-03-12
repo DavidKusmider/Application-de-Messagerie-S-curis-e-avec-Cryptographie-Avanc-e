@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-export default function LogoutButton({ user }: { user: User | null }, props) {
+export default function LogoutButton({ user }: { user: User | null }, props : any) {
   const router = useRouter();
   const loginGithub = async () => {
     const supa = createClient();
