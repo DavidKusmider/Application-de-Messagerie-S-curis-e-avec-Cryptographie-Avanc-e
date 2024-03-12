@@ -9,57 +9,24 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      _prisma_migrations: {
-        Row: {
-          applied_steps_count: number
-          checksum: string
-          finished_at: string | null
-          id: string
-          logs: string | null
-          migration_name: string
-          rolled_back_at: string | null
-          started_at: string
-        }
-        Insert: {
-          applied_steps_count?: number
-          checksum: string
-          finished_at?: string | null
-          id: string
-          logs?: string | null
-          migration_name: string
-          rolled_back_at?: string | null
-          started_at?: string
-        }
-        Update: {
-          applied_steps_count?: number
-          checksum?: string
-          finished_at?: string | null
-          id?: string
-          logs?: string | null
-          migration_name?: string
-          rolled_back_at?: string | null
-          started_at?: string
-        }
-        Relationships: []
-      }
       group: {
         Row: {
           created_at: string
-          group_name: string
-          id: string
-          id_user_creator: string
+          group_name: string | null
+          id: number
+          id_user_creator: string | null
         }
         Insert: {
           created_at?: string
-          group_name?: string
-          id?: string
-          id_user_creator?: string
+          group_name?: string | null
+          id?: number
+          id_user_creator?: string | null
         }
         Update: {
           created_at?: string
-          group_name?: string
-          id?: string
-          id_user_creator?: string
+          group_name?: string | null
+          id?: number
+          id_user_creator?: string | null
         }
         Relationships: [
           {
@@ -76,25 +43,25 @@ export type Database = {
           content: string | null
           created_at: string
           id: number
-          id_group: string
-          id_user: string
-          send_at: string
+          id_group: number | null
+          id_user: string | null
+          send_at: string | null
         }
         Insert: {
           content?: string | null
           created_at?: string
           id?: number
-          id_group?: string
-          id_user?: string
-          send_at?: string
+          id_group?: number | null
+          id_user?: string | null
+          send_at?: string | null
         }
         Update: {
           content?: string | null
           created_at?: string
           id?: number
-          id_group?: string
-          id_user?: string
-          send_at?: string
+          id_group?: number | null
+          id_user?: string | null
+          send_at?: string | null
         }
         Relationships: [
           {
@@ -117,26 +84,26 @@ export type Database = {
         Row: {
           created_at: string
           id: number
-          id_group: string
-          id_user: string
-          last_check: string
-          state_invitation: number
+          id_group: number | null
+          id_user: string | null
+          last_check: string | null
+          state_invitation: number | null
         }
         Insert: {
           created_at?: string
           id?: number
-          id_group?: string
-          id_user?: string
-          last_check?: string
-          state_invitation?: number
+          id_group?: number | null
+          id_user?: string | null
+          last_check?: string | null
+          state_invitation?: number | null
         }
         Update: {
           created_at?: string
           id?: number
-          id_group?: string
-          id_user?: string
-          last_check?: string
-          state_invitation?: number
+          id_group?: number | null
+          id_user?: string | null
+          last_check?: string | null
+          state_invitation?: number | null
         }
         Relationships: [
           {
@@ -195,23 +162,23 @@ export type Database = {
         Row: {
           id: string
           user_created_at: string
-          user_profile_picture: string
-          user_pseudo: string
-          user_state: number
+          user_profile_picture: string | null
+          user_pseudo: string | null
+          user_state: number | null
         }
         Insert: {
           id?: string
           user_created_at?: string
-          user_profile_picture?: string
-          user_pseudo?: string
-          user_state?: number
+          user_profile_picture?: string | null
+          user_pseudo?: string | null
+          user_state?: number | null
         }
         Update: {
           id?: string
           user_created_at?: string
-          user_profile_picture?: string
-          user_pseudo?: string
-          user_state?: number
+          user_profile_picture?: string | null
+          user_pseudo?: string | null
+          user_state?: number | null
         }
         Relationships: [
           {

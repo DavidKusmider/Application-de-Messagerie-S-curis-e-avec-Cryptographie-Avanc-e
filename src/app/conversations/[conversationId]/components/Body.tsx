@@ -12,7 +12,7 @@ interface BodyProps {
   initialMessages: FullMessageType[];
 }
 
-const Body: React.FC<BodyProps> = ({ initialMessages = [] }) => {
+const Body: React.FC<BodyProps> = ({userData, initialMessages = [] }) => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState(initialMessages); // TODO initialMessages should contain all previous messages from DB.
 
@@ -54,6 +54,7 @@ const Body: React.FC<BodyProps> = ({ initialMessages = [] }) => {
     <div className="flex-1 overflow-y-auto">
       {messages.map((message, i) => (
         <MessageBox 
+          user = {userData}
           isLast={i === messages.length - 1} 
           key={message.id} 
           data={message}

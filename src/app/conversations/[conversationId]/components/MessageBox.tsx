@@ -12,12 +12,14 @@ import { io } from 'socket.io-client';
 import Avatar from "@/app/components/Avatar";
 import ImageModal from "./ImageModal";
 
+import  {insertMessage} from '../../actions';
+
 interface MessageBoxProps {
   data: FullMessageType;
   isLast?: boolean;
 }
 
-const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
+const MessageBox: React.FC<MessageBoxProps> = ({user, data, isLast }) => {
   const { conversationId } = useConversation();
   const [imageModalOpen, setImageModalOpen] = useState(false);
 
@@ -37,11 +39,12 @@ const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
   );
 
   useEffect(() => {
-    const socket = io('http://localhost:3001');
-    socket.emit('joinRoom', conversationId);
-    socket.on('message', (newMessage) => {
-      console.log('New message received:', newMessage);
-      // TODO DB : save message
+    const socket = io("http://localhost:3001");
+    socket.emit("joinRoom", conversationId);
+    socket.on("message", (newMessage) => {
+      console.log("New message received:", newMessage);
+      //save message
+      insertMessage(newMessage, conversationId, user);  
       // TODO Front-end : display new message
     });
 
