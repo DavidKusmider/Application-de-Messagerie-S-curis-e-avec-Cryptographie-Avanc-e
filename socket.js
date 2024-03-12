@@ -30,4 +30,4 @@ const broadcastMessage = (message) => {
     }
 };
 
-module.exports = { initWebSocket };
+module.exports = { initWebSocket, broadcastMessage };

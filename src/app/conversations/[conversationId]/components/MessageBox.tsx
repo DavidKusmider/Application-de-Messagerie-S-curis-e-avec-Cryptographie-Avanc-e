@@ -20,7 +20,6 @@ const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
   console.log('Rendering MessageBox for message:', data);
   const [imageModalOpen, setImageModalOpen] = useState(false);
 
-
   const isOwn = 'test@gmail.com'/*session.data?.user?.email*/ === data?.sender?.email
   const seenList = (data.seen || [])
     .filter((user) => user.email !== data?.sender?.email)
@@ -48,7 +47,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
 }, []);
   
 
-  return ( 
+  return (
     <div className={container}>
       <div className={avatar}>
         <Avatar user={data.sender} />
@@ -70,12 +69,12 @@ const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
               height="288"
               width="288"
               onClick={() => setImageModalOpen(true)} 
-              src={data.image} 
+              src={data.image}
               className="
-                object-cover 
-                cursor-pointer 
-                hover:scale-110 
-                transition 
+                object-cover
+                cursor-pointer
+                hover:scale-110
+                transition
                 translate
               "
             />
@@ -84,10 +83,10 @@ const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
           )}
         </div>
         {isLast && isOwn && seenList.length > 0 && (
-          <div 
+          <div
             className="
-            text-xs 
-            font-light 
+            text-xs
+            font-light
             text-gray-500
             "
           >
@@ -96,7 +95,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
         )}
       </div>
     </div>
-   );
+  );
 }
- 
+
 export default MessageBox;

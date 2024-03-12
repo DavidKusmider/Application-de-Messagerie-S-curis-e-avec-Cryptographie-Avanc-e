@@ -50,51 +50,52 @@ const Form = () => {
   }
 
   useEffect(() => {
+    const socket = io('http://localhost:3001');
     return () => {
       socket.disconnect();
     };
   }, []);
 
-  return ( 
-    <div 
+  return (
+    <div
       className="
-        py-4 
-        px-4 
-        bg-white 
-        border-t 
-        flex 
-        items-center 
-        gap-2 
-        lg:gap-4 
+        py-4
+        px-4
+        bg-white
+        border-t
+        flex
+        items-center
+        gap-2
+        lg:gap-4
         w-full
       "
     >
-      <CldUploadButton 
-        options={{ maxFiles: 1 }} 
-        onUpload={handleUpload} 
+      <CldUploadButton
+        options={{ maxFiles: 1 }}
+        onUpload={handleUpload}
         uploadPreset="pgc9ehd5"
       >
         <HiPhoto size={30} className="text-sky-500" />
       </CldUploadButton>
-      <form 
-        onSubmit={handleSubmit(onSubmit)} 
+      <form
+        onSubmit={handleSubmit(onSubmit)}
         className="flex items-center gap-2 lg:gap-4 w-full"
       >
-        <MessageInput 
-          id="message" 
-          register={register} 
-          errors={errors} 
-          required 
+        <MessageInput
+          id="message"
+          register={register}
+          errors={errors}
+          required
           placeholder="Write a message"
         />
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className="
-            rounded-full 
-            p-2 
-            bg-sky-500 
-            cursor-pointer 
-            hover:bg-sky-600 
+            rounded-full
+            p-2
+            bg-sky-500
+            cursor-pointer
+            hover:bg-sky-600
             transition
           "
         >
@@ -107,5 +108,5 @@ const Form = () => {
     </div>
   );
 }
- 
+
 export default Form;
