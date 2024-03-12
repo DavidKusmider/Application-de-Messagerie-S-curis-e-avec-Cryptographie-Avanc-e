@@ -51,6 +51,7 @@ const Form = () => {
 
   useEffect(() => {
     const socket = io('http://localhost:3001');
+    socket.emit('joinRoom', conversationId);
     return () => {
       socket.disconnect();
     };

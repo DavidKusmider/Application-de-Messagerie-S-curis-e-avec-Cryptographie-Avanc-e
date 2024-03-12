@@ -13,6 +13,10 @@ const initWebSocket = (server) => {
     io.on('connection', (socket) => {
         console.log('WebSocket connected');
 
+        socket.on('joinRoom', (room) => {
+            socket.join(room);
+        });
+
         socket.on('message', (message) => {
             console.log('Received message:', message);
             broadcastMessage(message);
@@ -26,7 +30,7 @@ const initWebSocket = (server) => {
 
 const broadcastMessage = (message) => {
     if (io) {
-        io.emit('message', message);
+        io.to(message.conversationId).emit('message', message);
     }
 };
 

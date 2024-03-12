@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import { FullMessageType } from "@/app/types";
+import useConversation from "@/app/hooks/useConversation";
 import { io } from 'socket.io-client';
 
 import Avatar from "@/app/components/Avatar";
@@ -17,7 +18,7 @@ interface MessageBoxProps {
 }
 
 const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
-  console.log('Rendering MessageBox for message:', data);
+  const { conversationId } = useConversation();
   const [imageModalOpen, setImageModalOpen] = useState(false);
 
   const isOwn = 'test@gmail.com'/*session.data?.user?.email*/ === data?.sender?.email
@@ -37,6 +38,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
 
   useEffect(() => {
     const socket = io('http://localhost:3001');
+    socket.emit('joinRoom', conversationId);
     socket.on('message', (newMessage) => {
       console.log('New message received:', newMessage);
       // TODO DB : save message
