@@ -14,7 +14,7 @@ interface BodyProps {
 
 const Body: React.FC<BodyProps> = ({ initialMessages = [] }) => {
   const bottomRef = useRef<HTMLDivElement>(null);
-  const [messages, setMessages] = useState(initialMessages);
+  const [messages, setMessages] = useState(initialMessages); // TODO initialMessages should contain all previous messages from DB.
 
   const { conversationId } = useConversation();
 
