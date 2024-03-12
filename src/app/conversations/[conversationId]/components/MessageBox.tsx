@@ -1,41 +1,35 @@
 'use client';
 
 import clsx from "clsx";
-import Image from "next/image";
 import { useEffect, useState } from 'react';
 import { format } from "date-fns";
-import { useSession } from "next-auth/react";
-import { FullMessageType } from "@/app/types";
 import useConversation from "@/app/hooks/useConversation";
 import { io } from 'socket.io-client';
 
 import Avatar from "@/app/components/Avatar";
-import ImageModal from "./ImageModal";
 
 import  {insertMessage} from '../../actions';
+import {User} from '@supabase/supabase-js'
+
+import {getAuthUser} from "../../actions";
 
 interface MessageBoxProps {
-  data: FullMessageType;
+  user: User | null;
+  data: any;
   isLast?: boolean;
 }
 
-const MessageBox: React.FC<MessageBoxProps> = ({user, data, isLast }) => {
-  const { conversationId } = useConversation();
-  const [imageModalOpen, setImageModalOpen] = useState(false);
+const MessageBox: React.FC<MessageBoxProps> = async ({user, data, isLast }) => {
+  const conversationId = "1";// useConversation();
 
-  const isOwn = 'test@gmail.com'/*session.data?.user?.email*/ === data?.sender?.email
-  const seenList = (data.seen || [])
-    .filter((user) => user.email !== data?.sender?.email)
-    .map((user) => user.name)
-    .join(', ');
+  const isOwn = user?.email === user?.email;
 
   const container = clsx('flex gap-3 p-4', isOwn && 'justify-end');
   const avatar = clsx(isOwn && 'order-2');
   const body = clsx('flex flex-col gap-2', isOwn && 'items-end');
   const message = clsx(
     'text-sm w-fit overflow-hidden', 
-    isOwn ? 'bg-sky-500 text-white' : 'bg-gray-100', 
-    data.image ? 'rounded-md p-0' : 'rounded-full py-2 px-3'
+    isOwn ? 'bg-sky-500 text-white' : 'bg-gray-100'
   );
 
   useEffect(() => {
@@ -43,15 +37,14 @@ const MessageBox: React.FC<MessageBoxProps> = ({user, data, isLast }) => {
     socket.emit("joinRoom", conversationId);
     socket.on("message", (newMessage) => {
       console.log("New message received:", newMessage);
-      //save message
-      insertMessage(newMessage, conversationId, user);  
+        insertMessage(newMessage, conversationId, user).then(r => console.log("Message registered."));
       // TODO Front-end : display new message
     });
 
     return () => {
       socket.disconnect();
     };
-}, []);
+  }, [user]);
   
 
   return (
@@ -62,44 +55,15 @@ const MessageBox: React.FC<MessageBoxProps> = ({user, data, isLast }) => {
       <div className={body}>
         <div className="flex items-center gap-1">
           <div className="text-sm text-gray-500">
-            {data.sender.name}
+            {data.id_user}
           </div>
           <div className="text-xs text-gray-400">
-            {format(new Date(data.createdAt), 'p')}
+            {format(new Date(data.created_at), 'p')}
           </div>
         </div>
         <div className={message}>
-          <ImageModal src={data.image} isOpen={imageModalOpen} onClose={() => setImageModalOpen(false)} />
-          {data.image ? (
-            <Image
-              alt="Image"
-              height="288"
-              width="288"
-              onClick={() => setImageModalOpen(true)} 
-              src={data.image}
-              className="
-                object-cover
-                cursor-pointer
-                hover:scale-110
-                transition
-                translate
-              "
-            />
-          ) : (
-            <div>{data.body}</div>
-          )}
+            <div>{data.content}</div>
         </div>
-        {isLast && isOwn && seenList.length > 0 && (
-          <div
-            className="
-            text-xs
-            font-light
-            text-gray-500
-            "
-          >
-            {`Seen by ${seenList}`}
-          </div>
-        )}
       </div>
     </div>
   );

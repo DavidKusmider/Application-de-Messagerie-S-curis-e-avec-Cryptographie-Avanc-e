@@ -3,8 +3,7 @@ import Body from "./components/Body";
 import Form from "./components/Form";
 import EmptyState from "@/app/components/EmptyState";
 
-import { cookies } from "next/headers";
-import {createClient } from "@/utils/supabase/server";
+import {getAllMessages, getAuthUser} from "../actions"
 
 interface IParams {
   conversationId: string;
@@ -12,13 +11,13 @@ interface IParams {
 
 const ChatId = async ({ params }: { params: IParams }) => {
 
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
-    const {data} = await supabase.auth.getUser();
+    const data = await getAuthUser();
 
-
+    const messages = await getAllMessages(data.user, params.conversationId);
+    console.log(messages);
   const user1 = {id: '1', name: 'Test1', image: undefined, email: 'test1@gmail.com', createdAt: new Date(Date.now())};
-  const messages = [{id: '0', createdAt: new Date(Date.now()), image: undefined, body: 'Ceci est un message', sender: user1, seen: []}];//await getMessages(params.conversationId);
+  //const messages = [{id: '0', createdAt: new Date(Date.now()), image: undefined, content: 'Ceci est un message', sender: user1, seen: []}];//await getMessages(params.conversationId);
+  //console.log(messages);
   const conversation = {id: '0', name:'Test', users : [user1], messages: messages};//await getConversationById(params.conversationId);
 
   if (!conversation) {
@@ -35,7 +34,7 @@ const ChatId = async ({ params }: { params: IParams }) => {
     <div className="lg:pl-80 h-full">
       <div className="h-full flex flex-col">
         <Header conversation={conversation} />
-        <Body userData={data.user} initialMessages={messages}/>
+        <Body userData={data.user} initialMessages={messages!}/>
         <Form />
       </div>
     </div>
