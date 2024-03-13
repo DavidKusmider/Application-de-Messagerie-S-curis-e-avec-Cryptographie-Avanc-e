@@ -48,18 +48,18 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
                         {id: '12', name: 'Test', users: users, messages: []}];//await getConversations();
   const actif = useActif().actif;
   
-  console.log({ currentUser, }, 'TEST')
+  console.log("currentUser: " + {currentUser});
 
-  return ( 
+  return (
     <>
       <SettingsModal currentUser={currentUser} isOpen={isOpen} onClose={() => setIsOpen(false)} />
       <div className="
-        hidden 
-        lg:fixed 
-        lg:inset-y-0 
-        lg:left-0 
-        lg:z-40 
-        lg:w-[25rem] 
+        hidden
+        lg:fixed
+        lg:inset-y-0
+        lg:left-0
+        lg:z-40
+        lg:w-[25rem]
         xl:px-6
         lg:overflow-y-auto
         lg:pb-4
@@ -82,19 +82,19 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
           </div>
         </nav>
         {actif==="groups" ? (
-             <div className="absolute top-20 left-5">
-          <div>
-            <ConversationList 
-              users={users} 
-              title="Messages" 
-              initialItems={conversations}
-            />
+          <div className="absolute top-20 left-5">
+            <div>
+              <ConversationList
+                users={users}
+                title="Messages"
+                initialItems={conversations}
+              />
+            </div>
           </div>
-        </div>
         ) : (<></>)}
         <div className="mt-4 flex flex-col justify-between items-center">
-          <div 
-            onClick={() => setIsOpen(true)} 
+          <div
+            onClick={() => setIsOpen(true)}
             className="cursor-pointer hover:opacity-75 transition"
           >
             <Avatar user={currentUser} />
@@ -102,7 +102,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
         </div>
       </div>
     </>
-   );
+  );
 }
- 
+
 export default DesktopSidebar;

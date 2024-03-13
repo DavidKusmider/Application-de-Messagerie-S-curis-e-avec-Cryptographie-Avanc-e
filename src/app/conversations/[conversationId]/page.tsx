@@ -14,8 +14,7 @@ const ChatId = async ({ params }: { params: IParams }) => {
   const data = await getAuthUser();
 
   const messages = await getAllMessages(data.user, params.conversationId);
-  console.log("once");
-  console.log(messages);
+  //console.log(messages);
   const user1 = {id: '1', name: 'Test1', image: undefined, email: 'test1@gmail.com', createdAt: new Date(Date.now())};
   //const messages = [{id: '0', createdAt: new Date(Date.now()), image: undefined, content: 'Ceci est un message', sender: user1, seen: []}];//await getMessages(params.conversationId);
   //console.log(messages);

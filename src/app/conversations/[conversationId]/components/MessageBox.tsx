@@ -32,21 +32,6 @@ const MessageBox: React.FC<MessageBoxProps> = ({user, data, isLast }) => {
     isOwn ? 'bg-sky-500 text-white' : 'bg-gray-100'
   );
 
-  useEffect(() => {
-    const socket = io("http://localhost:3001");
-    socket.emit("joinRoom", conversationId);
-    socket.on("message", (newMessage) => {
-      console.log("New message received:", newMessage);
-        insertMessage(newMessage, conversationId, user).then(r => console.log("Message registered."));
-      // TODO Front-end : display new message
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, [user]);
-  
-
   return (
     <div className={container}>
       <div className={avatar}>
