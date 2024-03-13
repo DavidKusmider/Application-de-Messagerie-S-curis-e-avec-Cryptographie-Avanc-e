@@ -5,12 +5,11 @@ export type Notification = {id: string, msg: string};
 export type Group = {id: string, name: string};
 
 export type FullMessageType = Message & {
-    sender: User, 
+    sender: User,
     seen: User[]
   };
   
-  export type FullConversationType = Conversation & { 
-    users: User[]; 
+  export type FullConversationType = Conversation & {
+    users: User[];
     messages: FullMessageType[]
   };
-  

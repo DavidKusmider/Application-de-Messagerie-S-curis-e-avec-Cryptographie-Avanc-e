@@ -13,7 +13,7 @@ export async function insertMessage(nMessage: { message: any; }, conversationId:
         content: nMessage.message,
         id_user: user.id,
         id_group: conversationId,
-      });
+    });
     if(error !== null){
         console.log(error);
     }
@@ -21,8 +21,8 @@ export async function insertMessage(nMessage: { message: any; }, conversationId:
         const { error } = await supabase
             .from("message")
             .insert({
-              content: nMessage.message,
-              id_group: conversationId,
+                content: nMessage.message,
+                id_group: conversationId,
             });
         if(error !== null){
             console.log(error);
