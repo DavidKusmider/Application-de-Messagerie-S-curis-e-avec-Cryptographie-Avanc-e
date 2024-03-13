@@ -55,8 +55,8 @@ const Body: React.FC<BodyProps> = ({userData, initialMessages }) => {
     socket.emit("joinRoom", conversationId);
     socket.on("message", (newMessage) => {
       console.log("New message received:", newMessage);
-        insertMessage(newMessage, conversationId, user).then(r => console.log("Message registered."));
-        // TODO Front-end : here, a message has just been received => display new MessageBox with newMessage
+      insertMessage(newMessage, conversationId, user).then(() => console.log("Message registered."));
+      // TODO Front-end : here, a message has just been received => display new MessageBox with newMessage
     });
 
     return () => {
@@ -76,7 +76,7 @@ const Body: React.FC<BodyProps> = ({userData, initialMessages }) => {
 
   return (
     <div className="flex-1 overflow-y-auto">
-      {messages.map((message, i) => (
+      {messages && messages.map((message, i) => (
         <MessageBox
           user = {user}
           isLast={i === messages.length - 1}
