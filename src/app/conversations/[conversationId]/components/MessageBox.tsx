@@ -19,7 +19,7 @@ interface MessageBoxProps {
   isLast?: boolean;
 }
 
-const MessageBox: React.FC<MessageBoxProps> = async ({user, data, isLast }) => {
+const MessageBox: React.FC<MessageBoxProps> = ({user, data, isLast }) => {
   const conversationId = "1";// useConversation();
 
   const isOwn = user?.email === user?.email;
@@ -28,7 +28,7 @@ const MessageBox: React.FC<MessageBoxProps> = async ({user, data, isLast }) => {
   const avatar = clsx(isOwn && 'order-2');
   const body = clsx('flex flex-col gap-2', isOwn && 'items-end');
   const message = clsx(
-    'text-sm w-fit overflow-hidden', 
+    'text-sm w-fit overflow-hidden',
     isOwn ? 'bg-sky-500 text-white' : 'bg-gray-100'
   );
 
