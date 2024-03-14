@@ -12,7 +12,7 @@ export async function insertMessage(nMessage:  any, conversationId: string, user
     console.log("Inserting message", nMessage);
 
     if(user !== null){
-        console.log("With user", user);
+        console.log("With user");
     const { error } = await supabase.from("message").insert({
         content: nMessage.message,
         id_user: user.id,

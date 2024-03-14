@@ -15,7 +15,7 @@ import {Message} from "@/types/databases.types";
 
 interface MessageBoxProps {
   user: User | null;
-  data: any;
+  data: Message;
   isLast?: boolean;
 }
 
@@ -35,7 +35,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({user, data, isLast }) => {
   return (
     <div className={container}>
       <div className={avatar}>
-        <Avatar user={data.sender} />
+        {/*<Avatar user={data.sender} />*/}
       </div>
       <div className={body}>
         <div className="flex items-center gap-1">

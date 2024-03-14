@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 
 import MessageBox from "./MessageBox";
-import { FullMessageType } from "@/app/types";
 import { find } from "lodash";
 import useConversation from "@/app/hooks/useConversation";
 import {User} from '@supabase/supabase-js';
-import {getAuthUser, insertMessage} from "@/app/conversations/actions";
+import {Message} from "@/types/databases.types"
+import {getAllMessages, insertMessage} from "@/app/conversations/actions";
 import { io } from "socket.io-client";
 
 interface BodyProps {
@@ -27,6 +27,22 @@ const Body: React.FC<BodyProps> = ({userData, initialMessages }) => {
     bottomRef?.current?.scrollIntoView();
 
     const messageHandler = (message: any) => {
+
+      /*
+
+      console.log("New message received:", newMessage);
+      const data = await insertMessage(newMessage, conversationId, userData);
+      console.log("Message registered.");
+      console.log(data);
+      console.log('Message handler called');
+      const messagesFromDB = await getAllMessages(userData, conversationId);
+      console.log(messagesFromDB?.length);
+      if(messagesFromDB) {
+        setMessages(messagesFromDB!);
+      }else{
+        setMessages([]);
+      }
+       */
       console.log('Message handler called:', message);
 
       setMessages((current) => {
