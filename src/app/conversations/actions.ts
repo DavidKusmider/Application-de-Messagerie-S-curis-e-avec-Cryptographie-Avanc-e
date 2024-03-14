@@ -3,7 +3,6 @@
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import { User } from '@supabase/supabase-js';
-import {Message} from "@/types/databases.types";
 
 export async function insertMessage(nMessage:  any, conversationId: string, user: User | null) {
     const cookieStore = cookies();
@@ -41,7 +40,7 @@ export async function getAllMessages(user: User | null, conversationId: any){
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
     if(user !== null){
-        const { data, error } = await supabase.from("message").select().eq("id_group", conversationId);
+        const { data, error } = await supabase.from("message").select().eq("id_group", conversationId).order("id");
         if(error != null){
             console.log("getAllMessages:\n" + error);
         }
@@ -55,6 +54,16 @@ export async function getAuthUser(){
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
     const {data, error} = await supabase.auth.getUser();
+    if(error !== null){
+        console.log(error);
+    }
+    return data;
+}
+
+export async function getUsersMetadata(){
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
+    const {data, error} = await supabase.schema("public").from("users").select();
     if(error !== null){
         console.log(error);
     }

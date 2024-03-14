@@ -48,7 +48,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
                         {id: '12', name: 'Test', users: users, messages: []}];//await getConversations();
   const actif = useActif().actif;
   
-  console.log("currentUser: " + {currentUser});
+  console.log("currentUser: ", {currentUser});
 
   return (
     <>
@@ -97,7 +97,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
             onClick={() => setIsOpen(true)}
             className="cursor-pointer hover:opacity-75 transition"
           >
-            <Avatar user={currentUser} />
+            {/*<Avatar user={currentUser} />*/}
           </div>
         </div>
       </div>
