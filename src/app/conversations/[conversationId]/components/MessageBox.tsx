@@ -4,7 +4,6 @@ import clsx from "clsx";
 import { useEffect, useState } from 'react';
 import { format } from "date-fns";
 import useConversation from "@/app/hooks/useConversation";
-import { io } from 'socket.io-client';
 
 import Avatar from "@/app/components/Avatar";
 

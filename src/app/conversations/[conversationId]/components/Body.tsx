@@ -1,6 +1,5 @@
 'use client';
 
-import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 
 import MessageBox from "./MessageBox";

@@ -4,7 +4,6 @@ import { useEffect, useMemo } from 'react';
 import { HiPaperAirplane, HiPhoto } from 'react-icons/hi2';
 import MessageInput from "./MessageInput";
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
-import axios from "axios";
 import { CldUploadButton } from "next-cloudinary";
 import useConversation from "@/app/hooks/useConversation";
 import { io } from 'socket.io-client';

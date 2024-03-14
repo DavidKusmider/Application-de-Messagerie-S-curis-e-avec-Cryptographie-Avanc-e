@@ -15,9 +15,9 @@ interface ConfirmModalProps {
   onClose: () => void;
 }
 
-const ConfirmModal: React.FC<ConfirmModalProps> = ({ 
-  isOpen, 
-  onClose 
+const ConfirmModal: React.FC<ConfirmModalProps> = ({
+  isOpen,
+  onClose
 }) => {
   const router = useRouter();
   const { conversationId } = useConversation();
@@ -39,38 +39,38 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="sm:flex sm:items-start">
-        <div 
+        <div
           className="
-            mx-auto 
-            flex 
-            h-12 
-            w-12 
-            flex-shrink-0 
-            items-center 
-            justify-center 
-            rounded-full 
-            bg-red-100 
-            sm:mx-0 
-            sm:h-10 
+            mx-auto
+            flex
+            h-12
+            w-12
+            flex-shrink-0
+            items-center
+            justify-center
+            rounded-full
+            bg-red-100
+            sm:mx-0
+            sm:h-10
             sm:w-10
           "
         >
-          <FiAlertTriangle 
-            className="h-6 w-6 text-red-600" 
+          <FiAlertTriangle
+            className="h-6 w-6 text-red-600"
             aria-hidden="true"
           />
         </div>
-        <div 
+        <div
           className="
-            mt-3 
-            text-center 
-            sm:ml-4 
-            sm:mt-0 
+            mt-3
+            text-center
+            sm:ml-4
+            sm:mt-0
             sm:text-left
           "
         >
-          <Dialog.Title 
-            as="h3" 
+          <Dialog.Title
+            as="h3"
             className="text-base font-semibold leading-6 text-gray-900"
           >
             Delete conversation

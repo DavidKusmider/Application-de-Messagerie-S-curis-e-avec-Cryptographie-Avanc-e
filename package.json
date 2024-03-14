@@ -10,9 +10,9 @@
     "serv": "node server.js"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.18",
     "@supabase/ssr": "^0.1.0",
     "@supabase/supabase-js": "^2.39.7",
-    "@headlessui/react": "^1.7.18",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "express": "^4.18.3",
