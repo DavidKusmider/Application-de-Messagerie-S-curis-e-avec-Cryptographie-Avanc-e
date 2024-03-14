@@ -11,6 +11,7 @@ import  {insertMessage} from '../../actions';
 import {User} from '@supabase/supabase-js'
 
 import {getAuthUser} from "../../actions";
+import {Message} from "@/types/databases.types";
 
 interface MessageBoxProps {
   user: User | null;
@@ -41,9 +42,9 @@ const MessageBox: React.FC<MessageBoxProps> = ({user, data, isLast }) => {
           <div className="text-sm text-gray-500">
             {data.id_user}
           </div>
-          <div className="text-xs text-gray-400">
-            {format(new Date(data.created_at), 'p')}
-          </div>
+          {/*<div className="text-xs text-gray-400">*/}
+          {/*  /!*format(new Date(data.created_at), 'MM/dd/yyyy')*!/*/}
+          {/*</div>*/}
         </div>
         <div className={message}>
             <div>{data.content}</div>

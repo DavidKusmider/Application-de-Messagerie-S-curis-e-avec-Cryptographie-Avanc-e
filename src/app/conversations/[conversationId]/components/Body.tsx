@@ -40,21 +40,15 @@ const Body: React.FC<BodyProps> = ({userData, initialMessages }) => {
       bottomRef?.current?.scrollIntoView();
     };
 
-    const updateMessageHandler = (newMessage: FullMessageType) => {
-      setMessages((current) => current.map((currentMessage) => {
-        if (currentMessage.id === newMessage.id) {
-          return newMessage;
-        }
-  
-        return currentMessage;
-      }))
-    };
-
     const socket = io("http://localhost:3001");
     socket.emit("joinRoom", conversationId);
     socket.on("message", (newMessage) => {
       console.log("New message received:", newMessage);
-      insertMessage(newMessage, conversationId, userData).then(() => console.log("Message registered."));
+      insertMessage(newMessage, conversationId, userData);
+      const formattedMessage: Message = {id: newMessage.id, content:newMessage.message, id_user: userData?.id!, id_group: Number(conversationId), created_at: newMessage.timestamp, send_at: newMessage.timestamp}
+      console.log("Message registered.");
+      console.log(formattedMessage);
+      messageHandler(formattedMessage);
       // TODO Front-end : here, a message has just been received => display new MessageBox with newMessage
     });
 

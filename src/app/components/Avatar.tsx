@@ -1,7 +1,7 @@
 'use client';
 
 import Image from "next/image";
-import { User } from "../types";
+import { User } from "@supabase/supabase-js";
 
 interface AvatarProps {
   user?: User;
@@ -25,7 +25,7 @@ const Avatar: React.FC<AvatarProps> = ({ user }) => {
       ">
         <Image
           fill
-          src={user?.image || '/images/placeholder.jpg'}
+          src={'/images/placeholder.jpg'}
           alt="Avatar"
         />
       </div>

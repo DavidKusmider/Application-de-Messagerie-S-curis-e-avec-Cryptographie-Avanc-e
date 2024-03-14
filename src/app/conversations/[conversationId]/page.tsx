@@ -12,7 +12,6 @@ interface IParams {
 const ChatId = async ({ params }: { params: IParams }) => {
 
   const data = await getAuthUser();
-  console.log("data.user?.id: " + data.user?.id);
 
   const messages = await getAllMessages(data.user, params.conversationId);
   //console.log(messages);
