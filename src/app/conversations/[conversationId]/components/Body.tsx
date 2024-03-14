@@ -54,24 +54,24 @@ const Body: React.FC<BodyProps> = ({userData, initialMessages }) => {
     socket.emit("joinRoom", conversationId);
     socket.on("message", (newMessage) => {
       console.log("New message received:", newMessage);
-      insertMessage(newMessage, conversationId, user).then(() => console.log("Message registered."));
+      insertMessage(newMessage, conversationId, userData).then(() => console.log("Message registered."));
       // TODO Front-end : here, a message has just been received => display new MessageBox with newMessage
     });
 
     return () => {
       socket.disconnect();
     };
-  }, [conversationId, messages]);
+  }, [conversationId, messages, userData]);
 
   const [user, setUserData] = useState<User | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const userData = await getAuthUser();
-      setUserData(userData.user);
+    const fetchData = () => {
+      //const userData = await getAuthUser();
+      setUserData(userData);
     };
     fetchData();
-  }, []);
+  }, [userData]);
 
   return (
     <div className="flex-1 overflow-y-auto">

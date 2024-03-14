@@ -21,14 +21,14 @@ interface MessageBoxProps {
 const MessageBox: React.FC<MessageBoxProps> = ({user, data, isLast }) => {
   const conversationId = "1";// useConversation();
 
-  const isOwn = user?.email === user?.email;
+  const isOwn = user?.id === data.id_user;
 
   const container = clsx('flex gap-3 p-4', isOwn && 'justify-end');
   const avatar = clsx(isOwn && 'order-2');
   const body = clsx('flex flex-col gap-2', isOwn && 'items-end');
   const message = clsx(
-    'text-sm w-fit overflow-hidden',
-    isOwn ? 'bg-sky-500 text-white' : 'bg-gray-100'
+    'text-sm w-fit overflow-hidden p-2',
+    isOwn ? 'bg-sky-400 text-white rounded-l-lg' : 'bg-gray-100 rounded-r-lg'
   );
 
   return (
