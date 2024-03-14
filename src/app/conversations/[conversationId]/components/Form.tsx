@@ -7,6 +7,8 @@ import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { CldUploadButton } from "next-cloudinary";
 import useConversation from "@/app/hooks/useConversation";
 import { io } from 'socket.io-client';
+import {Message} from "@/types/databases.types"
+import {getAuthUser} from "@/app/conversations/actions";
 
 const Form = () => {
   const { conversationId } = useConversation();
@@ -22,6 +24,15 @@ const Form = () => {
     try {
       setValue('message', '', { shouldValidate: true });
 
+      const dataUser = await getAuthUser();
+      /*const newMessage : Message = {
+        id: Number(Date.now().toString()), // unique identifier for the message, TODO find a better one
+        content: data.message,
+        id_user: dataUser.user?.id!,
+        id_group: Number(conversationId),
+        created_at: Date.now().toString(),
+        send_at: Date.now().toString()
+      };*/
       const newMessage = {
         id: Date.now().toString(),
         message: data.message,

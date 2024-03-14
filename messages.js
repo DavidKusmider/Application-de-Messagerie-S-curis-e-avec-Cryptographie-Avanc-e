@@ -9,17 +9,23 @@ router.use(cors());
 
 // API endpoint for posting a new message
 router.post('/', (req, res) => {
-    const { message, image, conversationId } = req.body;
+    const { message, conversationId } = req.body;
     console.log("received message: " + message);
 
-    if (!message && !image) {
-        return res.status(400).json({ error: 'Message or image is required' });
+    if (!message) {
+        return res.status(400).json({ error: 'Message is required' });
     }
 
     const newMessage = {
+        /*id: Number(Date.now().toString()),
+        content: message,
+        id_user: "",
+        id_group: conversationId.toString(),
+        created_at: Date.now().toString(),
+        send_at: Date.now().toString(),
+        */
         id: Date.now().toString(), // unique identifier for the message, TODO find a better one
         message,
-        image,
         conversationId,
         timestamp: new Date().toISOString(),
     };

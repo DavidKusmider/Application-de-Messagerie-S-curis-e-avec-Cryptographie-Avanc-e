@@ -3,20 +3,21 @@
 import { useEffect, useRef, useState } from "react";
 
 import MessageBox from "./MessageBox";
-import { FullMessageType } from "@/app/types";
 import { find } from "lodash";
 import useConversation from "@/app/hooks/useConversation";
 import { User } from '@supabase/supabase-js';
-import { getAuthUser, insertMessage } from "@/app/conversations/actions";
+import { Message, UserMetadata } from "@/types/databases.types"
+import { getAllMessages, insertMessage } from "@/app/conversations/actions";
 import { io } from "socket.io-client";
 
 interface BodyProps {
   userData: User | null;
   initialMessages: any[];
+  usersMetadata: UserMetadata[] | null;
 }
 
 // @ts-ignore
-const Body: React.FC<BodyProps> = ({ userData, initialMessages }) => {
+const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages }) => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState(initialMessages); // TODO initialMessages should contain all previous messages from DB.
 
@@ -27,6 +28,22 @@ const Body: React.FC<BodyProps> = ({ userData, initialMessages }) => {
     bottomRef?.current?.scrollIntoView();
 
     const messageHandler = (message: any) => {
+
+      /*
+
+      console.log("New message received:", newMessage);
+      const data = await insertMessage(newMessage, conversationId, userData);
+      console.log("Message registered.");
+      console.log(data);
+      console.log('Message handler called');
+      const messagesFromDB = await getAllMessages(userData, conversationId);
+      console.log(messagesFromDB?.length);
+      if(messagesFromDB) {
+        setMessages(messagesFromDB!);
+      }else{
+        setMessages([]);
+      }
+       */
       console.log('Message handler called:', message);
 
       setMessages((current) => {
@@ -40,21 +57,15 @@ const Body: React.FC<BodyProps> = ({ userData, initialMessages }) => {
       bottomRef?.current?.scrollIntoView();
     };
 
-    const updateMessageHandler = (newMessage: FullMessageType) => {
-      setMessages((current) => current.map((currentMessage) => {
-        if (currentMessage.id === newMessage.id) {
-          return newMessage;
-        }
-
-        return currentMessage;
-      }))
-    };
-
     const socket = io("http://localhost:3001");
     socket.emit("joinRoom", conversationId);
     socket.on("message", (newMessage) => {
       console.log("New message received:", newMessage);
-      insertMessage(newMessage, conversationId, userData).then(() => console.log("Message registered."));
+      insertMessage(newMessage, conversationId, userData);
+      const formattedMessage: Message = { id: newMessage.id, content: newMessage.message, id_user: userData?.id!, id_group: Number(conversationId), created_at: newMessage.timestamp, send_at: newMessage.timestamp }
+      console.log("Message registered.");
+      console.log(formattedMessage);
+      messageHandler(formattedMessage);
       // TODO Front-end : here, a message has just been received => display new MessageBox with newMessage
     });
 
@@ -77,6 +88,7 @@ const Body: React.FC<BodyProps> = ({ userData, initialMessages }) => {
     <div className="flex-1 overflow-y-auto">
       {messages && messages.map((message, i) => (
         <MessageBox
+          userMetadata={usersMetadata?.find(m => m.id === message.id_user)}
           user={user}
           isLast={i === messages.length - 1}
           key={message.id}

@@ -48,6 +48,8 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ currentUser, groups }) 
 
   const actif = useActif().actif;
 
+  console.log("currentUser: ", { currentUser });
+
   return (
     <>
       {/* <SettingsModal currentUser={currentUser} isOpen={isOpen} onClose={() => setIsOpen(false)} /> */}
@@ -97,7 +99,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ currentUser, groups }) 
             onClick={() => setIsOpen(true)}
             className="cursor-pointer hover:opacity-75 transition"
           >
-            {/* <Avatar user={currentUser} /> */}
+            {/*<Avatar user={currentUser} />*/}
           </div>
         </div>
       </div>

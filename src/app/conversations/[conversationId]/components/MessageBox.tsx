@@ -1,27 +1,21 @@
 'use client';
 
 import clsx from "clsx";
-import { useEffect, useState } from 'react';
-import { format } from "date-fns";
-import useConversation from "@/app/hooks/useConversation";
-
+import {User} from '@supabase/supabase-js'
+import {Message, UserMetadata} from "@/types/databases.types";
 import Avatar from "@/app/components/Avatar";
 
-import  {insertMessage} from '../../actions';
-import {User} from '@supabase/supabase-js'
-
-import {getAuthUser} from "../../actions";
-
 interface MessageBoxProps {
+  userMetadata: UserMetadata | undefined;
   user: User | null;
-  data: any;
+  data: Message;
   isLast?: boolean;
 }
 
-const MessageBox: React.FC<MessageBoxProps> = ({user, data, isLast }) => {
+const MessageBox: React.FC<MessageBoxProps> = ({userMetadata, user, data, isLast }) => {
   const conversationId = "1";// useConversation();
 
-  const isOwn = user?.id === data.id_user;
+    const isOwn = user?.id === data.id_user;
 
   const container = clsx('flex gap-3 p-4', isOwn && 'justify-end');
   const avatar = clsx(isOwn && 'order-2');
@@ -34,16 +28,16 @@ const MessageBox: React.FC<MessageBoxProps> = ({user, data, isLast }) => {
   return (
     <div className={container}>
       <div className={avatar}>
-        <Avatar user={data.sender} />
+        <Avatar user={userMetadata} />
       </div>
       <div className={body}>
         <div className="flex items-center gap-1">
           <div className="text-sm text-gray-500">
-            {data.id_user}
+            {userMetadata!== undefined ? userMetadata.user_pseudo : data.id_user}
           </div>
-          <div className="text-xs text-gray-400">
-            {format(new Date(data.created_at), 'p')}
-          </div>
+          {/*<div className="text-xs text-gray-400">*/}
+          {/*  /!*format(new Date(data.created_at), 'MM/dd/yyyy')*!/*/}
+          {/*</div>*/}
         </div>
         <div className={message}>
             <div>{data.content}</div>

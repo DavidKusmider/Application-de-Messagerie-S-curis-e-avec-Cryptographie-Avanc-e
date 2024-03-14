@@ -3,7 +3,8 @@ import Body from "./components/Body";
 import Form from "./components/Form";
 import EmptyState from "@/app/components/EmptyState";
 
-import {getAllMessages, getAuthUser} from "../actions"
+import {getAllMessages, getAuthUser, getUsersMetadata} from "../actions"
+import {UserMetadata} from "@/types/databases.types";
 
 interface IParams {
   conversationId: string;
@@ -12,9 +13,9 @@ interface IParams {
 const ChatId = async ({ params }: { params: IParams }) => {
 
   const data = await getAuthUser();
-  console.log("data.user?.id: " + data.user?.id);
 
   const messages = await getAllMessages(data.user, params.conversationId);
+  const usersMetadata : UserMetadata[] | null = await getUsersMetadata();
   //console.log(messages);
   const user1 = {id: '1', name: 'Test1', image: undefined, email: 'test1@gmail.com', createdAt: new Date(Date.now())};
   //const messages = [{id: '0', createdAt: new Date(Date.now()), image: undefined, content: 'Ceci est un message', sender: user1, seen: []}];//await getMessages(params.conversationId);
@@ -35,7 +36,7 @@ const ChatId = async ({ params }: { params: IParams }) => {
     <div className="lg:pl-80 h-full">
       <div className="h-full flex flex-col">
         <Header conversation={conversation} />
-        <Body userData={data.user} initialMessages={messages!}/>
+        <Body usersMetadata={usersMetadata} userData={data.user} initialMessages={messages!}/>
         <Form />
       </div>
     </div>
