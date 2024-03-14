@@ -10,16 +10,16 @@ import { find, uniq } from 'lodash';
 import useConversation from "@/app/hooks/useConversation";
 import GroupChatModal from "@/app/components/modals/GroupChatModal";
 import ConversationBox from "./ConversationBox";
-import { FullConversationType, User } from "@/app/types";
+import { User } from "@supabase/supabase-js";
 
 interface ConversationListProps {
-  initialItems: FullConversationType[];
+  initialItems: any[];
   users: User[];
   title?: string;
 }
 
-const ConversationList: React.FC<ConversationListProps> = ({ 
-  initialItems, 
+const ConversationList: React.FC<ConversationListProps> = ({
+  initialItems,
   users
 }) => {
   const [items, setItems] = useState(initialItems);
@@ -35,51 +35,52 @@ const ConversationList: React.FC<ConversationListProps> = ({
   }, ['test@gmail.com'/*session.data?.user?.email*/])
 
   useEffect(() => {
-    if (!pusherKey) {
-      return;
-    }
+    const groupsTest = [{ id: '1', name: 'Test', users: users, messages: [] }];
+    console.log("ConversationList : ", initialItems);
+    setItems(initialItems);
+
 
     //pusherClient.subscribe(pusherKey);
 
-    const updateHandler = (conversation: FullConversationType) => {
-      setItems((current) => current.map((currentConversation) => {
-        if (currentConversation.id === conversation.id) {
-          return {
-            ...currentConversation,
-            messages: conversation.messages
-          };
-        }
-
-        return currentConversation;
-      }));
-    }
-
-    const newHandler = (conversation: FullConversationType) => {
-      setItems((current) => {
-        if (find(current, { id: conversation.id })) {
-          return current;
-        }
-
-        return [conversation, ...current]
-      });
-    }
-
-    const removeHandler = (conversation: FullConversationType) => {
-      setItems((current) => {
-        return [...current.filter((convo) => convo.id !== conversation.id)]
-      });
-    }
+    // const updateHandler = (conversation: FullConversationType) => {
+    //   setItems((current) => current.map((currentConversation) => {
+    //     if (currentConversation.id === conversation.id) {
+    //       return {
+    //         ...currentConversation,
+    //         messages: conversation.messages
+    //       };
+    //     }
+    //
+    //     return currentConversation;
+    //   }));
+    // }
+    //
+    // const newHandler = (conversation: FullConversationType) => {
+    //   setItems((current) => {
+    //     if (find(current, { id: conversation.id })) {
+    //       return current;
+    //     }
+    //
+    //     return [conversation, ...current]
+    //   });
+    // }
+    //
+    // const removeHandler = (conversation: FullConversationType) => {
+    //   setItems((current) => {
+    //     return [...current.filter((convo) => convo.id !== conversation.id)]
+    //   });
+    // }
 
     //pusherClient.bind('conversation:update', updateHandler)
     //pusherClient.bind('conversation:new', newHandler)
     //pusherClient.bind('conversation:remove', removeHandler)
-  }, [pusherKey, router]);
+  }, [initialItems]);
 
   return (
     <>
-      <GroupChatModal 
-        users={users} 
-        isOpen={isModalOpen} 
+      <GroupChatModal
+        users={users}
+        isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
       <aside className={clsx(`
@@ -101,8 +102,8 @@ const ConversationList: React.FC<ConversationListProps> = ({
             <div className="text-2xl font-bold text-neutral-800">
               Groups
             </div>
-            <div 
-              onClick={() => setIsModalOpen(true)} 
+            <div
+              onClick={() => setIsModalOpen(true)}
               className="
                 rounded-full 
                 p-2 
@@ -116,17 +117,19 @@ const ConversationList: React.FC<ConversationListProps> = ({
               <MdOutlineGroupAdd size={20} />
             </div>
           </div>
-          {items.map((item) => (
-            <ConversationBox
-              key={item.id}
-              data={item}
-              selected={conversationId === item.id}
-            />
-          ))}
+          {items ? (
+            items.map((item) => (
+              <ConversationBox
+                key={item.id}
+                data={item}
+                selected={conversationId === item.id}
+              />
+            ))
+          ) : null}
         </div>
       </aside>
     </>
-   );
+  );
 }
- 
+
 export default ConversationList;

@@ -6,17 +6,17 @@ import MessageBox from "./MessageBox";
 import { FullMessageType } from "@/app/types";
 import { find } from "lodash";
 import useConversation from "@/app/hooks/useConversation";
-import {User} from '@supabase/supabase-js';
-import {getAuthUser, insertMessage} from "@/app/conversations/actions";
+import { User } from '@supabase/supabase-js';
+import { getAuthUser, insertMessage } from "@/app/conversations/actions";
 import { io } from "socket.io-client";
 
 interface BodyProps {
-  userData : User | null;
+  userData: User | null;
   initialMessages: any[];
 }
 
 // @ts-ignore
-const Body: React.FC<BodyProps> = ({userData, initialMessages }) => {
+const Body: React.FC<BodyProps> = ({ userData, initialMessages }) => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState(initialMessages); // TODO initialMessages should contain all previous messages from DB.
 
@@ -36,7 +36,7 @@ const Body: React.FC<BodyProps> = ({userData, initialMessages }) => {
 
         return [...current, message]
       });
-      
+
       bottomRef?.current?.scrollIntoView();
     };
 
@@ -45,7 +45,7 @@ const Body: React.FC<BodyProps> = ({userData, initialMessages }) => {
         if (currentMessage.id === newMessage.id) {
           return newMessage;
         }
-  
+
         return currentMessage;
       }))
     };
@@ -77,7 +77,7 @@ const Body: React.FC<BodyProps> = ({userData, initialMessages }) => {
     <div className="flex-1 overflow-y-auto">
       {messages && messages.map((message, i) => (
         <MessageBox
-          user = {user}
+          user={user}
           isLast={i === messages.length - 1}
           key={message.id}
           data={message}
