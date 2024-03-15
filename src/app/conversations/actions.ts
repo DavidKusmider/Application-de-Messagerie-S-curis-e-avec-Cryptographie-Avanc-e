@@ -50,7 +50,6 @@ export async function getGroupsUser(user: User | null) {
       throw new Error(error.message);
     }
     console.log("DATA : ", data);
-    console.log("DATA.USERGROUP : ", data[2].user_group);
 
     return data;
   } catch (error) {
