@@ -1,3 +1,5 @@
+'use client';
+
 import Header from "./components/Header";
 import Body from "./components/Body";
 import Form from "./components/Form";
@@ -5,17 +7,35 @@ import EmptyState from "@/app/components/EmptyState";
 
 import {getAllMessages, getAuthUser, getUsersMetadata} from "../actions"
 import {UserMetadata} from "@/types/databases.types";
+import { useEffect, useState } from "react";
 
 interface IParams {
   conversationId: string;
 }
 
-const ChatId = async ({ params }: { params: IParams }) => {
+const ChatId = ({ params }: { params: IParams }) => {
+  const [data, setData] = useState<any>(null);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [usersMetadata, setUsersMetadata] = useState<UserMetadata[] | null>(null);
 
-  const data = await getAuthUser();
+  useEffect(() => {
+    const fetchData = async () => {
+      const userData = await getAuthUser();
+      setData(userData);
 
-  const messages = await getAllMessages(data.user, params.conversationId);
-  const usersMetadata : UserMetadata[] | null = await getUsersMetadata();
+      const fetchedMessages = await getAllMessages(userData.user, params.conversationId);
+      setMessages(fetchedMessages || []);
+
+      const fetchedUsersMetadata = await getUsersMetadata();
+      setUsersMetadata(fetchedUsersMetadata);
+    };
+
+    fetchData();
+
+    return () => {
+    };
+  }, [params.conversationId]);
+
   //console.log(messages);
   const user1 = {id: '1', name: 'Test1', image: undefined, email: 'test1@gmail.com', createdAt: new Date(Date.now())};
   //const messages = [{id: '0', createdAt: new Date(Date.now()), image: undefined, content: 'Ceci est un message', sender: user1, seen: []}];//await getMessages(params.conversationId);
