@@ -44,7 +44,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ currentUser, groups }) 
     console.log("conversations before fetchGroups() : ", conversations);
     fetchGroups();
     console.log("conversations AFTER fetchGroups() : ", conversations);
-  }, [currentUser, user]);
+  }, [currentUser]);
 
   const actif = useActif().actif;
 
