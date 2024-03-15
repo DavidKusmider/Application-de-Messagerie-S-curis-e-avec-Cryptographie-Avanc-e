@@ -58,6 +58,67 @@ export async function getGroupsUser(user: User | null) {
   }
 }
 
+export async function getUsersByUsername(username: string): Promise<User[]> {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .select()
+      .ilike('user_pseudo', `%${username}%`); // Utiliser ilike pour une recherche insensible à la casse
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    console.log("DATA USERNAME SEARCH: ", data);
+    return data || [];
+  } catch (error) {
+    console.error('Error fetching users by username:', error);
+    return [];
+  }
+}
+
+interface GroupData {
+  name: string;
+  members: number[]; // Liste des identifiants des membres du groupe
+}
+
+export async function createGroup(groupData: GroupData, userId: number): Promise<void> {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  try {
+    // Insérer le nouveau groupe dans la table "groups"
+    const { data, error } = await supabase
+      .from('groups')
+      .insert({
+        name: groupData.name,
+        id_user_creator: userId // ID de l'utilisateur créateur du groupe
+      });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    // Insérer les membres du groupe dans la table de liaison "user_group"
+    if (data && data.length > 0) {
+      const groupId = data[0].id; // Récupérer l'ID du groupe créé
+      const memberInserts = groupData.members.map(memberId => ({
+        id_group: groupId,
+        id_user: memberId
+      }));
+
+      await supabase
+        .from('user_group')
+        .insert(memberInserts);
+    }
+  } catch (error) {
+    console.error('Error creating group:', error);
+    throw new Error('Error creating group');
+  }
+}
+
 export async function getAllMessages(user: User | null, conversationId: any) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
