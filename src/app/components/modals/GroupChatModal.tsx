@@ -1,20 +1,14 @@
 'use client';
 
-import axios from 'axios';
-import React, { useState } from 'react'
-import { useRouter } from 'next/navigation';
-import {
-  FieldValues,
-  SubmitHandler,
-  useForm
-} from 'react-hook-form';
-
+import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import Input from "../inputs/Input";
-import Select from '../inputs/Select';
 import Modal from './Modal';
 import Button from '../Button';
 import { toast } from 'react-hot-toast';
 import { User } from '@supabase/supabase-js';
+import { getUsersByUsername, createGroup } from '@/app/conversations/actions'; // Importer la fonction pour récupérer les utilisateurs par nom d'utilisateur
 
 interface GroupChatModalProps {
   isOpen?: boolean;
@@ -27,40 +21,46 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
   onClose,
   users = []
 }) => {
-  const router = useRouter();
+  // const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const [searchResults, setSearchResults] = useState<User[]>([]);
 
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
-    formState: {
-      errors,
-    }
-  } = useForm<FieldValues>({
-    defaultValues: {
-      name: '',
-      members: []
-    }
-  });
+    formState: { errors }
+  } = useForm<FieldValues>();
 
-  const members = watch('members');
-
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true);
+    try {
+      // Envoyer la requête à la base de données Supabase avec les données du formulaire
+      // await createGroup(data, currentUser);
+      // Réinitialiser l'état local et afficher une notification de succès
+      setInputValue('');
+      toast.success('Group created successfully!');
+    } catch (error) {
+      // Gérer les erreurs de requête
+      console.error('Error creating group:', error);
+      toast.error('Failed to create group.');
+    } finally {
+      setIsLoading(false);
+      onClose();
+    }
+  };
 
-    axios.post('/api/conversations', {
-      ...data,
-      isGroup: true
-    })
-      .then(() => {
-        router.refresh();
-        onClose();
-      })
-      .catch(() => toast.error('Something went wrong!'))
-      .finally(() => setIsLoading(false));
-  }
+  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+    try {
+      // Envoyer une requête pour récupérer les utilisateurs correspondant à la saisie de l'utilisateur
+      console.log("je rentre dnas handle input change");
+      const results = await getUsersByUsername(e.target.value);
+      setSearchResults(results);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -89,18 +89,28 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
                 required
                 register={register}
               />
-              <Select
+              <Input
                 disabled={isLoading}
-                label="Members"
-                options={users.map((user) => ({
-                  value: user.id,
-                  label: user.identities
-                }))}
-                onChange={(value) => setValue('members', value, {
-                  shouldValidate: true
-                })}
-                value={members}
+                label="Search friends"
+                id="searchFriends"
+                // value={inputValue}
+                errors={errors}
+                register={register}
+                onChange={handleInputChange}
               />
+              {searchResults.length > 0 && (
+                <div className="mt-4">
+                  <h3 className="text-sm font-medium text-gray-900">Search results:</h3>
+                  <ul className="mt-2 divide-y divide-gray-200">
+                    {searchResults.map((user) => (
+                      <li key={user.id} className="py-2">
+                        <span className="block text-sm font-medium text-gray-900">{user.user_pseudo}</span>
+                        <span className="block text-sm text-gray-500">{user.email}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -119,7 +129,8 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
         </div>
       </form>
     </Modal>
-  )
-}
+  );
+};
 
 export default GroupChatModal;
+
