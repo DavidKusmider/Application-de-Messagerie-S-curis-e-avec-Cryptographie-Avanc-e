@@ -3,6 +3,7 @@
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import { User } from '@supabase/supabase-js';
+import { Group, User_Group, UserMetadata } from '@/types/databases.types';
 
 export async function insertMessage(nMessage: any, conversationId: string, user: User | null) {
   const cookieStore = cookies();
@@ -79,39 +80,64 @@ export async function getUsersByUsername(username: string): Promise<User[]> {
   }
 }
 
-interface GroupData {
-  name: string;
-  members: number[]; // Liste des identifiants des membres du groupe
-}
-
-export async function createGroup(groupData: GroupData, userId: number): Promise<void> {
+export async function createGroup(name: string, members: UserMetadata[], user: User | null): Promise<void> {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
+  console.log("Je suis dans createGroup");
+  console.log("userID : ", user?.id);
+  console.log("name : ", name);
+
+  const groupData: Group = {
+    group_name: name,
+    id_user_creator: user?.id!
+  }
 
   try {
     // Insérer le nouveau groupe dans la table "groups"
     const { data, error } = await supabase
-      .from('groups')
-      .insert({
-        name: groupData.name,
-        id_user_creator: userId // ID de l'utilisateur créateur du groupe
-      });
+      .schema("public")
+      .from('group')
+      .insert(groupData)
+      .select();
+
+    console.log("checkpoint 1");
+
 
     if (error) {
       throw new Error(error.message);
     }
 
-    // Insérer les membres du groupe dans la table de liaison "user_group"
-    if (data && data.length > 0) {
-      const groupId = data[0].id; // Récupérer l'ID du groupe créé
-      const memberInserts = groupData.members.map(memberId => ({
-        id_group: groupId,
-        id_user: memberId
-      }));
+    console.log("INSERT GROUP SUPA : ", data[0].id);
 
-      await supabase
+    // Insérer les membres du groupe dans la table de liaison "user_group"
+    const groupId = data[0].id; // Récupérer l'ID du groupe créé
+    console.log("groupID", groupId);
+    console.log("checkpoint 1.5");
+
+    console.log("members : ", members);
+
+    const memberInserts = members.map(memberId => ({
+      id_group: groupId,
+      id_user: memberId.id
+    }));
+
+    console.log("checkpoint 2");
+    console.log("checkpoint memberInserts : ", memberInserts);
+
+    {
+      const groupData: User_Group = {
+        id_user: user?.id!,
+        id_group: groupId
+      }
+      const { data, error } = await supabase
         .from('user_group')
-        .insert(memberInserts);
+        .insert(memberInserts)
+        .select();
+
+      console.log("checkpoint 3");
+
+      console.log("data user_group : ", data);
+
     }
   } catch (error) {
     console.error('Error creating group:', error);

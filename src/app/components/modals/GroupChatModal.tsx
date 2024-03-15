@@ -8,23 +8,24 @@ import Modal from './Modal';
 import Button from '../Button';
 import { toast } from 'react-hot-toast';
 import { User } from '@supabase/supabase-js';
-import { getUsersByUsername, createGroup } from '@/app/conversations/actions'; // Importer la fonction pour récupérer les utilisateurs par nom d'utilisateur
+import { getAuthUser, getUsersByUsername, createGroup } from '@/app/conversations/actions'; // Importer la fonction pour récupérer les utilisateurs par nom d'utilisateur
+import { UserMetadata } from "@/types/databases.types"
 
 interface GroupChatModalProps {
   isOpen?: boolean;
   onClose: () => void;
-  users: User[];
 }
 
 const GroupChatModal: React.FC<GroupChatModalProps> = ({
   isOpen,
   onClose,
-  users = []
 }) => {
   // const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [searchResults, setSearchResults] = useState<User[]>([]);
+  const [user, setUser] = useState<any>(null);
+  const [users, setUsers] = useState<any>([]);
 
   const {
     register,
@@ -35,8 +36,14 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true);
     try {
+      const groupName = data.name; // Récupérer la valeur du champ "Name" du formulaire
+      console.log("data.groupName : ", groupName);
       // Envoyer la requête à la base de données Supabase avec les données du formulaire
-      // await createGroup(data, currentUser);
+      const data2 = await getAuthUser();
+      setUser(data2!);
+      console.log("user : ", user);
+
+      await createGroup(groupName, users, data2.user);
       // Réinitialiser l'état local et afficher une notification de succès
       setInputValue('');
       toast.success('Group created successfully!');
@@ -57,6 +64,8 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
       console.log("je rentre dnas handle input change");
       const results = await getUsersByUsername(e.target.value);
       setSearchResults(results);
+      setUsers(results);
+      console.log("users : ", users);
     } catch (error) {
       console.error('Error fetching users:', error);
     }

@@ -30,6 +30,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ currentUser, groups }) 
     const fetchGroups = async () => {
       try {
         const data = await getAuthUser();
+        console.log("user usergorup value : ", data);
         setUser(data!);
         const userGroups = await getGroupsUser(data.user);
         if (userGroups) {

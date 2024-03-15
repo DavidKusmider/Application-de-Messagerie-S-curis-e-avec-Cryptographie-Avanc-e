@@ -14,6 +14,7 @@ interface InputProps {
   required?: boolean;
   register: UseFormRegister<FieldValues>;
   errors: FieldErrors;
+  name?: string;
   disabled?: boolean;
   onChange?: React.ChangeEventHandler<HTMLInputElement>; // Ajoutez cette ligne
 }
@@ -26,7 +27,7 @@ const Input: React.FC<InputProps> = ({
   errors,
   type = 'text',
   disabled,
-  onChange, // Ajoutez cette ligne
+  onChange,
 }) => {
   return (
     <div>
