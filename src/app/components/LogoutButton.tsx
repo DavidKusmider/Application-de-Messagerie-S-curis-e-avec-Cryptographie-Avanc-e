@@ -10,7 +10,6 @@ export default function LogoutButton({ user }: { user: User | null }, props : an
 
   const logout = async () => {
     document.cookie = "privateKey=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    console.log(user);
     const supa = createClient();
     await supa.auth.signOut();
     router.refresh();
