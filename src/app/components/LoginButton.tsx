@@ -4,6 +4,7 @@ import { User } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { generateUserKeyPair } from "@/cryptoUtils";
 
 export default function LoginButton({ user }: { user: User | null }, props : any) {
   const router = useRouter();
@@ -15,6 +16,14 @@ export default function LoginButton({ user }: { user: User | null }, props : any
         redirectTo: location.origin + "/auth/callback",
       },
     });
+
+    try {
+      const { publicKey, privateKey } = await generateUserKeyPair();
+      console.log("Public Key:", publicKey);
+      console.log("Private Key:", privateKey);
+    } catch (error: any) {
+      console.error("Error generating key pair:", error.message);
+    }
   };
   const login = () => {
     router.push("/connexion");

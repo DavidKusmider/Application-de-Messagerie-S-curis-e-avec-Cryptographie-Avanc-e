@@ -9,6 +9,7 @@ import useConversation from "@/app/hooks/useConversation";
 import { io } from 'socket.io-client';
 import {Message} from "@/types/databases.types"
 import {getAuthUser} from "@/app/conversations/actions";
+import { encryptMessageContent } from '@/cryptoUtils';
 
 const Form = () => {
   const { conversationId } = useConversation();
@@ -35,7 +36,7 @@ const Form = () => {
       };*/
       const newMessage = {
         id: Date.now().toString(),
-        message: data.message,
+        message: data.message/* encryptMessageContent(data.message, recipientPublicKey) */,
         conversationId: conversationId,
         timestamp: new Date().toISOString(),
       };
