@@ -8,7 +8,8 @@ import { CldUploadButton } from "next-cloudinary";
 import useConversation from "@/app/hooks/useConversation";
 import { io } from 'socket.io-client';
 import {Message} from "@/types/databases.types"
-import {getAuthUser} from "@/app/conversations/actions";
+import {getAuthUser, insertMessage} from "../../actions";
+import {saveMessageEvent} from "@/app/conversations/[conversationId]/actions";
 
 const Form = () => {
   const { conversationId } = useConversation();
@@ -40,12 +41,27 @@ const Form = () => {
         timestamp: new Date().toISOString(),
       };
 
-      socket.emit('message', newMessage);
+      socket.emit('send_message', newMessage, dataUser, conversationId, socket.id, async (formattedMessage:any) => {
+        console.log("save_message event");
+        console.log(formattedMessage, conversationId);
+        await insertMessage(formattedMessage, conversationId, dataUser.user);
+      });
 
-      console.log('Message sent:', newMessage);
+      /*socket.on("save_message", async (formattedMessage: Message, conversationId:any, userData:any, socketId:any) => {
+      });*/
+      //saveMessageEvent(socket);
+      /*socket.on("save_message", (formattedMessage: Message, conversationId, userData) => {
+        console.log("save_message event");
+        console.log(formattedMessage, conversationId);
+        insertMessage(formattedMessage, conversationId, userData.user);
+      });*/
+
     } catch (error: any) {
       console.error('Error sending message:', error.message);
     }
+    return () => {
+      socket.disconnect();
+    };
   };
 
   const handleUpload = (result: any) => {
@@ -56,16 +72,8 @@ const Form = () => {
       timestamp: new Date().toISOString(),
     };
 
-    socket.emit('message', newMessage);
+    socket.emit('send_message', newMessage);
   }
-
-  useEffect(() => {
-    const socket = io('http://localhost:3001');
-    socket.emit('joinRoom', conversationId);
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
 
   return (
     <div

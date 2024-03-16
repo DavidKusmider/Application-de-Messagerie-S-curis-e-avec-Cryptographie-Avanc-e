@@ -11,6 +11,8 @@ import useConversation from "@/app/hooks/useConversation";
 import GroupChatModal from "@/app/components/modals/GroupChatModal";
 import ConversationBox from "./ConversationBox";
 import { User } from "@supabase/supabase-js";
+import { getAuthUser, getUsersByUsername, createGroup } from '@/app/conversations/actions'; // Importer la fonction pour récupérer les utilisateurs par nom d'utilisateur
+import { UserMetadata } from "@/types/databases.types"
 
 interface ConversationListProps {
   initialItems: any[];

@@ -48,8 +48,8 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ currentUser, groups }) 
   }, [currentUser]);
 
   const actif = useActif().actif;
-
-  console.log("currentUser: ", { currentUser });
+  
+  //console.log("currentUser: ", {currentUser});
 
   return (
     <>

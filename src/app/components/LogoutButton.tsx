@@ -18,7 +18,6 @@ export default function LogoutButton({ user }: { user: User | null }, props : an
   };
 
   const logout = async () => {
-    console.log(user);
     const supa = createClient();
     await supa.auth.signOut();
     router.refresh();

@@ -58,21 +58,26 @@ const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages })
     };
 
     const socket = io("http://localhost:3001");
-    socket.emit("joinRoom", conversationId);
-    socket.on("message", (newMessage) => {
+    //socket.emit("joinRoom", conversationId);
+    /*socket.on("message", (newMessage) => {
+
       console.log("New message received:", newMessage);
       insertMessage(newMessage, conversationId, userData);
-      const formattedMessage: Message = { id: newMessage.id, content: newMessage.message, id_user: userData?.id!, id_group: Number(conversationId), created_at: newMessage.timestamp, send_at: newMessage.timestamp }
+      const formattedMessage: Message = {id: newMessage.id, content:newMessage.message, id_user: userData?.id!, id_group: Number(conversationId), created_at: newMessage.timestamp, send_at: newMessage.timestamp};
       console.log("Message registered.");
       console.log(formattedMessage);
       messageHandler(formattedMessage);
       // TODO Front-end : here, a message has just been received => display new MessageBox with newMessage
+    });*/
+    socket.on("receive_message", (message) => {
+      console.log("receive_message event");
+      messageHandler(message);
     });
 
     return () => {
       socket.disconnect();
     };
-  }, [conversationId, messages, userData]);
+  }, [messages]);
 
   const [user, setUserData] = useState<User | null>(null);
 
