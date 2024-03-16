@@ -3,7 +3,7 @@ import Body from "./components/Body";
 import Form from "./components/Form";
 import EmptyState from "@/app/components/EmptyState";
 
-import { getAllMessages, getAuthUser, getUsersMetadata, insertMessage } from "../actions"
+import {getAllMessages, getAuthUser, getUserGroupFromIdGroup, getUsersMetadata, insertMessage} from "../actions"
 import { Message, UserMetadata } from "@/types/databases.types";
 import { io } from "socket.io-client";
 import { joinRoomSocket, saveMessageEvent } from "@/app/conversations/[conversationId]/actions";
@@ -18,7 +18,7 @@ export default async function ChatId({ params }: { params: IParams }) {
   //saveMessageEvent();
 
   const data = await getAuthUser();
-
+  const userGroupData = await getUserGroupFromIdGroup(params.conversationId);
   const messages = await getAllMessages(data.user, params.conversationId);
   const usersMetadata: UserMetadata[] | null = await getUsersMetadata();
   //console.log(messages);
@@ -40,7 +40,7 @@ export default async function ChatId({ params }: { params: IParams }) {
   return (
     <div className="lg:pl-80 h-full">
       <div className="h-full flex flex-col">
-        <Header conversation={conversation} />
+        <Header nbmember={userGroupData?.length} conversation={conversation} />
         <Body usersMetadata={usersMetadata} userData={data.user} initialMessages={messages!} />
         <Form />
       </div>

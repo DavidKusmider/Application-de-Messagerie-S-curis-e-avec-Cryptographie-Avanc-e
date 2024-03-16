@@ -202,3 +202,13 @@ export async function getUsersMetadata() {
   }
   return data;
 }
+
+export async function getUserGroupFromIdGroup(id:string){
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+  const { data, error } = await supabase.schema("public").from("user_group").select().eq("id_group", id);
+  if (error !== null) {
+    console.log(error);
+  }
+  return data;
+}
