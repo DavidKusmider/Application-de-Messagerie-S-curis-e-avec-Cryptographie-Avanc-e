@@ -12,7 +12,7 @@ import AvatarGroup from "@/app/components/AvatarGroup";
 import { FullConversationType } from "@/app/types";
 
 interface ConversationBoxProps {
-  data: FullConversationType,
+  data: any,
   selected?: boolean;
 }
 
@@ -20,7 +20,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
   data,
   selected
 }) => {
-  const otherUser = useOtherUser(data);
+  // const otherUser = useOtherUser(data);
   //const session = useSession();
   const router = useRouter();
 
@@ -35,8 +35,8 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
   }, [data.messages]);
 
   const userEmail = useMemo(() => 'test@gmail.com'/*session.data?.user?.email*/,
-  ['test@gmail.com'/*session.data?.user?.email*/]);
-  
+    ['test@gmail.com'/*session.data?.user?.email*/]);
+
   const hasSeen = useMemo(() => {
     if (!lastMessage) {
       return false;
@@ -82,15 +82,17 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
         selected ? 'bg-neutral-100' : 'bg-white'
       )}
     >
-      {(
-          <AvatarGroup users={data.users}/>
+      {true/*data.isGroup*/ ? (
+        <AvatarGroup users={data.users} />
+      ) : (
+        <Avatar user={data} />
       )}
       <div className="min-w-0 flex-1">
         <div className="focus:outline-none">
           <span className="absolute inset-0" aria-hidden="true" />
           <div className="flex justify-between items-center mb-1">
             <p className="text-md font-medium text-gray-900">
-              {data.name || otherUser.name}
+              {data.name}
             </p>
             {lastMessage?.createdAt && (
               <p
@@ -111,8 +113,8 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
               `,
               hasSeen ? 'text-gray-500' : 'text-black font-medium'
             )}>
-              {lastMessageText}
-            </p>
+            {lastMessageText}
+          </p>
         </div>
       </div>
     </div>

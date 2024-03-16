@@ -5,19 +5,19 @@ import { useEffect, useRef, useState } from "react";
 import MessageBox from "./MessageBox";
 import { find } from "lodash";
 import useConversation from "@/app/hooks/useConversation";
-import {User} from '@supabase/supabase-js';
-import {Message, UserMetadata} from "@/types/databases.types"
-import {getAllMessages, insertMessage} from "@/app/conversations/actions";
+import { User } from '@supabase/supabase-js';
+import { Message, UserMetadata } from "@/types/databases.types"
+import { getAllMessages, insertMessage } from "@/app/conversations/actions";
 import { io } from "socket.io-client";
 
 interface BodyProps {
-  userData : User | null;
+  userData: User | null;
   initialMessages: any[];
   usersMetadata: UserMetadata[] | null;
 }
 
 // @ts-ignore
-const Body: React.FC<BodyProps> = ({usersMetadata, userData, initialMessages }) => {
+const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages }) => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState(initialMessages); // TODO initialMessages should contain all previous messages from DB.
 
@@ -53,7 +53,7 @@ const Body: React.FC<BodyProps> = ({usersMetadata, userData, initialMessages }) 
 
         return [...current, message]
       });
-      
+
       bottomRef?.current?.scrollIntoView();
     };
 
@@ -94,7 +94,7 @@ const Body: React.FC<BodyProps> = ({usersMetadata, userData, initialMessages }) 
       {messages && messages.map((message, i) => (
         <MessageBox
           userMetadata={usersMetadata?.find(m => m.id === message.id_user)}
-          user = {user}
+          user={user}
           isLast={i === messages.length - 1}
           key={message.id}
           data={message}

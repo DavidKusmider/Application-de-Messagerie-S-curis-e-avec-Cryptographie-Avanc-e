@@ -3,56 +3,57 @@
 import DesktopItem from "./DesktopItem";
 import useRoutes from "@/app/hooks/useRoutes";
 import SettingsModal from "./SettingsModal";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Avatar from "../Avatar";
-import { User } from "@/app/types";
 import useActif from "@/app/hooks/useActif";
 import ConversationList from "@/app/conversations/components/ConversationList";
+import { getAllMessages, getAuthUser, getGroupsUser } from "../../conversations/actions"
+import { User } from "@supabase/supabase-js"
+import { Message, Group, User_Group } from "@/types/databases.types"
 
 interface DesktopSidebarProps {
-  currentUser: User
+  currentUser: User;
+  groups: Group[];
 }
 
-const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
-  currentUser
-}) => {
+const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ currentUser, groups }) => {
   const routes = useRoutes();
   const [isOpen, setIsOpen] = useState(false);
+  const [conversations, setConversations] = useState(groups);
+  const [user, setUser] = useState<any>(null);
 
-  //const users = //await getUsers();
-  const users = [{id: '0', name: 'Test0', image: undefined, email: 'test@gmail.com', createdAt: new Date(Date.now())},
-                {id: '1', name: 'Test1', image: undefined, email: 'test1@gmail.com', createdAt: new Date(Date.now())},
-                {id: '0', name: 'Test0', image: undefined, email: 'test@gmail.com', createdAt: new Date(Date.now())},
-                {id: '0', name: 'Test0', image: undefined, email: 'test@gmail.com', createdAt: new Date(Date.now())},
-                {id: '0', name: 'Test0', image: undefined, email: 'test@gmail.com', createdAt: new Date(Date.now())},
-                {id: '0', name: 'Test0', image: undefined, email: 'test@gmail.com', createdAt: new Date(Date.now())},
-                {id: '0', name: 'Test0', image: undefined, email: 'test@gmail.com', createdAt: new Date(Date.now())},
-                {id: '0', name: 'Test0', image: undefined, email: 'test@gmail.com', createdAt: new Date(Date.now())},
-                {id: '0', name: 'Test0', image: undefined, email: 'test@gmail.com', createdAt: new Date(Date.now())},
-                {id: '0', name: 'Test0', image: undefined, email: 'test@gmail.com', createdAt: new Date(Date.now())},
-                {id: '0', name: 'Test0', image: undefined, email: 'test@gmail.com', createdAt: new Date(Date.now())},
-              ];
-  const groups = [{id: '0', name: 'Test0'},{id: '1', name: 'Test1'}];
-  const notifications = [{id: '0', msg: 'Test0'},{id: '1', msg: 'Test1'}];
-  const conversations = [{id: '1', name: 'Test', users: users, messages: []},
-                        {id: '2', name: 'Test2', users: users, messages: []},
-                        {id: '3', name: 'Test', users: users, messages: []},
-                        {id: '4', name: 'Test', users: users, messages: []},
-                        {id: '5', name: 'Test', users: users, messages: []},
-                        {id: '6', name: 'Test', users: users, messages: []},
-                        {id: '7', name: 'Test', users: users, messages: []},
-                        {id: '8', name: 'Test', users: users, messages: []},
-                        {id: '9', name: 'Test', users: users, messages: []},
-                        {id: '10', name: 'Test', users: users, messages: []},
-                        {id: '11', name: 'Test', users: users, messages: []},
-                        {id: '12', name: 'Test', users: users, messages: []}];//await getConversations();
+  const users = [currentUser];
+  const groupsTest = [{ id: '0', created_at: '2024/03/12', group_name: 'Test0', id_user_creator: 'davidIdUserCreator' }];
+  const notifications = [{ id: '0', msg: 'Test0' }, { id: '1', msg: 'Test1' }];
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      try {
+        const data = await getAuthUser();
+        console.log("user usergorup value : ", data);
+        setUser(data!);
+        const userGroups = await getGroupsUser(data.user);
+        if (userGroups) {
+          console.log("userGroups value : ", userGroups);
+          setConversations(userGroups);
+        }
+      } catch (error) {
+        console.error('Error fetching user groups:', error);
+      }
+    };
+
+    console.log("conversations before fetchGroups() : ", conversations);
+    fetchGroups();
+    console.log("conversations AFTER fetchGroups() : ", conversations);
+  }, [currentUser]);
+
   const actif = useActif().actif;
   
   //console.log("currentUser: ", {currentUser});
 
   return (
     <>
-      <SettingsModal currentUser={currentUser} isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      {/* <SettingsModal currentUser={currentUser} isOpen={isOpen} onClose={() => setIsOpen(false)} /> */}
       <div className="
         hidden
         lg:fixed
@@ -81,13 +82,15 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
             ))}
           </div>
         </nav>
-        {actif==="groups" ? (
+        {actif === "groups" ? (
           <div className="absolute top-20 left-5">
             <div>
               <ConversationList
                 users={users}
                 title="Messages"
                 initialItems={conversations}
+              // initialItems={[{ id: '1', name: 'Test', users: users, messages: [] }]}
+              // initialItems={groupsTest}
               />
             </div>
           </div>
@@ -104,5 +107,4 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
     </>
   );
 }
-
 export default DesktopSidebar;

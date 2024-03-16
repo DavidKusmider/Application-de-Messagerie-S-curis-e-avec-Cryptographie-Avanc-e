@@ -1,10 +1,10 @@
 'use client';
 
 import clsx from "clsx";
-import { 
-  FieldErrors, 
-  FieldValues, 
-  UseFormRegister 
+import {
+  FieldErrors,
+  FieldValues,
+  UseFormRegister
 } from "react-hook-form";
 
 interface InputProps {
@@ -12,9 +12,10 @@ interface InputProps {
   id: string;
   type?: string;
   required?: boolean;
-  register: UseFormRegister<FieldValues>,
-  errors: FieldErrors
+  register: UseFormRegister<FieldValues>;
+  errors: FieldErrors;
   disabled?: boolean;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>; // Ajoutez cette ligne
 }
 
 const Input: React.FC<InputProps> = ({
@@ -25,11 +26,12 @@ const Input: React.FC<InputProps> = ({
   errors,
   type = 'text',
   disabled,
+  onChange,
 }) => {
-  return ( 
+  return (
     <div>
-      <label 
-        htmlFor={id} 
+      <label
+        htmlFor={id}
         className="
           block 
           text-sm 
@@ -47,6 +49,7 @@ const Input: React.FC<InputProps> = ({
           autoComplete={id}
           disabled={disabled}
           {...register(id, { required })}
+          onChange={onChange}
           className={clsx(`
             form-input
             block 
@@ -71,7 +74,8 @@ const Input: React.FC<InputProps> = ({
         />
       </div>
     </div>
-   );
+  );
 }
- 
+
 export default Input;
+
