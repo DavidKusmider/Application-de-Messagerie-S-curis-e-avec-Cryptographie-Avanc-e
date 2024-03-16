@@ -77,7 +77,7 @@ const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages })
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [messages]);
 
   const [user, setUserData] = useState<User | null>(null);
 
