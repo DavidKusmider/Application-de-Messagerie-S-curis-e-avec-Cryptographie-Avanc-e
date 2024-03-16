@@ -3,7 +3,8 @@
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import { User } from '@supabase/supabase-js';
-import { Group, User_Group, UserMetadata, Message} from '@/types/databases.types';
+import { Group, User_Group, UserMetadata } from '@/types/databases.types';
+import { Message} from '@/types/databases.types';
 
 export async function insertMessage(nMessage:  Message, conversationId: string, user: User | null) {
     const cookieStore = cookies();
@@ -50,7 +51,7 @@ export async function getGroupsUser(user: User | null) {
       throw new Error(error.message);
     }
     console.log("DATA : ", data);
-    //console.log("DATA.USERGROUP : ", data[2].user_group);
+
 
     return data;
   } catch (error) {
@@ -80,7 +81,6 @@ export async function getUsersByUsername(username: string): Promise<User[]> {
   }
 }
 
-
 export async function createGroup(name: string, members: UserMetadata[], user: User | null): Promise<void> {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
@@ -102,6 +102,7 @@ export async function createGroup(name: string, members: UserMetadata[], user: U
       .select();
 
     console.log("checkpoint 1");
+
 
     if (error) {
       throw new Error(error.message);
@@ -137,6 +138,7 @@ export async function createGroup(name: string, members: UserMetadata[], user: U
       console.log("checkpoint 3");
 
       console.log("data user_group : ", data);
+
     }
   } catch (error) {
     console.error('Error creating group:', error);

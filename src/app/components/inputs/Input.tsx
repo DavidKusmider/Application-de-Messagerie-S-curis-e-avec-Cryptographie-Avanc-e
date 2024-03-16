@@ -14,6 +14,7 @@ interface InputProps {
   required?: boolean;
   register: UseFormRegister<FieldValues>;
   errors: FieldErrors;
+  name?: string;
   disabled?: boolean;
   onChange?: React.ChangeEventHandler<HTMLInputElement>; // Ajoutez cette ligne
 }

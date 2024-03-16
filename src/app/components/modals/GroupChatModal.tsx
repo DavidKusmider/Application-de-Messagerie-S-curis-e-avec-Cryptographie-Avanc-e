@@ -39,6 +39,7 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
       const groupName = data.name; // Récupérer la valeur du champ "Name" du formulaire
       console.log("data.groupName : ", groupName);
 
+      // Envoyer la requête à la base de données Supabase avec les données du formulaire
       const data2 = await getAuthUser();
       setUser(data2!);
       console.log("user : ", user);
