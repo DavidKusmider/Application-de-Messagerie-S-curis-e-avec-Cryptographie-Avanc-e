@@ -30,7 +30,7 @@ router.post('/', (req, res) => {
         timestamp: new Date().toISOString(),
     };
 
-    broadcastMessage(newMessage);
+    //broadcastMessage(newMessage);
 
     res.status(201).json(newMessage);
 });

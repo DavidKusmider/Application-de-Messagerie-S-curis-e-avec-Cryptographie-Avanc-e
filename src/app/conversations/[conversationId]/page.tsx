@@ -3,14 +3,19 @@ import Body from "./components/Body";
 import Form from "./components/Form";
 import EmptyState from "@/app/components/EmptyState";
 
-import {getAllMessages, getAuthUser, getUsersMetadata} from "../actions"
-import {UserMetadata} from "@/types/databases.types";
+import {getAllMessages, getAuthUser, getUsersMetadata, insertMessage} from "../actions"
+import {Message, UserMetadata} from "@/types/databases.types";
+import {io} from "socket.io-client";
+import {joinRoomSocket, saveMessageEvent} from "@/app/conversations/[conversationId]/actions";
 
 interface IParams {
   conversationId: string;
 }
 
-const ChatId = async ({ params }: { params: IParams }) => {
+export default async function ChatId ({ params }: { params: IParams }) {
+    const socket = io("http://localhost:3001");
+    joinRoomSocket(params?.conversationId, socket);
+    //saveMessageEvent();
 
   const data = await getAuthUser();
 
@@ -42,5 +47,3 @@ const ChatId = async ({ params }: { params: IParams }) => {
     </div>
   );
 }
-
-export default ChatId;

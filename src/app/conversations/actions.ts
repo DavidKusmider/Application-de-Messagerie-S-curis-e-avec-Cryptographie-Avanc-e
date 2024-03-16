@@ -3,8 +3,9 @@
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import { User } from '@supabase/supabase-js';
+import {Message} from "@/types/databases.types";
 
-export async function insertMessage(nMessage:  any, conversationId: string, user: User | null) {
+export async function insertMessage(nMessage:  Message, conversationId: string, user: User | null) {
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
 
@@ -13,7 +14,7 @@ export async function insertMessage(nMessage:  any, conversationId: string, user
     if(user !== null){
         console.log("With user");
     const { error } = await supabase.from("message").insert({
-        content: nMessage.message,
+        content: nMessage.content,
         id_user: user.id,
         id_group: conversationId,
     });
@@ -26,7 +27,7 @@ export async function insertMessage(nMessage:  any, conversationId: string, user
         const { error } = await supabase
             .from("message")
             .insert({
-                content: nMessage.message,
+                content: nMessage.content,
                 id_group: conversationId,
             });
         if(error !== null){
