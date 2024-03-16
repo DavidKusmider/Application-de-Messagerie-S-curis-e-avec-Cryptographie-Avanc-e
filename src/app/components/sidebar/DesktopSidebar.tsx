@@ -7,25 +7,37 @@ import { useState, useEffect, useMemo } from "react";
 import Avatar from "../Avatar";
 import useActif from "@/app/hooks/useActif";
 import ConversationList from "@/app/conversations/components/ConversationList";
-import { getAllMessages, getAuthUser, getGroupsUser } from "../../conversations/actions"
+import { getAllMessages, getAuthUser, getGroupsUser, getRelationsUser } from "../../conversations/actions"
 import { User } from "@supabase/supabase-js"
-import { Message, Group, User_Group } from "@/types/databases.types"
+import { Message, Group, User_Group, User_Relation } from "@/types/databases.types"
+import useConversation from "@/app/hooks/useConversation";
+import { usePathname } from "next/navigation";
+import FriendList from "@/app/friends/components/FriendList";
 
 interface DesktopSidebarProps {
   currentUser: User;
   groups: Group[];
+  friends: User_Relation[]
 }
 
-const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ currentUser, groups }) => {
+const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ 
+    currentUser,
+    groups,
+    friends
+  }) => {
   const routes = useRoutes();
   const [isOpen, setIsOpen] = useState(false);
   const [conversations, setConversations] = useState(groups);
+  const [relations, setRelations] = useState(friends);
   const [user, setUser] = useState<any>(null);
+  
+  const { conversationId } = useConversation();
+  const pathname = usePathname();
 
   const users = [currentUser];
   const groupsTest = [{ id: '0', created_at: '2024/03/12', group_name: 'Test0', id_user_creator: 'davidIdUserCreator' }];
   const notifications = [{ id: '0', msg: 'Test0' }, { id: '1', msg: 'Test1' }];
-
+  const friend = [{id_user : '1', id_other_user : '2',created_at : ''+Date.now(),state_relation : 3}];
   useEffect(() => {
     const fetchGroups = async () => {
       try {
@@ -41,10 +53,29 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ currentUser, groups }) 
         console.error('Error fetching user groups:', error);
       }
     };
-
     console.log("conversations before fetchGroups() : ", conversations);
     fetchGroups();
     console.log("conversations AFTER fetchGroups() : ", conversations);
+  }, [currentUser]);
+  
+  useEffect(() => {
+    const fetchRelations = async () => {
+      try {
+        const data = await getAuthUser();
+        console.log("user userRelations value : ", data);
+        setUser(data!);
+        const userRelations = await getRelationsUser(data.user);
+        if (userRelations) {
+          console.log("userRelations value : ", userRelations);
+          setRelations(userRelations);
+        }
+      } catch (error) {
+        console.error('Error fetching user relations:', error);
+      }
+    };
+    console.log("conversations before fetchRelations() : ", conversations);
+    fetchRelations();
+    console.log("conversations AFTER fetchRelations() : ", conversations);
   }, [currentUser]);
 
   const actif = useActif().actif;
@@ -82,7 +113,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ currentUser, groups }) 
             ))}
           </div>
         </nav>
-        {actif === "groups" ? (
+        {(pathname === '/conversations' || !!conversationId) ? (
           <div className="absolute top-20 left-5">
             <div>
               <ConversationList
@@ -94,7 +125,32 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ currentUser, groups }) 
               />
             </div>
           </div>
-        ) : (<></>)}
+        ) : (pathname === '/friends') ? (
+          <div className="absolute top-20 left-5">
+            <div>
+              <FriendList
+                users={users}
+                user={currentUser}
+                title="Friend"
+                initialItems={relations}
+              />
+            </div>
+          </div>
+        ) : 
+          (
+          <div className="absolute top-20 left-5">
+            <div>
+              <ConversationList
+                users={users}
+                title="Messages"
+                initialItems={conversations}
+              // initialItems={[{ id: '1', name: 'Test', users: users, messages: [] }]}
+              // initialItems={groupsTest}
+              />
+            </div>
+          </div>
+          )
+        }
         <div className="mt-4 flex flex-col justify-between items-center">
           <div
             onClick={() => setIsOpen(true)}
