@@ -109,8 +109,13 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
       });
     }
   };
+
+  const cancelModal = () => {
+    setUserChecked({userId: [], response: []});
+    onClose();
+  }
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={cancelModal}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-12">
           <div className="border-b border-gray-900/10 pb-12">
@@ -151,7 +156,7 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
                   <ul className="mt-2 divide-y divide-gray-200">
                     {searchResults.map((user) => (
                       <li key={user.id} className="py-2">
-                        <span className="block text-sm font-medium text-gray-900"><input className="ml-5 mr-5" type="checkbox" name="usersChecked" value={user.id} onChange={handleCheckboxChange} /><label>{user.user_pseudo}</label></span>
+                        <span className="block text-sm font-medium text-gray-900"><input className="ml-5 mr-5" type="checkbox" name="usersChecked" value={user.id} onChange={handleCheckboxChange} checked={userChecked.response.includes(user.id)}/><label>{user.user_pseudo}</label></span>
                         <span className="block text-sm text-gray-500">{user.email}</span>
                       </li>
                     ))}
@@ -164,13 +169,13 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
         <div className="mt-6 flex items-center justify-end gap-x-6">
           <Button
             disabled={isLoading}
-            onClick={onClose}
+            onClick={cancelModal}
             type="button"
             secondary
           >
             Cancel
           </Button>
-          <Button disabled={isLoading} type="submit">
+          <Button disabled={isLoading || userChecked.response.length === 0} type="submit">
             Create
           </Button>
         </div>
