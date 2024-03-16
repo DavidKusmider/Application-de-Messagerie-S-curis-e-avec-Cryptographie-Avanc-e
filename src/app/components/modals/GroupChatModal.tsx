@@ -8,7 +8,7 @@ import Modal from './Modal';
 import Button from '../Button';
 import { toast } from 'react-hot-toast';
 import { User } from '@supabase/supabase-js';
-import { getAuthUser, getUsersByUsername, createGroup } from '@/app/conversations/actions'; // Importer la fonction pour récupérer les utilisateurs par nom d'utilisateur
+import {getAuthUser, getUsersByUsername, createGroup, getUsersMetadata} from '@/app/conversations/actions'; // Importer la fonction pour récupérer les utilisateurs par nom d'utilisateur
 import { UserMetadata } from "@/types/databases.types"
 
 interface GroupChatModalProps {
@@ -26,6 +26,11 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [user, setUser] = useState<any>(null);
   const [users, setUsers] = useState<any>([]);
+  const [userChecked, setUserChecked] = useState<{userId: string[], response: string[]}>(
+      {
+        userId: [],
+        response: [],
+      });
 
   const {
     register,
@@ -44,7 +49,19 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
       setUser(data2!);
       console.log("user : ", user);
 
-      await createGroup(groupName, users, data2.user);
+      const usersMetadata : UserMetadata[] | null = await getUsersMetadata();
+      console.log(usersMetadata);
+      console.log(userChecked.response);
+      const usersToAddToGroup : UserMetadata[] = [];
+      userChecked.response.forEach((r) => {
+        usersMetadata?.forEach((m) => {
+          if(m.id === r){
+            usersToAddToGroup.push(m);
+          }
+        });
+      });
+      console.log(usersToAddToGroup);
+      await createGroup(groupName, usersToAddToGroup, data2.user);
       // Réinitialiser l'état local et afficher une notification de succès
       setInputValue('');
       toast.success('Group created successfully!');
@@ -56,6 +73,7 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
       setIsLoading(false);
       onClose();
     }
+    setUserChecked({userId: [], response: []});
   };
 
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,6 +92,23 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
     }
   };
 
+  const handleCheckboxChange = (e:any) => {
+    console.log(userChecked);
+    const {value, checked} = e.target;
+    const { userId } = userChecked;
+    console.log(`${value} is ${checked}`);
+    if(checked){
+      setUserChecked({
+        userId: [...userId, value],
+        response: [...userId, value],
+      });
+    }else{
+      setUserChecked({
+        userId : userId.filter((e) => e !== value),
+        response : userId.filter((e) => e !== value),
+      });
+    }
+  };
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -116,7 +151,7 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
                   <ul className="mt-2 divide-y divide-gray-200">
                     {searchResults.map((user) => (
                       <li key={user.id} className="py-2">
-                        <span className="block text-sm font-medium text-gray-900">{user.user_pseudo}</span>
+                        <span className="block text-sm font-medium text-gray-900"><input className="ml-5 mr-5" type="checkbox" name="usersChecked" value={user.id} onChange={handleCheckboxChange} /><label>{user.user_pseudo}</label></span>
                         <span className="block text-sm text-gray-500">{user.email}</span>
                       </li>
                     ))}
