@@ -37,7 +37,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
   const users = [currentUser];
   const groupsTest = [{ id: '0', created_at: '2024/03/12', group_name: 'Test0', id_user_creator: 'davidIdUserCreator' }];
   const notifications = [{ id: '0', msg: 'Test0' }, { id: '1', msg: 'Test1' }];
-  const friend = [{id_user : '1', id_other_user : '2',created_at : ''+Date.now(),state_relation : 3}];
+
   useEffect(() => {
     const fetchGroups = async () => {
       try {

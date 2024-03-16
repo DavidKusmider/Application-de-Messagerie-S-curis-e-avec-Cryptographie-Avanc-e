@@ -126,6 +126,7 @@ const FriendList: React.FC<FriendListProps> = ({
               <FriendBox
                 key={item.id_user}
                 data={item}
+                user={user}
                 //selected={conversationId === item.id}
               />
             ))) : null}
