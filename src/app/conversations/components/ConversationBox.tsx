@@ -12,11 +12,13 @@ import AvatarGroup from "@/app/components/AvatarGroup";
 import { FullConversationType } from "@/app/types";
 
 interface ConversationBoxProps {
+  name:string,
   data: any,
   selected?: boolean;
 }
 
 const ConversationBox: React.FC<ConversationBoxProps> = ({
+  name,
   data,
   selected
 }) => {
@@ -49,20 +51,8 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
     }
 
     return seenArray
-      .filter((user) => user.email === userEmail).length !== 0;
+      .filter((user : any) => user.email === userEmail).length !== 0;
   }, [userEmail, lastMessage]);
-
-  const lastMessageText = useMemo(() => {
-    if (lastMessage?.image) {
-      return 'Sent an image';
-    }
-
-    if (lastMessage?.content) {
-      return lastMessage?.content;
-    }
-
-    return 'Started a conversation';
-  }, [lastMessage]);
 
   return (
     <div
@@ -113,7 +103,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
               `,
               hasSeen ? 'text-gray-500' : 'text-black font-medium'
             )}>
-            {lastMessageText}
+            {name}
           </p>
         </div>
       </div>

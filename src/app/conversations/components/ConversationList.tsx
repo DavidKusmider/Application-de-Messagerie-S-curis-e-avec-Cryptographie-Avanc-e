@@ -37,7 +37,6 @@ const ConversationList: React.FC<ConversationListProps> = ({
   }, ['test@gmail.com'/*session.data?.user?.email*/])
 
   useEffect(() => {
-    const groupsTest = [{ id: '1', name: 'Test', users: users, messages: [] }];
     console.log("ConversationList : ", initialItems);
     setItems(initialItems);
 
@@ -78,11 +77,14 @@ const ConversationList: React.FC<ConversationListProps> = ({
     //pusherClient.bind('conversation:remove', removeHandler)
   }, [initialItems]);
 
+  const closeModal = () => {
+    setIsModalOpen(false)
+  }
   return (
     <>
       <GroupChatModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={closeModal}
       />
       <aside className={clsx(`
         fixed 
@@ -121,6 +123,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
           {items ? (
             items.map((item) => (
               <ConversationBox
+                name={item.group_name}
                 key={item.id}
                 data={item}
                 selected={conversationId === item.id}

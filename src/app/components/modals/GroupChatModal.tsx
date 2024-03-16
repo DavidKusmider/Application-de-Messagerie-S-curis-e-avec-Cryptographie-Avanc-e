@@ -50,8 +50,6 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
       console.log("user : ", user);
 
       const usersMetadata : UserMetadata[] | null = await getUsersMetadata();
-      console.log(usersMetadata);
-      console.log(userChecked.response);
       const usersToAddToGroup : UserMetadata[] = [];
       userChecked.response.forEach((r) => {
         usersMetadata?.forEach((m) => {
@@ -60,7 +58,6 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
           }
         });
       });
-      console.log(usersToAddToGroup);
       await createGroup(groupName, usersToAddToGroup, data2.user);
       // Réinitialiser l'état local et afficher une notification de succès
       setInputValue('');
