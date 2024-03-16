@@ -81,6 +81,25 @@ export async function getUsersByUsername(username: string): Promise<User[]> {
   }
 }
 
+export async function getUserById(id: string): Promise<User | null> {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .select()
+      .eq('id', id);
+    if (error) {
+      throw new Error(error.message);
+    }
+    return data[0];
+  } catch (error) {
+    console.error('Error fetching users by username:', error);
+    return null;
+  }
+}
+
 export async function createGroup(name: string, members: UserMetadata[], user: User | null): Promise<void> {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
@@ -212,3 +231,16 @@ export async function getUserGroupFromIdGroup(id:string){
   }
   return data;
 }
+
+// export async function getUserMetaData(user: User) {
+//   const cookieStore = cookies();
+//   const supabase = createClient(cookieStore);
+//   const { data, error } = await supabase.schema("public").from("users").select().eq('id',user.id);
+//   if (error !== null) {
+//     console.log(error);
+//   }
+//   if (data) {
+//     return data[0];
+//   }
+//   return null;
+// }
