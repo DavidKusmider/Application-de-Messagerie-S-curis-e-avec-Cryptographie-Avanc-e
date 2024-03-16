@@ -7,10 +7,10 @@ import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { CldUploadButton } from "next-cloudinary";
 import useConversation from "@/app/hooks/useConversation";
 import { io } from 'socket.io-client';
-import {Message} from "@/types/databases.types"
+import { Message } from "@/types/databases.types"
 import { encryptMessageContent } from '@/cryptoUtils';
-import {getAuthUser, insertMessage} from "../../actions";
-import {saveMessageEvent} from "@/app/conversations/[conversationId]/actions";
+import { getAuthUser, insertMessage } from "../../actions";
+import { saveMessageEvent } from "@/app/conversations/[conversationId]/actions";
 
 const Form = () => {
   const { conversationId } = useConversation();
@@ -20,7 +20,7 @@ const Form = () => {
     }
   });
 
-  const socket = useMemo(() => io('http://localhost:3001'), []);
+  const socket = useMemo(() => io('https://localhost:3000'), []);
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
@@ -42,7 +42,7 @@ const Form = () => {
         timestamp: new Date().toISOString(),
       };
 
-      socket.emit('send_message', newMessage, dataUser, conversationId, socket.id, async (formattedMessage:any) => {
+      socket.emit('send_message', newMessage, dataUser, conversationId, socket.id, async (formattedMessage: any) => {
         console.log("save_message event");
         console.log(formattedMessage, conversationId);
         await insertMessage(formattedMessage, conversationId, dataUser.user);

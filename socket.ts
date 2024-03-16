@@ -13,7 +13,7 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 const privateKeyPath = "./certificates/private-key.pem";
 const certificatePath = "./certificates/certificate.pem";

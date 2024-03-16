@@ -3,6 +3,6 @@ to run the dev server:
 npm run dev
 ```
 
-Website accessible at [http://localhost:3000](http://localhost:3000) by default.
+Website accessible at [https://localhost:3000](https://localhost:3000) by default.
 
 Default page: `app/page.tsx`.

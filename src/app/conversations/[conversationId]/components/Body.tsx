@@ -57,7 +57,7 @@ const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages })
       bottomRef?.current?.scrollIntoView();
     };
 
-    const socket = io("http://localhost:3001");
+    const socket = io("https://localhost:3000");
     //socket.emit("joinRoom", conversationId);
     /*socket.on("message", (newMessage) => {
 
