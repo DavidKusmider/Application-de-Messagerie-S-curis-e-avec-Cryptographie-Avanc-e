@@ -4,37 +4,38 @@ import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import { User } from '@supabase/supabase-js';
 import { Group, User_Group, UserMetadata } from '@/types/databases.types';
+import { Message} from '@/types/databases.types';
 
-export async function insertMessage(nMessage: any, conversationId: string, user: User | null) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+export async function insertMessage(nMessage:  Message, conversationId: string, user: User | null) {
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
 
   console.log("Inserting message", nMessage);
 
   if (user !== null) {
     console.log("With user");
     const { error } = await supabase.from("message").insert({
-      content: nMessage.message,
-      id_user: user.id,
-      id_group: conversationId,
+        content: nMessage.content,
+        id_user: user.id,
+        id_group: conversationId,
     });
     if (error !== null) {
       console.log("insertMessage with user id:\n");
       console.log(error);
     }
-  } else {
-    console.log("Without user");
-    const { error } = await supabase
-      .from("message")
-      .insert({
-        content: nMessage.message,
-        id_group: conversationId,
-      });
-    if (error !== null) {
-      console.log("insertMessage without user id:\n");
-      console.log(error);
+    } else {
+        console.log("Without user");
+        const { error } = await supabase
+            .from("message")
+            .insert({
+                content: nMessage.content,
+                id_group: conversationId,
+            });
+        if (error !== null) {
+            console.log("insertMessage without user id:\n");
+            console.log(error);
+        }
     }
-  }
 }
 
 export async function getGroupsUser(user: User | null) {
@@ -50,6 +51,7 @@ export async function getGroupsUser(user: User | null) {
       throw new Error(error.message);
     }
     console.log("DATA : ", data);
+
 
     return data;
   } catch (error) {
