@@ -1,15 +1,8 @@
-//const { Server } = require('socket.io');
 import {Server} from "socket.io";
-import express from 'express';
-//const express = require('express');
+import {publicEncrypt} from "node:crypto";
 import * as http from "http";
-//const http = require('http');
-import messagesRouter from './messages';
 
-//const app = express();
 const server = http.createServer();
-//app.use('/api/messages', messagesRouter);
-
 const PORT = process.env.PORT || 3001;
 
 /*
@@ -21,13 +14,12 @@ TLD;DR : séparer envoie (pas de broadcast) et reception de message (reception p
 const io = new Server(server, {
     cors: {
         origin: ["http://localhost:3000"], // Client URL
-        //methods: ["GET", "POST"]
     }
 });
 
 io.engine.on("connection_error", (err) => {
     console.log(err.req);      // the request object
-    console.log(err.code);     // the error code, for example 1
+    console.log(err.code);     // the error code
     console.log(err.message);  // the error message, for example "Session ID unknown"
     console.log(err.context);  // some additional error context
 });
@@ -41,10 +33,26 @@ io.on('connection', async (socket) => {
         console.log("Rooms: ", socket.rooms);
     });
 
-    socket.on('send_message', (message: any, userData: any, conversationId: string, socketId: string, cb) => {
+    socket.on('send_message', (message/* encryptedMessage */: any, userData: any, conversationId: string, socketId: string, cb) => {
        const user = userData.user;
        console.log("send_message event");
-       // register message in db
+        // console.log('Received encrypted message:', encryptedMessage);
+        //
+        //       // const decryptedContent = privateDecrypt(
+        //       //   {
+        //       //     key: privateKey,
+        //       //     padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+        //       //     oaepHash: 'sha256',
+        //       //   },
+        //       //   Buffer.from(encryptedMessage.message, 'base64')
+        //       // );
+        //
+        //       // const decryptedMessage = {
+        //       //   ...encryptedMessage,
+        //       //   message: decryptedContent.toString(),
+        //       // };
+        //
+        //       // console.log('Decrypted message:', decryptedMessage);
         console.log("New message received:", message);
         const formattedMessage: any = {id: message.id, content:message.message, id_user: user.id, id_group: Number(conversationId), created_at: message.timestamp, send_at: message.timestamp};
         //console.log("Sending save_message event");
@@ -54,11 +62,6 @@ io.on('connection', async (socket) => {
         console.log("receive_message event finished");
         cb(formattedMessage);
     });
-
-    /*socket.on('message', (message) => {
-        console.log('Received message:', message);
-        broadcastMessage(message);
-    });*/
 
     socket.on('disconnect', () => {
         console.log('WebSocket disconnected');
@@ -75,5 +78,3 @@ export const broadcastMessage = (message: any) => {
         io.to(message.conversationId).emit('message', message);
     }
 };
-
-//module.exports = { broadcastMessage };
