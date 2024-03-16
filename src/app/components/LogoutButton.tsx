@@ -7,17 +7,9 @@ import Link from "next/link";
 
 export default function LogoutButton({ user }: { user: User | null }, props : any) {
   const router = useRouter();
-  const loginGithub = async () => {
-    const supa = createClient();
-    await supa.auth.signInWithOAuth({
-      provider: "github",
-      options: {
-        redirectTo: location.origin + "/auth/callback",
-      },
-    });
-  };
 
   const logout = async () => {
+    document.cookie = "privateKey=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     const supa = createClient();
     await supa.auth.signOut();
     router.refresh();

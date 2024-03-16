@@ -5,6 +5,7 @@ import express from 'express';
 import * as https from "https";
 import next from 'next'
 import { readFileSync } from "fs";
+import { publicEncrypt } from "node:crypto";
 //const http = require('http');
 
 const dev = process.env.NODE_ENV !== 'production'
@@ -35,13 +36,12 @@ app.prepare().then(() => {
   const io = new Server(server, {
     cors: {
       origin: ["https://localhost:3000"], // Client URL
-      //methods: ["GET", "POST"]
     }
   });
 
   io.engine.on("connection_error", (err) => {
     console.log(err.req);      // the request object
-    console.log(err.code);     // the error code, for example 1
+    console.log(err.code);     // the error code
     console.log(err.message);  // the error message, for example "Session ID unknown"
     console.log(err.context);  // some additional error context
   });
@@ -58,6 +58,24 @@ app.prepare().then(() => {
     socket.on('send_message', (message: any, userData: any, conversationId: string, socketId: string, cb) => {
       const user = userData.user;
       console.log("send_message event");
+      // console.log('Received encrypted message:', encryptedMessage);
+      //
+      //       // const decryptedContent = privateDecrypt(
+      //       //   {
+      //       //     key: privateKey,
+      //       //     padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+      //       //     oaepHash: 'sha256',
+      //       //   },
+      //       //   Buffer.from(encryptedMessage.message, 'base64')
+      //       // );
+      //
+      //       // const decryptedMessage = {
+      //       //   ...encryptedMessage,
+      //       //   message: decryptedContent.toString(),
+      //       // };
+      //
+      //       // console.log('Decrypted message:', decryptedMessage);
+
       // register message in db
       console.log("New message received:", message);
       const formattedMessage: any = { id: message.id, content: message.message, id_user: user.id, id_group: Number(conversationId), created_at: message.timestamp, send_at: message.timestamp };

@@ -8,6 +8,7 @@ import { CldUploadButton } from "next-cloudinary";
 import useConversation from "@/app/hooks/useConversation";
 import { io } from 'socket.io-client';
 import {Message} from "@/types/databases.types"
+import { encryptMessageContent } from '@/cryptoUtils';
 import {getAuthUser, insertMessage} from "../../actions";
 import {saveMessageEvent} from "@/app/conversations/[conversationId]/actions";
 
@@ -36,7 +37,7 @@ const Form = () => {
       };*/
       const newMessage = {
         id: Date.now().toString(),
-        message: data.message,
+        message: data.message/* encryptMessageContent(data.message, recipientPublicKey) */,
         conversationId: conversationId,
         timestamp: new Date().toISOString(),
       };
