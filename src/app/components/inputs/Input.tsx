@@ -26,7 +26,7 @@ const Input: React.FC<InputProps> = ({
   errors,
   type = 'text',
   disabled,
-  onChange, // Ajoutez cette ligne
+  onChange,
 }) => {
   return (
     <div>

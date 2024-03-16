@@ -19,7 +19,7 @@ const Button: React.FC<ButtonProps> = ({
   danger,
   disabled,
 }) => {
-  return ( 
+  return (
     <button
       onClick={onClick}
       type={type}
@@ -45,7 +45,7 @@ const Button: React.FC<ButtonProps> = ({
     >
       {children}
     </button>
-   );
+  );
 }
- 
+
 export default Button;
