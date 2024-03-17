@@ -137,6 +137,7 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
                 errors={errors}
                 required
                 register={register}
+                placeholder="Enter the group name"
               />
               <Input
                 disabled={isLoading}
