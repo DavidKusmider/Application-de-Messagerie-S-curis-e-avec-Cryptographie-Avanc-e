@@ -232,15 +232,15 @@ export async function getUserGroupFromIdGroup(id:string){
   return data;
 }
 
-// export async function getUserMetaData(user: User) {
-//   const cookieStore = cookies();
-//   const supabase = createClient(cookieStore);
-//   const { data, error } = await supabase.schema("public").from("users").select().eq('id',user.id);
-//   if (error !== null) {
-//     console.log(error);
-//   }
-//   if (data) {
-//     return data[0];
-//   }
-//   return null;
-// }
+export async function getAllUsers() {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+  const { data, error } = await supabase.schema("public").from("users").select();
+  if (error !== null) {
+    console.log(error);
+  }
+  if (data) {
+    return data;
+  }
+  return [];
+}

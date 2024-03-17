@@ -1,7 +1,7 @@
 'use client';
 
 import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation';
 import { 
   FieldValues, 
@@ -9,12 +9,13 @@ import {
   useForm 
 } from 'react-hook-form';
 
-import Input from "../inputs/Input";
 import Select from '../inputs/Select';
 import Modal from './Modal';
 import Button from '../Button';
 import { toast } from 'react-hot-toast';
 import { User } from '@supabase/supabase-js';
+import { getAllUsers, getUsersByUsername } from '@/app/conversations/actions';
+import { addFriend } from '@/app/friends/actions';
 
 interface FriendModalProps {
   isOpen?: boolean;
@@ -29,6 +30,7 @@ const FriendModal: React.FC<FriendModalProps> = ({
 }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [usersOtherThanFriends, setUsers] = useState(users);
 
   const {
     register,
@@ -47,20 +49,27 @@ const FriendModal: React.FC<FriendModalProps> = ({
 
   const members = watch('members');
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true);
-  
-    axios.post('/api/conversations', {
-      ...data,
-      isGroup: true
-    })
-    .then(() => {
+    try {
+      await addFriend(data);
+      toast.success('Friend added successfully!');
       router.refresh();
       onClose();
-    })
-    .catch(() => toast.error('Something went wrong!'))
-    .finally(() => setIsLoading(false));
+    } catch (error) {
+      toast.error('Failed to add friend. Please try again later.');
+    } finally {
+      setIsLoading(false);
+    }
   }
+  
+  useEffect(() => {
+    const fetchOtherUser = async () => {
+      const otherUsers = await getAllUsers();
+      setUsers(otherUsers);
+    };
+    fetchOtherUser();
+  }, []);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -81,10 +90,10 @@ const FriendModal: React.FC<FriendModalProps> = ({
               <Select
                 multi={false}
                 disabled={isLoading}
-                label="User name" 
-                options={users.map((user) => ({ 
-                  value: user.id, 
-                  label: user.email 
+                label="New friend user name" 
+                options={usersOtherThanFriends.map((user) => ({ 
+                  value: user.id,
+                  label: user.user_pseudo,
                 }))} 
                 onChange={(value) => setValue('members', value, { 
                   shouldValidate: true 

@@ -9,9 +9,9 @@ import { find, uniq } from 'lodash';
 import useConversation from "@/app/hooks/useConversation";
 import FriendModal from "@/app/components/modals/FriendModal";
 import FriendBox from "./FriendBox";
-import { FullConversationType } from "@/app/types";
 import { User } from "@supabase/supabase-js";
 import { User_Relation } from "@/types/databases.types";
+import { getUsersByUsername } from "@/app/conversations/actions";
 
 interface FriendListProps {
   initialItems: User_Relation[];
@@ -27,53 +27,11 @@ const FriendList: React.FC<FriendListProps> = ({
 }) => {
   const [items, setItems] = useState(initialItems);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  console.log('Test : ',initialItems);
-  const router = useRouter();
-  
-  const { conversationId, isOpen } = useConversation();
-
-  const pusherKey = useMemo(() => {
-    return 'test@gmail.com'//user?.email
-  }, ['test@gmail.com'/*user?.email*/])
+  //const { conversationId, isOpen } = useConversation();
+  const isOpen = false;
 
   useEffect(() => {
-    //setItems([{id_user : '1', id_other_user : '2',created_at : ''+Date.now(),state_relation : 3}])
-    console.log('Les items sont : ',items);
     setItems(initialItems);
-    //pusherClient.subscribe(pusherKey);
-
-    //const updateHandler = (conversation: FullConversationType) => {
-    //  setItems((current) => current.map((currentConversation) => {
-    //    if (currentConversation.id === conversation.id) {
-    //      return {
-    //        ...currentConversation,
-    //        messages: conversation.messages
-    //      };
-    //    }
-    //
-    //    return currentConversation;
-    //  }));
-    //}
-    //
-    //const newHandler = (conversation: FullConversationType) => {
-    //  setItems((current) => {
-    //    if (find(current, { id: conversation.id })) {
-    //      return current;
-    //    }
-    //
-    //    return [conversation, ...current]
-    //  });
-    //}
-
-    //const removeHandler = (conversation: FullConversationType) => {
-    //  setItems((current) => {
-    //    return [...current.filter((convo) => convo.id !== conversation.id)]
-    //  });
-    //}
-
-    //pusherClient.bind('conversation:update', updateHandler)
-    //pusherClient.bind('conversation:new', newHandler)
-    //pusherClient.bind('conversation:remove', removeHandler)
   }, [initialItems]);
 
   return (

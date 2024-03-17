@@ -21,7 +21,6 @@ const FriendBox: React.FC<FriendBoxProps> = ({
         try {
           const dataUser = await getAuthUser();
           let otherU = await getUserById(data.id_other_user);
-          console.log('User 2:', otherU);
           if (data.id_user!==dataUser.user?.id) {
             otherU = await getUserById(data.id_user);
           }
