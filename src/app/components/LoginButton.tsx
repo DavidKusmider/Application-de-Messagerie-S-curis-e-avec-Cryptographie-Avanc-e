@@ -4,7 +4,7 @@ import { User } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { generateUserKeyPair } from "@/cryptoUtils";
+import { generateUserKeyPair } from "@/utils/cryptoUtils";
 
 export default function LoginButton({ user }: { user: User | null }, props : any) {
   const router = useRouter();

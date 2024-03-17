@@ -4,15 +4,18 @@ import { useEffect, useState } from 'react';
 import { getAuthUser, getUserById } from '@/app/conversations/actions';
 import clsx from 'clsx';
 import Avatar from '@/app/components/Avatar';
+import { removeFriend } from '../actions';
 
 interface FriendBoxProps {
     data : User_Relation
     user : User
+    onRemove: (idsRelation: any) => void;
 }
 
 const FriendBox: React.FC<FriendBoxProps> = ({
     data,
-    user
+    user,
+    onRemove
   }) => {
     const [otherUser, setOtherUser] = useState(user);
 
@@ -21,7 +24,6 @@ const FriendBox: React.FC<FriendBoxProps> = ({
         try {
           const dataUser = await getAuthUser();
           let otherU = await getUserById(data.id_other_user);
-          console.log('User 2:', otherU);
           if (data.id_user!==dataUser.user?.id) {
             otherU = await getUserById(data.id_user);
           }
@@ -40,8 +42,13 @@ const FriendBox: React.FC<FriendBoxProps> = ({
     const avatar = clsx(isOwn && 'order-2');
     const body = clsx('flex flex-col gap-2', isOwn && 'items-end');
 
+    const handleRemove = async (id : string) => {
+      const data = await removeFriend(id);
+      onRemove(data);
+    }
+
     return (
-      <div className='top-5'>
+      <div className='top-5 flex justify-between items-center'>
         <div className={avatar}>
           <Avatar user={otherUser} />
         </div>
@@ -52,6 +59,9 @@ const FriendBox: React.FC<FriendBoxProps> = ({
             </div>
           </div>
         </div>
+        <button onClick={() => handleRemove(otherUser.id)}>
+          delete
+        </button>
       </div>
     );
   }

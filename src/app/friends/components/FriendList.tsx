@@ -1,15 +1,12 @@
 'use client';
 
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdOutlineGroupAdd } from 'react-icons/md';
 import clsx from "clsx";
 import { find, uniq } from 'lodash';
 
-import useConversation from "@/app/hooks/useConversation";
 import FriendModal from "@/app/components/modals/FriendModal";
 import FriendBox from "./FriendBox";
-import { FullConversationType } from "@/app/types";
 import { User } from "@supabase/supabase-js";
 import { User_Relation } from "@/types/databases.types";
 
@@ -27,53 +24,23 @@ const FriendList: React.FC<FriendListProps> = ({
 }) => {
   const [items, setItems] = useState(initialItems);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  console.log('Test : ',initialItems);
-  const router = useRouter();
-  
-  const { conversationId, isOpen } = useConversation();
+  const isOpen = false;
 
-  const pusherKey = useMemo(() => {
-    return 'test@gmail.com'//user?.email
-  }, ['test@gmail.com'/*user?.email*/])
+  const handleAddFriend = (idsRelation: any) => {
+    const newFriend = {id_user : idsRelation.id1, id_other_user : idsRelation.id2, state_relation : 0, created_at : ''+Date.now()};
+    setItems(prevFriends => [...prevFriends, newFriend]);
+  }
+
+  const handleRemoveFriend = (idsRelation: any) => {
+    setItems(prevFriends => prevFriends.filter(it => 
+      (it.id_user !== idsRelation.id1 && it.id_other_user !== idsRelation.id1) || 
+      (it.id_user !== idsRelation.id2 && it.id_other_user !== idsRelation.id2)));
+    console.log('idsRelation :',idsRelation.id1,idsRelation.id2);
+  }
+
 
   useEffect(() => {
-    //setItems([{id_user : '1', id_other_user : '2',created_at : ''+Date.now(),state_relation : 3}])
-    console.log('Les items sont : ',items);
     setItems(initialItems);
-    //pusherClient.subscribe(pusherKey);
-
-    //const updateHandler = (conversation: FullConversationType) => {
-    //  setItems((current) => current.map((currentConversation) => {
-    //    if (currentConversation.id === conversation.id) {
-    //      return {
-    //        ...currentConversation,
-    //        messages: conversation.messages
-    //      };
-    //    }
-    //
-    //    return currentConversation;
-    //  }));
-    //}
-    //
-    //const newHandler = (conversation: FullConversationType) => {
-    //  setItems((current) => {
-    //    if (find(current, { id: conversation.id })) {
-    //      return current;
-    //    }
-    //
-    //    return [conversation, ...current]
-    //  });
-    //}
-
-    //const removeHandler = (conversation: FullConversationType) => {
-    //  setItems((current) => {
-    //    return [...current.filter((convo) => convo.id !== conversation.id)]
-    //  });
-    //}
-
-    //pusherClient.bind('conversation:update', updateHandler)
-    //pusherClient.bind('conversation:new', newHandler)
-    //pusherClient.bind('conversation:remove', removeHandler)
   }, [initialItems]);
 
   return (
@@ -82,6 +49,7 @@ const FriendList: React.FC<FriendListProps> = ({
         users={users} 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)}
+        onAdd={handleAddFriend}
       />
       <aside className={clsx(`
         fixed
@@ -127,7 +95,7 @@ const FriendList: React.FC<FriendListProps> = ({
                 key={item.id_user}
                 data={item}
                 user={user}
-                //selected={conversationId === item.id}
+                onRemove={handleRemoveFriend}
               />
             ))) : null}
           </div>

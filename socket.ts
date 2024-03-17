@@ -58,23 +58,27 @@ app.prepare().then(() => {
     socket.on('send_message', (message: any, userData: any, conversationId: string, socketId: string, cb) => {
       const user = userData.user;
       console.log("send_message event");
-      // console.log('Received encrypted message:', encryptedMessage);
-      //
-      //       // const decryptedContent = privateDecrypt(
-      //       //   {
-      //       //     key: privateKey,
-      //       //     padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-      //       //     oaepHash: 'sha256',
-      //       //   },
-      //       //   Buffer.from(encryptedMessage.message, 'base64')
-      //       // );
-      //
-      //       // const decryptedMessage = {
-      //       //   ...encryptedMessage,
-      //       //   message: decryptedContent.toString(),
-      //       // };
-      //
-      //       // console.log('Decrypted message:', decryptedMessage);
+      /* encryption
+
+      console.log('Received encrypted message:', encryptedMessage);
+
+      const decryptedContent = privateDecrypt(
+        {
+          key: privateKey,
+          padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+          oaepHash: 'sha256',
+        },
+        Buffer.from(encryptedMessage.message, 'base64')
+      );
+
+      const decryptedMessage = {
+        ...encryptedMessage,
+        message: decryptedContent.toString(),
+      };
+
+      console.log('Decrypted message:', decryptedMessage);
+
+      */
 
       // register message in db
       console.log("New message received:", message);

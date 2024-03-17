@@ -155,7 +155,7 @@ export async function getRelationsUser(user: User | null) {
     if (error) {
       throw new Error(error.message);
     }
-    console.log("DATA relation: ", data);
+    //console.log("DATA relation: ", data);
 
     return data;
   } catch (error) {
@@ -215,15 +215,15 @@ export async function getUserGroupFromIdGroup(id:string){
   return [];
 }
 
-// export async function getUserMetaData(user: User) {
-//   const cookieStore = cookies();
-//   const supabase = createClient(cookieStore);
-//   const { data, error } = await supabase.schema("public").from("users").select().eq('id',user.id);
-//   if (error !== null) {
-//     console.log(error);
-//   }
-//   if (data) {
-//     return data[0];
-//   }
-//   return null;
-// }
+export async function getAllUsers() {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+  const { data, error } = await supabase.schema("public").from("users").select();
+  if (error !== null) {
+    console.log(error);
+  }
+  if (data) {
+    return data;
+  }
+  return [];
+}

@@ -17,6 +17,7 @@
 
 # production
 /build
+socket.js
 
 # misc
 .DS_Store

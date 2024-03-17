@@ -8,7 +8,7 @@ import { CldUploadButton } from "next-cloudinary";
 import useConversation from "@/app/hooks/useConversation";
 import { io } from 'socket.io-client';
 import { Message } from "@/types/databases.types"
-import { encryptMessageContent } from '@/cryptoUtils';
+import { encryptMessageContent } from '@/utils/cryptoUtils';
 import { getAuthUser, insertMessage } from "../../actions";
 import { saveMessageEvent } from "@/app/conversations/[conversationId]/actions";
 
