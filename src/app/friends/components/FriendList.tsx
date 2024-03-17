@@ -1,17 +1,14 @@
 'use client';
 
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdOutlineGroupAdd } from 'react-icons/md';
 import clsx from "clsx";
 import { find, uniq } from 'lodash';
 
-import useConversation from "@/app/hooks/useConversation";
 import FriendModal from "@/app/components/modals/FriendModal";
 import FriendBox from "./FriendBox";
 import { User } from "@supabase/supabase-js";
 import { User_Relation } from "@/types/databases.types";
-import { getUsersByUsername } from "@/app/conversations/actions";
 
 interface FriendListProps {
   initialItems: User_Relation[];
@@ -27,8 +24,20 @@ const FriendList: React.FC<FriendListProps> = ({
 }) => {
   const [items, setItems] = useState(initialItems);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  //const { conversationId, isOpen } = useConversation();
   const isOpen = false;
+
+  const handleAddFriend = (idsRelation: any) => {
+    const newFriend = {id_user : idsRelation.id1, id_other_user : idsRelation.id2, state_relation : 0, created_at : ''+Date.now()};
+    setItems(prevFriends => [...prevFriends, newFriend]);
+  }
+
+  const handleRemoveFriend = (idsRelation: any) => {
+    setItems(prevFriends => prevFriends.filter(it => 
+      (it.id_user !== idsRelation.id1 && it.id_other_user !== idsRelation.id1) || 
+      (it.id_user !== idsRelation.id2 && it.id_other_user !== idsRelation.id2)));
+    console.log('idsRelation :',idsRelation.id1,idsRelation.id2);
+  }
+
 
   useEffect(() => {
     setItems(initialItems);
@@ -40,6 +49,7 @@ const FriendList: React.FC<FriendListProps> = ({
         users={users} 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)}
+        onAdd={handleAddFriend}
       />
       <aside className={clsx(`
         fixed
@@ -85,7 +95,7 @@ const FriendList: React.FC<FriendListProps> = ({
                 key={item.id_user}
                 data={item}
                 user={user}
-                //selected={conversationId === item.id}
+                onRemove={handleRemoveFriend}
               />
             ))) : null}
           </div>

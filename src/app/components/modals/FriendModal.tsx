@@ -21,12 +21,14 @@ interface FriendModalProps {
   isOpen?: boolean;
   onClose: () => void;
   users: User[];
+  onAdd: (idsRelation: any) => void;
 }
 
 const FriendModal: React.FC<FriendModalProps> = ({ 
   isOpen, 
   onClose, 
-  users = []
+  users = [],
+  onAdd
 }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +54,8 @@ const FriendModal: React.FC<FriendModalProps> = ({
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true);
     try {
-      await addFriend(data);
+      const idsRelation = await addFriend(data);
+      onAdd(idsRelation);
       toast.success('Friend added successfully!');
       router.refresh();
       onClose();

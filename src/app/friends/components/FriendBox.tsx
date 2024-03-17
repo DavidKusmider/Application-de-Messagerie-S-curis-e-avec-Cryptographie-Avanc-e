@@ -9,11 +9,13 @@ import { removeFriend } from '../actions';
 interface FriendBoxProps {
     data : User_Relation
     user : User
+    onRemove: (idsRelation: any) => void;
 }
 
 const FriendBox: React.FC<FriendBoxProps> = ({
     data,
-    user
+    user,
+    onRemove
   }) => {
     const [otherUser, setOtherUser] = useState(user);
 
@@ -40,9 +42,9 @@ const FriendBox: React.FC<FriendBoxProps> = ({
     const avatar = clsx(isOwn && 'order-2');
     const body = clsx('flex flex-col gap-2', isOwn && 'items-end');
 
-    const remove = (id : string) => {
-      console.log(id);
-      removeFriend(id);
+    const handleRemove = async (id : string) => {
+      const data = await removeFriend(id);
+      onRemove(data);
     }
 
     return (
@@ -57,7 +59,7 @@ const FriendBox: React.FC<FriendBoxProps> = ({
             </div>
           </div>
         </div>
-        <button onClick={() => remove(otherUser.id)}>
+        <button onClick={() => handleRemove(otherUser.id)}>
           delete
         </button>
       </div>
