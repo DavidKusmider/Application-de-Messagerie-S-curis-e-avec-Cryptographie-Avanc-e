@@ -199,9 +199,53 @@ export async function getUsersMetadata() {
   if (error !== null) {
     console.log(error);
   }
-  return data;
+  if(data) {
+    return data;
+  }
+  return [];
 }
 
+// Fetch all of 'group' table
+export async function getAllGroups(){
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+    const { data, error } = await supabase.from("group").select();
+    if (error != null) {
+      console.log("getAllGroups:\n" + error);
+    }
+    if(data) {
+      return data;
+    }
+    return [];
+}
+
+// Fetch all of 'user_group' table
+export async function getAllUserGroup(){
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+  const { data, error } = await supabase.from("user_group").select();
+  if (error != null) {
+    console.log("getAllUserGroup:\n" + error);
+  }
+  if(data) {
+    return data;
+  }
+  return [];
+}
+
+// Fetch all of 'user_relation' table
+export async function getAllUserRelation(){
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+    const { data, error } = await supabase.from("user_relation").select();
+  if (error != null) {
+    console.log("getAllUserRelation:\n" + error);
+  }
+  if(data) {
+    return data;
+  }
+  return [];
+}
 export async function getUserGroupFromIdGroup(id:string){
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
@@ -223,6 +267,19 @@ export async function getAllUsers() {
     console.log(error);
   }
   if (data) {
+    return data;
+  }
+  return [];
+}
+
+export async function getGroupFromIdGroup(id:string){
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+  const { data, error } = await supabase.schema("public").from("group").select().eq("id", id);
+  if (error !== null) {
+    console.log(error);
+  }
+  if(data) {
     return data;
   }
   return [];
