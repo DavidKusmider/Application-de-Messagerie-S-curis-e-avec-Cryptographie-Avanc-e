@@ -5,8 +5,8 @@ import { User } from "@supabase/supabase-js";
 import {UserMetadata} from "@/types/databases.types";
 
 interface AvatarProps {
-  user?: UserMetadata | undefined;
-};
+  user: UserMetadata | null;
+}
 
 const Avatar: React.FC<AvatarProps> = ({ user }) => {
   //const { members } = useActiveList();
@@ -26,7 +26,7 @@ const Avatar: React.FC<AvatarProps> = ({ user }) => {
       ">
         <Image
           fill
-          src={user !== undefined ? user.user_profile_picture : '/images/placeholder.jpg'}
+          src={user !== null ? user.user_profile_picture : '/images/placeholder.jpg'}
           alt="Avatar"
         />
       </div>
