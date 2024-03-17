@@ -1,5 +1,5 @@
 import { User } from '@supabase/supabase-js';
-import { User_Relation } from '@/types/databases.types';
+import {User_Relation, UserMetadata} from '@/types/databases.types';
 import { useEffect, useState } from 'react';
 import { getAuthUser, getUserById } from '@/app/conversations/actions';
 import clsx from 'clsx';
@@ -8,25 +8,28 @@ import { removeFriend } from '../actions';
 
 interface FriendBoxProps {
     data : User_Relation
-    user : User
     onRemove: (idsRelation: any) => void;
+    usersMetadata: UserMetadata[],
+    user : User | null,
 }
 
 const FriendBox: React.FC<FriendBoxProps> = ({
     data,
+    usersMetadata,
     user,
     onRemove
   }) => {
-    const [otherUser, setOtherUser] = useState(user);
+    const [otherUser, setOtherUser] = useState<UserMetadata | null>(null);
 
     useEffect(() => {
-      const fetchOtherUser = async () => {
+      const fetchOtherUser = () => {
         try {
-          const dataUser = await getAuthUser();
-          let otherU = await getUserById(data.id_other_user);
-          if (data.id_user!==dataUser.user?.id) {
+          /*const dataUser = await getAuthUser();
+          let otherU = await getUserById(data.id_other_user);*/
+          let otherU = usersMetadata.filter((m) => m.id === data.id_other_user)[0]; //await getUserById(data.id_other_user);
+          /*if (data.id_user!==user?.id) {
             otherU = await getUserById(data.id_user);
-          }
+          }*/
           if (otherU) {
             setOtherUser(otherU);
           }
@@ -55,7 +58,7 @@ const FriendBox: React.FC<FriendBoxProps> = ({
         <div className={body}>
           <div className="flex items-center gap-1">
             <div className="text-sm text-gray-500">
-              {otherUser.user_pseudo}
+              {otherUser !== null ? otherUser.user_pseudo : ""}
             </div>
           </div>
         </div>

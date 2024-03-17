@@ -3,84 +3,98 @@
 import DesktopItem from "./DesktopItem";
 import useRoutes from "@/app/hooks/useRoutes";
 import SettingsModal from "./SettingsModal";
-import { useState, useEffect, useMemo } from "react";
+import {useEffect, useState} from "react";
 import Avatar from "../Avatar";
-import useActif from "@/app/hooks/useActif";
 import ConversationList from "@/app/conversations/components/ConversationList";
-import { getAllMessages, getAuthUser, getGroupsUser, getRelationsUser } from "../../conversations/actions"
-import { User } from "@supabase/supabase-js"
-import { Message, Group, User_Group, User_Relation } from "@/types/databases.types"
+import {User} from "@supabase/supabase-js"
+import {Group, User_Group, User_Relation, UserMetadata} from "@/types/databases.types"
 import useConversation from "@/app/hooks/useConversation";
-import { usePathname } from "next/navigation";
+import {usePathname} from "next/navigation";
 import FriendList from "@/app/friends/components/FriendList";
 
 interface DesktopSidebarProps {
-  currentUser: User;
-  groups: Group[];
-  friends: User_Relation[]
+    currentUser: User | null;
+    groups: Group[];
+    friends: User_Relation[],
+    usersMetadata: UserMetadata[],
+    userGroupsData: User_Group[],
 }
 
-const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ 
-    currentUser,
-    groups,
-    friends
-  }) => {
-  const routes = useRoutes();
-  const [isOpen, setIsOpen] = useState(false);
-  const [conversations, setConversations] = useState(groups);
-  const [relations, setRelations] = useState(friends);
-  const [user, setUser] = useState<any>(null);
-  
-  const { conversationId } = useConversation();
-  const pathname = usePathname();
+const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
+                                                           currentUser,
+                                                           groups,
+                                                           friends,
+                                                           usersMetadata,
+                                                           userGroupsData
+                                                       }) => {
+    const routes = useRoutes();
+    const [isOpen, setIsOpen] = useState(false);
+    const [conversations, setConversations] = useState(groups);
+    const [relations, setRelations] = useState(friends);
+    const [user, setUser] = useState<User | null>(currentUser);
 
-  const users = [currentUser];
-  const groupsTest = [{ id: '0', created_at: '2024/03/12', group_name: 'Test0', id_user_creator: 'davidIdUserCreator' }];
-  const notifications = [{ id: '0', msg: 'Test0' }, { id: '1', msg: 'Test1' }];
+    const {conversationId} = useConversation();
+    const pathname = usePathname();
+    let users: User[] = [];
 
-  useEffect(() => {
-    const fetchGroups = async () => {
-      try {
-        const data = await getAuthUser();
-        console.log("user usergorup value : ", data);
-        setUser(data!);
-        const userGroups = await getGroupsUser(data.user);
+    if (user) {
+        users = [user];
+    }
+
+    //console.log("conversations before fetchGroups() : ", conversations);
+
+    /*try {
+        let userGroups: Group[] = [];
+        groups.forEach((g) => {
+            userGroupsData.forEach((m) => {
+                if (m.id_user === user?.id && !userGroups.includes(g)) {
+                    userGroups.push(g);
+                }
+            })
+        }) //await getGroupsUserByUserId(data.user);
+        console.log(userGroups);
         if (userGroups) {
-          console.log("userGroups value : ", userGroups);
-          setConversations(userGroups);
+            console.log("userGroups value : ", userGroups);
+            setConversations(userGroups);
         }
-      } catch (error) {
+    } catch (error) {
         console.error('Error fetching user groups:', error);
-      }
-    };
-    console.log("conversations before fetchGroups() : ", conversations);
-    fetchGroups();
-    console.log("conversations AFTER fetchGroups() : ", conversations);
-  }, [currentUser]);
-  
-  useEffect(() => {
-    const fetchRelations = async () => {
-      try {
-        const data = await getAuthUser();
-        console.log("user userRelations value : ", data);
-        setUser(data!);
-        const userRelations = await getRelationsUser(data.user);
-        if (userRelations) {
-          console.log("userRelations value : ", userRelations);
-          setRelations(userRelations);
+    }
+    console.log("conversations AFTER fetchGroups() : ", conversations);*/
+    useEffect(() => {
+        const userGroups: Group[] = [];
+        groups.forEach((g) => {
+            userGroupsData.forEach((m) => {
+                if (m.id_user === user?.id && !userGroups.includes(g)) {
+                    userGroups.push(g);
+                }
+            });
+        });
+        if (userGroups.length > 0) {
+            setConversations(userGroups);
         }
-      } catch (error) {
-        console.error('Error fetching user relations:', error);
-      }
-    };
-    console.log("conversations before fetchRelations() : ", conversations);
-    fetchRelations();
-    console.log("conversations AFTER fetchRelations() : ", conversations);
-  }, [currentUser]);
+    }, [groups, user, userGroupsData]);
 
-  const actif = useActif().actif;
-  
-  //console.log("currentUser: ", {currentUser});
+    /*console.log("relations before fetchRelations() : ", relations);
+    try {
+        //setUser(user);
+        const userRelations = friends.filter((f) => f.id_user === user?.id); //await getRelationsUser(data.user);
+        if (userRelations) {
+            console.log("userRelations value : ", userRelations);
+            setRelations(userRelations);
+        }
+    } catch (error) {
+        console.error('Error fetching user relations:', error);
+    }
+    console.log("relations AFTER fetchRelations() : ", relations);*/
+
+    useEffect(() => {
+        const userRelations = friends.filter((f) => f.id_user === user?.id);
+        if (userRelations.length > 0) {
+            setRelations(userRelations);
+        }
+    }, [friends, user]);
+    //console.log("currentUser: ", {currentUser});
 
   return (
     <>
@@ -128,15 +142,16 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
         ) : (pathname === '/friends') ? (
           <div className="absolute top-20 left-5">
             <div>
-              <FriendList
-                users={users}
-                user={currentUser}
-                title="Friend"
-                initialItems={relations}
-              />
+                <FriendList
+                    initialItems={relations}
+                    users={users}
+                    usersMetadata={usersMetadata}
+                    user={user}
+                    title="Friend"
+                />
             </div>
           </div>
-        ) : 
+        ) :
           (
           <div className="absolute top-20 left-5">
             <div>

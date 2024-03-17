@@ -3,24 +3,23 @@
 import { useEffect, useState } from "react";
 import { MdOutlineGroupAdd } from 'react-icons/md';
 import clsx from "clsx";
-import { find, uniq } from 'lodash';
-
 import FriendModal from "@/app/components/modals/FriendModal";
 import FriendBox from "./FriendBox";
 import { User } from "@supabase/supabase-js";
-import { User_Relation } from "@/types/databases.types";
+import {User_Relation, UserMetadata} from "@/types/databases.types";
 
 interface FriendListProps {
   initialItems: User_Relation[];
+  usersMetadata: UserMetadata[],
   users: User[];
-  user: User;
+  user: User | null;
   title?: string;
 }
 
 const FriendList: React.FC<FriendListProps> = ({
   initialItems,
   users,
-  user
+  user, usersMetadata,
 }) => {
   const [items, setItems] = useState(initialItems);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,8 +31,8 @@ const FriendList: React.FC<FriendListProps> = ({
   }
 
   const handleRemoveFriend = (idsRelation: any) => {
-    setItems(prevFriends => prevFriends.filter(it => 
-      (it.id_user !== idsRelation.id1 && it.id_other_user !== idsRelation.id1) || 
+    setItems(prevFriends => prevFriends.filter(it =>
+      (it.id_user !== idsRelation.id1 && it.id_other_user !== idsRelation.id1) ||
       (it.id_user !== idsRelation.id2 && it.id_other_user !== idsRelation.id2)));
     console.log('idsRelation :',idsRelation.id1,idsRelation.id2);
   }
@@ -94,6 +93,7 @@ const FriendList: React.FC<FriendListProps> = ({
               <FriendBox
                 key={item.id_user}
                 data={item}
+                usersMetadata={usersMetadata}
                 user={user}
                 onRemove={handleRemoveFriend}
               />

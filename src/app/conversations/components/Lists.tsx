@@ -1,7 +1,8 @@
 import GroupBox from "./GroupBox";
 import NotifBox from "./NotifBox"
 
-import { Notification, Group, User, FullConversationType } from '@/app/types/index';
+import { Notification, Group, FullConversationType } from '@/app/types/index';
+import {User} from "@supabase/supabase-js"
 import ConversationList from "./ConversationList";
 import useActif from "@/app/hooks/useActif";
 

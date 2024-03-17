@@ -3,47 +3,42 @@ import Body from "./components/Body";
 import Form from "./components/Form";
 import EmptyState from "@/app/components/EmptyState";
 
-import {getAllMessages, getAuthUser, getUserGroupFromIdGroup, getUsersMetadata, insertMessage} from "../actions"
-import { Message, UserMetadata } from "@/types/databases.types";
-import { io } from "socket.io-client";
-import { joinRoomSocket, saveMessageEvent } from "@/app/conversations/[conversationId]/actions";
+import {getAllMessages, getAuthUser, getGroupFromIdGroup, getUserGroupFromIdGroup, getUsersMetadata} from "../actions"
+import {UserMetadata} from "@/types/databases.types";
+import {io} from "socket.io-client";
+import {joinRoomSocket} from "@/app/conversations/[conversationId]/actions";
 
 interface IParams {
-  conversationId: string;
+    conversationId: string;
 }
 
-export default async function ChatId({ params }: { params: IParams }) {
-  const socket = io("https://localhost:3000");
-  joinRoomSocket(params?.conversationId, socket);
-  //saveMessageEvent();
+export default async function ChatId({params}: { params: IParams }) {
+    const socket = io("https://localhost:3000");
+    joinRoomSocket(params?.conversationId, socket);
 
-  const data = await getAuthUser();
-  const userGroupData = await getUserGroupFromIdGroup(params.conversationId);
-  const messages = await getAllMessages(data.user, params.conversationId);
-  const usersMetadata: UserMetadata[] | null = await getUsersMetadata();
-  //console.log(messages);
-  const user1 = { id: '1', name: 'Test1', image: undefined, email: 'test1@gmail.com', createdAt: new Date(Date.now()) };
-  //const messages = [{id: '0', createdAt: new Date(Date.now()), image: undefined, content: 'Ceci est un message', sender: user1, seen: []}];//await getMessages(params.conversationId);
-  //console.log(messages);
-  const conversation = { id: '0', name: 'Test', users: [user1], messages: messages };//await getConversationById(params.conversationId);
+    const data = await getAuthUser();
+    const userGroupData = await getUserGroupFromIdGroup(params.conversationId);
+    const groupData = await getGroupFromIdGroup(params.conversationId);
+    const messages = await getAllMessages(data.user, params.conversationId);
+    const usersMetadata: UserMetadata[] | null = await getUsersMetadata();
 
-  if (!conversation) {
+    if (!groupData) {
+        return (
+            <div className="lg:pl-80 h-full">
+                <div className="h-full flex flex-col">
+                    <EmptyState/>
+                </div>
+            </div>
+        )
+    }
+
     return (
-      <div className="lg:pl-80 h-full">
-        <div className="h-full flex flex-col">
-          <EmptyState />
+        <div className="lg:pl-80 h-full">
+            <div className="h-full flex flex-col">
+                <Header name={groupData[0].group_name} nbmember={userGroupData?.length}/>
+                <Body usersMetadata={usersMetadata} userData={data.user} initialMessages={messages!}/>
+                <Form user={data.user}/>
+            </div>
         </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className="lg:pl-80 h-full">
-      <div className="h-full flex flex-col">
-        <Header nbmember={userGroupData?.length} conversation={conversation} />
-        <Body usersMetadata={usersMetadata} userData={data.user} initialMessages={messages!} />
-        <Form />
-      </div>
-    </div>
-  );
+    );
 }

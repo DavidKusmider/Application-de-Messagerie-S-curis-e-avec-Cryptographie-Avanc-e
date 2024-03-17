@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import { HiPaperAirplane, HiPhoto } from 'react-icons/hi2';
 import MessageInput from "./MessageInput";
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
@@ -11,8 +11,14 @@ import { Message } from "@/types/databases.types"
 import { encryptMessageContent } from '@/utils/cryptoUtils';
 import { getAuthUser, insertMessage } from "../../actions";
 import { saveMessageEvent } from "@/app/conversations/[conversationId]/actions";
+import {User} from "@supabase/supabase-js";
 
-const Form = () => {
+interface FormProps {
+  user : User | null,
+}
+
+const Form: React.FC<FormProps> = ({user}) => {
+  const [userState, setUser] = useState<User | null>(user)
   const { conversationId } = useConversation();
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<FieldValues>({
     defaultValues: {
@@ -22,11 +28,9 @@ const Form = () => {
 
   const socket = useMemo(() => io('https://localhost:3000'), []);
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
     try {
       setValue('message', '', { shouldValidate: true });
-
-      const dataUser = await getAuthUser();
       /*const newMessage : Message = {
         id: Number(Date.now().toString()), // unique identifier for the message, TODO find a better one
         content: data.message,
@@ -42,20 +46,11 @@ const Form = () => {
         timestamp: new Date().toISOString(),
       };
 
-      socket.emit('send_message', newMessage, dataUser, conversationId, socket.id, async (formattedMessage: any) => {
+      socket.emit('send_message', newMessage, userState, conversationId, socket.id, async (formattedMessage: any) => {
         console.log("save_message event");
         console.log(formattedMessage, conversationId);
-        await insertMessage(formattedMessage, conversationId, dataUser.user);
+        await insertMessage(formattedMessage, conversationId, userState);
       });
-
-      /*socket.on("save_message", async (formattedMessage: Message, conversationId:any, userData:any, socketId:any) => {
-      });*/
-      //saveMessageEvent(socket);
-      /*socket.on("save_message", (formattedMessage: Message, conversationId, userData) => {
-        console.log("save_message event");
-        console.log(formattedMessage, conversationId);
-        insertMessage(formattedMessage, conversationId, userData.user);
-      });*/
 
     } catch (error: any) {
       console.error('Error sending message:', error.message);
