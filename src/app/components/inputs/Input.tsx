@@ -17,6 +17,7 @@ interface InputProps {
   name?: string;
   disabled?: boolean;
   onChange?: React.ChangeEventHandler<HTMLInputElement>; // Ajoutez cette ligne
+  placeholder?:string;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -27,7 +28,7 @@ const Input: React.FC<InputProps> = ({
   errors,
   type = 'text',
   disabled,
-  onChange,
+  onChange, placeholder,
 }) => {
   return (
     <div>
@@ -51,6 +52,7 @@ const Input: React.FC<InputProps> = ({
           disabled={disabled}
           {...register(id, { required })}
           onChange={onChange}
+          placeholder={placeholder}
           className={clsx(`
             form-input
             block 
