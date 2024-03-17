@@ -38,10 +38,10 @@ export async function insertMessage(nMessage:  Message, conversationId: string, 
     }
 }
 
-export async function getGroupsUser(user: User | null) {
+export async function getGroupsUserByUserId(user: User | null) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
-  console.log("USER.ID : ", user?.id);
+  //console.log("USER.ID : ", user?.id);
 
   try {
     const { data, error } = await supabase
@@ -50,7 +50,7 @@ export async function getGroupsUser(user: User | null) {
     if (error) {
       throw new Error(error.message);
     }
-    console.log("DATA : ", data);
+    //console.log("DATA : ", data);
 
 
     return data;
@@ -103,15 +103,10 @@ export async function getUserById(id: string): Promise<User | null> {
 export async function createGroup(name: string, members: UserMetadata[], user: User | null): Promise<void> {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
-  console.log("Je suis dans createGroup");
-  console.log("userID : ", user?.id);
-  console.log("name : ", name);
-
   const groupData: Group = {
     group_name: name,
     id_user_creator: user?.id!
   }
-
   try {
     // Insérer le nouveau groupe dans la table "groups"
     const { data, error } = await supabase
@@ -120,30 +115,16 @@ export async function createGroup(name: string, members: UserMetadata[], user: U
       .insert(groupData)
       .select();
 
-    console.log("checkpoint 1");
-
-
     if (error) {
       throw new Error(error.message);
     }
 
-    console.log("INSERT GROUP SUPA : ", data[0].id);
-
     // Insérer les membres du groupe dans la table de liaison "user_group"
     const groupId = data[0].id; // Récupérer l'ID du groupe créé
-    console.log("groupID", groupId);
-    console.log("checkpoint 1.5");
-
-    console.log("members : ", members);
-
     const memberInserts = members.map(memberId => ({
       id_group: groupId,
       id_user: memberId.id
     }));
-
-    console.log("checkpoint 2");
-    console.log("checkpoint memberInserts : ", memberInserts);
-
     {
       const groupData: User_Group = {
         id_user: user?.id!,
@@ -153,11 +134,6 @@ export async function createGroup(name: string, members: UserMetadata[], user: U
         .from('user_group')
         .insert(memberInserts)
         .select();
-
-      console.log("checkpoint 3");
-
-      console.log("data user_group : ", data);
-
     }
   } catch (error) {
     console.error('Error creating group:', error);
@@ -168,7 +144,7 @@ export async function createGroup(name: string, members: UserMetadata[], user: U
 export async function getRelationsUser(user: User | null) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
-  console.log("USER.ID r: ", user?.id);
+  //console.log("USER.ID r: ", user?.id);
 
   try {
     const userId = user?.id;
@@ -188,6 +164,7 @@ export async function getRelationsUser(user: User | null) {
   }
 }
 
+// Fetch all of 'message' table
 export async function getAllMessages(user: User | null, conversationId: any) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
@@ -196,10 +173,12 @@ export async function getAllMessages(user: User | null, conversationId: any) {
     if (error != null) {
       console.log("getAllMessages:\n" + error);
     }
-    return data;
-  } else {
-    return null;
+    if(data) {
+      return data;
+    }
+    return [];
   }
+  return [];
 }
 
 export async function getAuthUser() {
@@ -212,6 +191,7 @@ export async function getAuthUser() {
   return data;
 }
 
+// Fetch all of 'users' table
 export async function getUsersMetadata() {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
@@ -229,7 +209,10 @@ export async function getUserGroupFromIdGroup(id:string){
   if (error !== null) {
     console.log(error);
   }
-  return data;
+  if(data) {
+    return data;
+  }
+  return [];
 }
 
 // export async function getUserMetaData(user: User) {
