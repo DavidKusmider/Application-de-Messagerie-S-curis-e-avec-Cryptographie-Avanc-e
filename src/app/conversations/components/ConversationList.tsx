@@ -5,14 +5,12 @@ import { useSession } from "next-auth/react";
 import { useEffect, useMemo, useState } from "react";
 import { MdOutlineGroupAdd } from 'react-icons/md';
 import clsx from "clsx";
-import { find, uniq } from 'lodash';
 
 import useConversation from "@/app/hooks/useConversation";
 import GroupChatModal from "@/app/components/modals/GroupChatModal";
 import ConversationBox from "./ConversationBox";
 import { User } from "@supabase/supabase-js";
-import { getAuthUser, getUsersByUsername, createGroup } from '@/app/conversations/actions'; // Importer la fonction pour récupérer les utilisateurs par nom d'utilisateur
-import { UserMetadata } from "@/types/databases.types"
+
 
 interface ConversationListProps {
   initialItems: any[];
@@ -39,9 +37,6 @@ const ConversationList: React.FC<ConversationListProps> = ({
   useEffect(() => {
     console.log("ConversationList : ", initialItems);
     setItems(initialItems);
-
-
-    //pusherClient.subscribe(pusherKey);
 
     // const updateHandler = (conversation: FullConversationType) => {
     //   setItems((current) => current.map((currentConversation) => {
@@ -72,9 +67,6 @@ const ConversationList: React.FC<ConversationListProps> = ({
     //   });
     // }
 
-    //pusherClient.bind('conversation:update', updateHandler)
-    //pusherClient.bind('conversation:new', newHandler)
-    //pusherClient.bind('conversation:remove', removeHandler)
   }, [initialItems]);
 
   const closeModal = () => {
