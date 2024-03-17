@@ -10,8 +10,6 @@ export async function addFriend(newFriend : any) {
   const supabase = createClient(cookieStore);
   const user = await getAuthUser();
   try {
-    //console.log('user ID: ',user.user?.id);
-    //console.log('other user ID: ',newFriend.members.value);
     const { error } = await supabase
       .from('user_relation')
       .insert({ id_user: user.user?.id, id_other_user: newFriend.members.value, state_relation: 0})
@@ -24,3 +22,23 @@ export async function addFriend(newFriend : any) {
     return null;
   } 
 }
+
+export async function removeFriend(otherUserId : string) {
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
+    const user = await getAuthUser();
+    const userId = user.user?.id;
+    try {
+      const { data, error } = await supabase
+        .from('user_relation')
+        .delete()
+        .or(`and(id_user.eq.${userId},id_other_user.eq.${otherUserId}),and(id_user.eq.${otherUserId},id_other_user.eq.${userId})`);
+      if (error) {
+        throw new Error(error.message);
+      }
+    } catch(error) {
+      console.error('Error deleting relation between:',userId,' and ',otherUserId);
+      console.error(error);
+      return null;
+    } 
+  }

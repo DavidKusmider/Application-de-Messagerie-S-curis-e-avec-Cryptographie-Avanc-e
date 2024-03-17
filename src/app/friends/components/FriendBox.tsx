@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { getAuthUser, getUserById } from '@/app/conversations/actions';
 import clsx from 'clsx';
 import Avatar from '@/app/components/Avatar';
+import { removeFriend } from '../actions';
 
 interface FriendBoxProps {
     data : User_Relation
@@ -39,8 +40,13 @@ const FriendBox: React.FC<FriendBoxProps> = ({
     const avatar = clsx(isOwn && 'order-2');
     const body = clsx('flex flex-col gap-2', isOwn && 'items-end');
 
+    const remove = (id : string) => {
+      console.log(id);
+      removeFriend(id);
+    }
+
     return (
-      <div className='top-5'>
+      <div className='top-5 flex justify-between items-center'>
         <div className={avatar}>
           <Avatar user={otherUser} />
         </div>
@@ -51,6 +57,9 @@ const FriendBox: React.FC<FriendBoxProps> = ({
             </div>
           </div>
         </div>
+        <button onClick={() => remove(otherUser.id)}>
+          delete
+        </button>
       </div>
     );
   }
