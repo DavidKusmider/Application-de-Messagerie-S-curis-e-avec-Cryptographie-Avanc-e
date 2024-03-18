@@ -4,6 +4,7 @@ import {
     getAllUserGroup,
     getAllUserRelation,
     getAuthUser,
+    getRelationsUser,
     getUsersMetadata
 } from "@/app/conversations/actions";
 import React from "react";
@@ -16,7 +17,7 @@ export default async function FriendsLayout({
     const data = await getAuthUser();
     const groups = await getAllGroups();
     const userGroups = await getAllUserGroup();
-    const userRelations = await getAllUserRelation();
+    const userRelations = await getRelationsUser(data.user);
     const usersMetadata = await getUsersMetadata();
   return (
     <Sidebar user={data.user} groups={groups} userGroups={userGroups} userRelations={userRelations} userMetadata={usersMetadata}>

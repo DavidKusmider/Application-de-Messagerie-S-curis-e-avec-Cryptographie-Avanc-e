@@ -19,7 +19,8 @@ interface FriendListProps {
 const FriendList: React.FC<FriendListProps> = ({
   initialItems,
   users,
-  user, usersMetadata,
+  user, 
+  usersMetadata,
 }) => {
   const [items, setItems] = useState(initialItems);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,16 +32,15 @@ const FriendList: React.FC<FriendListProps> = ({
   }
 
   const handleRemoveFriend = (idsRelation: any) => {
-    setItems(prevFriends => prevFriends.filter(it =>
-      (it.id_user !== idsRelation.id1 && it.id_other_user !== idsRelation.id1) ||
-      (it.id_user !== idsRelation.id2 && it.id_other_user !== idsRelation.id2)));
-    console.log('idsRelation :',idsRelation.id1,idsRelation.id2);
+    const temp = items.filter(it => {return !((it.id_user === idsRelation.id1 && it.id_other_user === idsRelation.id2) ||
+      (it.id_user === idsRelation.id2 && it.id_other_user === idsRelation.id1))})
+    setItems(temp);
   }
 
 
   useEffect(() => {
     setItems(initialItems);
-  }, [initialItems]);
+  }, []);
 
   return (
     <>
@@ -91,7 +91,7 @@ const FriendList: React.FC<FriendListProps> = ({
             {items ? (
             items.map((item) => (
               <FriendBox
-                key={item.id_user}
+                key={(user?.id === item.id_user ? item.id_other_user : item.id_user)}
                 data={item}
                 usersMetadata={usersMetadata}
                 user={user}

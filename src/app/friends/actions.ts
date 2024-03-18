@@ -45,3 +45,26 @@ export async function removeFriend(otherUserId : string) {
       return null;
     } 
   }
+
+  export async function getRelationsUser(user: User | null) {
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
+    //console.log("USER.ID r: ", user?.id);
+  
+    try {
+      const userId = user?.id;
+      const { data, error } = await supabase
+        .from('user_relation')
+        .select()
+        .or(`id_user.eq.${userId},id_other_user.eq.${userId}`);
+      if (error) {
+        throw new Error(error.message);
+      }
+      console.log("DATA relation: ", data);
+  
+      return data;
+    } catch (error) {
+      console.error('Error fetching user relations getRelationsUser:');
+      return null;
+    }
+  }

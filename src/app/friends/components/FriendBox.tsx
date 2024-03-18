@@ -42,7 +42,7 @@ const FriendBox: React.FC<FriendBoxProps> = ({
 
     
     const isOwn = user?.id === data.id_user;
-    const avatar = clsx(isOwn && 'order-2');
+    const avatar = clsx(isOwn);
     const body = clsx('flex flex-col gap-2', isOwn && 'items-end');
 
     const handleRemove = async (id : string) => {
