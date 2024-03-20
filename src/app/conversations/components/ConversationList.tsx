@@ -10,29 +10,33 @@ import useConversation from "@/app/hooks/useConversation";
 import GroupChatModal from "@/app/components/modals/GroupChatModal";
 import ConversationBox from "./ConversationBox";
 import { User } from "@supabase/supabase-js";
+import {Group, User_Group, User_Relation, UserMetadata} from "@/types/databases.types";
 
 
 interface ConversationListProps {
   initialItems: any[];
   users: User[];
   title?: string;
+  currentUser: User | null;
+  groups: Group[];
+  friends: User_Relation[],
+  usersMetadata: UserMetadata[],
+  userGroupsData: User_Group[],
 }
 
 const ConversationList: React.FC<ConversationListProps> = ({
   initialItems,
-  users
+  users,
+    currentUser,
+    groups,
+    friends,
+    usersMetadata,
+    userGroupsData
 }) => {
   const [items, setItems] = useState(initialItems);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const router = useRouter();
-  //const session = useSession();
-
   const { conversationId, isOpen } = useConversation();
-
-  const pusherKey = useMemo(() => {
-    return 'test@gmail.com'//session.data?.user?.email
-  }, ['test@gmail.com'/*session.data?.user?.email*/])
 
   useEffect(() => {
     console.log("ConversationList : ", initialItems);
@@ -77,6 +81,11 @@ const ConversationList: React.FC<ConversationListProps> = ({
       <GroupChatModal
         isOpen={isModalOpen}
         onClose={closeModal}
+        currentUser={currentUser}
+        groups={groups}
+        friends={friends}
+        usersMetadata={usersMetadata}
+        userGroupsData={userGroupsData}
       />
       <aside className={clsx(`
         fixed 

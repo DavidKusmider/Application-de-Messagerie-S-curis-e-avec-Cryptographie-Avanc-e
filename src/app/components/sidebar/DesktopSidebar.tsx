@@ -135,6 +135,11 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
                 users={users}
                 title="Messages"
                 initialItems={conversations}
+                currentUser={currentUser}
+                groups={groups}
+                friends={friends}
+                usersMetadata={usersMetadata}
+                userGroupsData={userGroupsData}
               // initialItems={[{ id: '1', name: 'Test', users: users, messages: [] }]}
               // initialItems={groupsTest}
               />
@@ -160,6 +165,11 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
                 users={users}
                 title="Messages"
                 initialItems={conversations}
+                currentUser={currentUser}
+                groups={groups}
+                friends={friends}
+                usersMetadata={usersMetadata}
+                userGroupsData={userGroupsData}
               // initialItems={[{ id: '1', name: 'Test', users: users, messages: [] }]}
               // initialItems={groupsTest}
               />

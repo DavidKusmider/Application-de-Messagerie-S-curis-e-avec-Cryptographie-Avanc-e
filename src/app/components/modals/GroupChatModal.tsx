@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import Input from "../inputs/Input";
 import Modal from './Modal';
@@ -9,23 +8,32 @@ import Button from '../Button';
 import { toast } from 'react-hot-toast';
 import { User } from '@supabase/supabase-js';
 import {getAuthUser, getUsersByUsername, createGroup, getUsersMetadata} from '@/app/conversations/actions'; // Importer la fonction pour récupérer les utilisateurs par nom d'utilisateur
-import { UserMetadata } from "@/types/databases.types"
+import {Group, User_Group, User_Relation, UserMetadata} from "@/types/databases.types"
 
 interface GroupChatModalProps {
-  isOpen?: boolean;
-  onClose: () => void;
+  isOpen?: boolean,
+  onClose: () => void,
+  currentUser: User | null;
+  groups: Group[];
+  friends: User_Relation[],
+  usersMetadata: UserMetadata[],
+  userGroupsData: User_Group[],
 }
 
 const GroupChatModal: React.FC<GroupChatModalProps> = ({
   isOpen,
   onClose,
+    currentUser,
+    groups,
+    friends,
+    usersMetadata,
+    userGroupsData,
 }) => {
   // const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [inputValue, setInputValue] = useState('');
-  const [searchResults, setSearchResults] = useState<User[]>([]);
-  const [user, setUser] = useState<any>(null);
-  const [users, setUsers] = useState<any>([]);
+  const [searchResults, setSearchResults] = useState<UserMetadata[]>([]);
+  const [user, setUser] = useState<User | null>(currentUser);
+  const [users, setUsers] = useState<UserMetadata[]>([]);
   const [userChecked, setUserChecked] = useState<{userId: string[], response: string[]}>(
       {
         userId: [],
@@ -45,11 +53,10 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
       console.log("data.groupName : ", groupName);
 
       // Envoyer la requête à la base de données Supabase avec les données du formulaire
-      const data2 = await getAuthUser();
-      setUser(data2!);
-      console.log("user : ", user);
+      //const data2 = await getAuthUser();
+      //setUser(data2!);
+      //console.log("user : ", user);
 
-      const usersMetadata : UserMetadata[] | null = await getUsersMetadata();
       const usersToAddToGroup : UserMetadata[] = [];
       userChecked.response.forEach((r) => {
         usersMetadata?.forEach((m) => {
@@ -58,9 +65,8 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
           }
         });
       });
-      await createGroup(groupName, usersToAddToGroup, data2.user);
+      await createGroup(groupName, usersToAddToGroup, user);
       // Réinitialiser l'état local et afficher une notification de succès
-      setInputValue('');
       toast.success('Group created successfully!');
     } catch (error) {
       // Gérer les erreurs de requête
@@ -73,13 +79,11 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
     setUserChecked({userId: [], response: []});
   };
 
-  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       // Envoyer une requête pour récupérer les utilisateurs correspondant à la saisie de l'utilisateur
       console.log("je rentre dnas handle input change");
-
-      const results = await getUsersByUsername(e.target.value);
+      const results = usersMetadata.filter( m => m.user_pseudo.includes(e.target.value));//await getUsersByUsername(e.target.value);
       setSearchResults(results);
       setUsers(results);
       console.log("users : ", users);
@@ -90,10 +94,8 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
   };
 
   const handleCheckboxChange = (e:any) => {
-    console.log(userChecked);
     const {value, checked} = e.target;
     const { userId } = userChecked;
-    console.log(`${value} is ${checked}`);
     if(checked){
       setUserChecked({
         userId: [...userId, value],
@@ -155,7 +157,6 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
                     {searchResults.map((user) => (
                       <li key={user.id} className="py-2">
                         <span className="block text-sm font-medium text-gray-900"><input className="ml-5 mr-5" type="checkbox" name="usersChecked" value={user.id} onChange={handleCheckboxChange} checked={userChecked.response.includes(user.id)}/><label>{user.user_pseudo}</label></span>
-                        <span className="block text-sm text-gray-500">{user.email}</span>
                       </li>
                     ))}
                   </ul>
