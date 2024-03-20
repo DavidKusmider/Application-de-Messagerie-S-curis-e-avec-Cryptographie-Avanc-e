@@ -35,7 +35,7 @@ export default async function ChatId({params}: { params: IParams }) {
     return (
         <div className="lg:pl-80 h-full">
             <div className="h-full flex flex-col">
-                <Header name={groupData[0].group_name} nbmember={userGroupData?.length}/>
+                <Header name={groupData[0].group_name} userGroupData={userGroupData}/>
                 <Body usersMetadata={usersMetadata} userData={data.user} initialMessages={messages!}/>
                 <Form user={data.user}/>
             </div>

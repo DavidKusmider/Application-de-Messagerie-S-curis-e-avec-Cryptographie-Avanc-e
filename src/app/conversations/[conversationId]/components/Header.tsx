@@ -11,19 +11,20 @@ import ProfileDrawer from "./ProfileDrawer";
 import { Conversation, User } from '@/app/types';
 import useActiveList from '@/app/hooks/useActiveList';
 import useOtherUser from '@/app/hooks/useOtherUser';
+import {User_Group} from "@/types/databases.types";
 
 interface HeaderProps {
   name: string,
-  nbmember : number | undefined,
+  userGroupData : User_Group[],
 }
 
-const Header: React.FC<HeaderProps> = ({ name, nbmember }) => {
+const Header: React.FC<HeaderProps> = ({ name, userGroupData }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-
-  const { members } = useActiveList();
+  console.log(userGroupData.length);
+  console.log(userGroupData);
   const statusText = useMemo(() => {
-    return `${nbmember} members`;
-  }, [nbmember]);
+    return `${userGroupData.length} members`;
+  }, [userGroupData.length]);
 
   return (
   <>
