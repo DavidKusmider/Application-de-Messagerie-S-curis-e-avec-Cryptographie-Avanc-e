@@ -29,7 +29,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
                                                        }) => {
     const routes = useRoutes();
     const [isOpen, setIsOpen] = useState(false);
-    const [conversations, setConversations] = useState(groups);
+    const [conversations, setConversations] = useState<Group[]>([]);
     const [relations, setRelations] = useState(friends);
     const [user, setUser] = useState<User | null>(currentUser);
 
@@ -64,16 +64,17 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
     useEffect(() => {
         const userGroups: Group[] = [];
         groups.forEach((g) => {
-            userGroupsData.forEach((m) => {
-                if (m.id_user === user?.id && !userGroups.includes(g)) {
+            const groupsFiltered = userGroupsData.filter((m) => m.id_group === g.id);
+            groupsFiltered.forEach((f) => {
+                if(f.id_user === user?.id && !userGroups.includes(g)){
                     userGroups.push(g);
                 }
-            });
+            })
         });
         if (userGroups.length > 0) {
             setConversations(userGroups);
         }
-    }, [groups, user, userGroupsData]);
+    }, [groups, user?.id, userGroupsData]);
 
     /*console.log("relations before fetchRelations() : ", relations);
     try {
