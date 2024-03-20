@@ -20,8 +20,6 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ name, userGroupData }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  console.log(userGroupData.length);
-  console.log(userGroupData);
   const statusText = useMemo(() => {
     return `${userGroupData.length} members`;
   }, [userGroupData.length]);
