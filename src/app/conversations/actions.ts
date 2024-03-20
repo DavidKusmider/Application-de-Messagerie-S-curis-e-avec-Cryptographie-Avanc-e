@@ -160,7 +160,7 @@ export async function getRelationsUser(user: User | null) {
     return data;
   } catch (error) {
     console.error('Error fetching user relations getRelationsUser:');
-    return null;
+    return [];
   }
 }
 
