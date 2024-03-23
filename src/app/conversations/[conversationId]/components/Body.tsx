@@ -4,10 +4,8 @@ import { useEffect, useRef, useState } from "react";
 
 import MessageBox from "./MessageBox";
 import { find } from "lodash";
-import useConversation from "@/app/hooks/useConversation";
 import { User } from '@supabase/supabase-js';
 import { Message, UserMetadata } from "@/types/databases.types"
-import { getAllMessages, insertMessage } from "@/app/conversations/actions";
 import { io } from "socket.io-client";
 
 interface BodyProps {
@@ -19,9 +17,7 @@ interface BodyProps {
 // @ts-ignore
 const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages }) => {
   const bottomRef = useRef<HTMLDivElement>(null);
-  const [messages, setMessages] = useState(initialMessages); // TODO initialMessages should contain all previous messages from DB.
-
-  const { conversationId } = useConversation();
+  const [messages, setMessages] = useState(initialMessages);
 
   useEffect(() => {
     console.log('useEffect triggered with messages:', messages);
@@ -30,7 +26,6 @@ const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages })
     const messageHandler = (message: any) => {
 
       /*
-
       console.log("New message received:", newMessage);
       const data = await insertMessage(newMessage, conversationId, userData);
       console.log("Message registered.");
@@ -82,11 +77,7 @@ const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages })
   const [user, setUserData] = useState<User | null>(null);
 
   useEffect(() => {
-    const fetchData = () => {
-      //const userData = await getAuthUser();
       setUserData(userData);
-    };
-    fetchData();
   }, [userData]);
 
   return (
