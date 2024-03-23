@@ -10,16 +10,19 @@ import Avatar from "@/app/components/Avatar";
 import useOtherUser from "@/app/hooks/useOtherUser";
 import AvatarGroup from "@/app/components/AvatarGroup";
 import { FullConversationType } from "@/app/types";
+import { UserMetadata, User_Group } from "@/types/databases.types";
 
 interface ConversationBoxProps {
-  name:string,
+  name: string,
   data: any,
   selected?: boolean;
+  usersM?: UserMetadata[]
 }
 
 const ConversationBox: React.FC<ConversationBoxProps> = ({
   name,
   data,
+  usersM,
   selected
 }) => {
   // const otherUser = useOtherUser(data);
@@ -51,8 +54,9 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
     }
 
     return seenArray
-      .filter((user : any) => user.email === userEmail).length !== 0;
+      .filter((user: any) => user.email === userEmail).length !== 0;
   }, [userEmail, lastMessage]);
+
 
   return (
     <div
@@ -73,7 +77,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
       )}
     >
       {true/*data.isGroup*/ ? (
-        <AvatarGroup users={data.users} />
+        <AvatarGroup users={usersM} />
       ) : (
         <Avatar user={data} />
       )}
