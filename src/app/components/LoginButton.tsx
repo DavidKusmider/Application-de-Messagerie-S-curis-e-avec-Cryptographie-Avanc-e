@@ -5,6 +5,7 @@ import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { generateUserKeyPair } from "@/utils/cryptoUtils";
+import { io } from "socket.io-client";
 
 export default function LoginButton({ user }: { user: User | null }, props : any) {
   const router = useRouter();
@@ -17,13 +18,29 @@ export default function LoginButton({ user }: { user: User | null }, props : any
       },
     });
 
-    try {
-      const { publicKey, privateKey } = await generateUserKeyPair();
-      console.log("Public Key:", publicKey);
-      console.log("Private Key:", privateKey);
-    } catch (error: any) {
-      console.error("Error generating key pair:", error.message);
-    }
+    const socket = io("http://localhost:3000");
+
+    socket.emit("login", async (response: any) => {
+      let date = new Date();
+      const time = date.getTime();
+      const expireTime = time + 30 * 24 * 60 * 60 * 1000; // 1 month
+      date.setTime(expireTime);
+      document.cookie = `privateKey=${response.privateKey};`
+        +`expires=${date.toUTCString()};`
+        +`path=/;`
+        +`Secure;`
+        +`HttpOnly`;
+      console.log("Private Key received and stored: ", response.privateKey);
+
+      const supabase = createClient();
+      const { data, error } = await supabase.from('public.users').update({ public_key: response.publicKey }).eq('id', 'id_de_utilisateur'/*TODO fetch user ID*/);
+
+      if (error) {
+          console.error("Error saving public key to Supabase database:", error.message);
+      } else {
+          console.log("Public key saved successfully to Supabase database!");
+      }
+    });
   };
   const login = () => {
     router.push("/connexion");
