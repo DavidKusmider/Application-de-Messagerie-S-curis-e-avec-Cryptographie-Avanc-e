@@ -1,14 +1,19 @@
-'use client';
-
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import Input from "../inputs/Input";
 import Modal from './Modal';
 import Button from '../Button';
 import { toast } from 'react-hot-toast';
 import { User } from '@supabase/supabase-js';
-import {getAuthUser, getUsersByUsername, createGroup, getUsersMetadata} from '@/app/conversations/actions'; // Importer la fonction pour récupérer les utilisateurs par nom d'utilisateur
+import {
+  getAuthUser,
+  getUsersByUsername,
+  createGroup,
+  getUsersMetadata,
+  getAllUserGroup, getAllGroups
+} from '@/app/conversations/actions'; // Importer la fonction pour récupérer les utilisateurs par nom d'utilisateur
 import {Group, User_Group, User_Relation, UserMetadata} from "@/types/databases.types"
+import {SocketContext} from "@/app/conversations/socketContext";
 
 interface GroupChatModalProps {
   isOpen?: boolean,
@@ -40,6 +45,7 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
         response: [],
       });
 
+  const socket = useContext(SocketContext);
   const {
     register,
     handleSubmit,
@@ -65,7 +71,12 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
           }
         });
       });
+
       await createGroup(groupName, usersToAddToGroup, user);
+      const newUserGroup = await getAllUserGroup();
+      const newGroups = await getAllGroups();
+      socket.emit('save_group', newUserGroup, newGroups);
+
       // Réinitialiser l'état local et afficher une notification de succès
       toast.success('Group created successfully!');
     } catch (error) {
@@ -83,7 +94,7 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
     try {
       // Envoyer une requête pour récupérer les utilisateurs correspondant à la saisie de l'utilisateur
       console.log("je rentre dnas handle input change");
-      const results = usersMetadata.filter( m => m.user_pseudo.includes(e.target.value));//await getUsersByUsername(e.target.value);
+      const results = usersMetadata.filter( m => m.user_pseudo.toLowerCase().includes(e.target.value.toLowerCase()));//await getUsersByUsername(e.target.value);
       setSearchResults(results);
       setUsers(results);
       console.log("users : ", users);

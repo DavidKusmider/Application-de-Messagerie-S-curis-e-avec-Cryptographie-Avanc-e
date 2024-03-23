@@ -1,8 +1,9 @@
+'use client'
 import DesktopSidebar from "./DesktopSidebar";
 import MobileFooter from "./MobileFooter";
 import {User} from "@supabase/supabase-js";
 import {Group, User_Group, User_Relation, UserMetadata} from "@/types/databases.types";
-
+import {SocketContext, socket} from "@/app/conversations/socketContext";
 interface SidebarProps{
     user: User | null,
     groups: Group[],
@@ -16,6 +17,7 @@ const Sidebar : React.FC<SidebarProps> = ({user, groups, userGroups, userRelatio
 
     console.log(userRelations);
   return (
+      <SocketContext.Provider value={socket}>
     <div className="h-full">
       <DesktopSidebar currentUser={user} groups={groups} friends={userRelations} usersMetadata={userMetadata} userGroupsData={userGroups}/>
       {/*<MobileFooter />*/}
@@ -23,6 +25,7 @@ const Sidebar : React.FC<SidebarProps> = ({user, groups, userGroups, userRelatio
         {children}
       </main>
     </div>
+      </SocketContext.Provider>
   )
 }
 
