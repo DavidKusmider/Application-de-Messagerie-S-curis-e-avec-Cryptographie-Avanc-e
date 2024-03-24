@@ -42,7 +42,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
 
   const userMeta = currentUser
     ? usersMetadata.find((userMetadata) => userMetadata.id === currentUser.id)
-    : null;
+    : undefined;
 
   const socket = useContext(SocketContext);
   if (user) {

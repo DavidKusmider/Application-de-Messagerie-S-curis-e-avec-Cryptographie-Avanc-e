@@ -5,7 +5,7 @@ import { User } from "@supabase/supabase-js";
 import {UserMetadata} from "@/types/databases.types";
 
 interface AvatarProps {
-  user: UserMetadata | null;
+  user: UserMetadata | undefined;
 }
 
 const Avatar: React.FC<AvatarProps> = ({ user }) => {
@@ -26,7 +26,7 @@ const Avatar: React.FC<AvatarProps> = ({ user }) => {
       ">
         <Image
           fill
-          src={user !== null ? user.user_profile_picture : '/images/placeholder.jpg'}
+          src={user !== undefined ? user.user_profile_picture : '/images/placeholder.jpg'}
           alt="Avatar"
         />
       </div>
