@@ -10,7 +10,7 @@ import useConversation from "@/app/hooks/useConversation";
 import GroupChatModal from "@/app/components/modals/GroupChatModal";
 import ConversationBox from "./ConversationBox";
 import { User } from "@supabase/supabase-js";
-import {Group, User_Group, User_Relation, UserMetadata} from "@/types/databases.types";
+import { Group, User_Group, User_Relation, UserMetadata } from "@/types/databases.types";
 
 
 interface ConversationListProps {
@@ -27,19 +27,20 @@ interface ConversationListProps {
 const ConversationList: React.FC<ConversationListProps> = ({
   initialItems,
   users,
-    currentUser,
-    groups,
-    friends,
-    usersMetadata,
-    userGroupsData
+  currentUser,
+  groups,
+  friends,
+  usersMetadata,
+  userGroupsData
 }) => {
   const [items, setItems] = useState(initialItems);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [usersM, setUsersM] = useState<UserMetadata[]>([]);
 
   const { conversationId, isOpen } = useConversation();
 
   useEffect(() => {
-    console.log("ConversationList : ", initialItems);
+
     setItems(initialItems);
 
     // const updateHandler = (conversation: FullConversationType) => {
@@ -121,16 +122,25 @@ const ConversationList: React.FC<ConversationListProps> = ({
               <MdOutlineGroupAdd size={20} />
             </div>
           </div>
-          {items ? (
-            items.map((item) => (
+          {items.map((item) => {
+            const groupUsers = userGroupsData
+              .filter((userGroup) => userGroup.id_group === item.id)
+              .map((userGroup) => userGroup.id_user);
+
+            const groupUsersMetadata: UserMetadata[] = usersMetadata.filter((userMetadata) =>
+              groupUsers.includes(userMetadata.id)
+            );
+
+            return (
               <ConversationBox
                 name={item.group_name}
                 key={item.id}
                 data={item}
                 selected={conversationId === item.id}
+                usersM={groupUsersMetadata}
               />
-            ))
-          ) : null}
+            );
+          })}
         </div>
       </aside>
     </>

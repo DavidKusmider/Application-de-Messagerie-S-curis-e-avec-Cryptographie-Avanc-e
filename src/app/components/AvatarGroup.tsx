@@ -2,16 +2,17 @@
 
 import Image from "next/image";
 import { User } from "../types";
+import { UserMetadata } from "@/types/databases.types";
 
 interface AvatarGroupProps {
-  users?: User[];
+  users?: UserMetadata[];
 };
 
 const AvatarGroup: React.FC<AvatarGroupProps> = ({
   users = []
 }) => {
   const slicedUsers = users.slice(0, 3);
-  
+
   const positionMap = {
     0: 'top-0 left-[12px]',
     1: 'bottom-0',
@@ -32,11 +33,11 @@ const AvatarGroup: React.FC<AvatarGroupProps> = ({
             w-[21px]
             ${positionMap[index as keyof typeof positionMap]}
           `}>
-            <Image
-              fill
-              src={user?.image || '/images/placeholder.jpg'}
-              alt="Avatar"
-            />
+          <Image
+            fill
+            src={user.user_profile_picture || '/images/placeholder.jpg'}
+            alt="Avatar"
+          />
         </div>
       ))}
     </div>

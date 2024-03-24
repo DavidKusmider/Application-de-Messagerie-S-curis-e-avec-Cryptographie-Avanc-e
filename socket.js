@@ -1,3 +1,5 @@
+import { generateKeyPairSync, publicEncrypt } from "node:crypto";
+//const http = require('http');
 const socket = require("socket.io");
 const https= require("https");
 const next = require('next');
@@ -17,6 +19,30 @@ const certificatePath = "./certificates/certificate.pem";
 const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
 const certificate = fs.readFileSync(certificatePath, 'utf8');
 const credentials = { key: privateKey, cert: certificate };
+
+const generateUserKeyPair = async () => {
+  try {
+    const { publicKey, privateKey } = generateKeyPairSync('rsa', {
+      modulusLength: 530,
+      publicExponent: 0x10101,
+      publicKeyEncoding: {
+        type: 'pkcs1',
+        format: 'pem'
+      },
+      privateKeyEncoding: {
+        type: 'pkcs8',
+        format: 'pem',
+        cipher: 'aes-192-cbc',
+        passphrase: 'Hertz eats chipolata all night long'
+      }
+    });
+
+    return { publicKey, privateKey };
+  } catch (error: any) {
+    console.error("Error generating key pair:", error.message);
+    throw error;
+  }
+};
 
 app.prepare().then(() => {
   const server = https.createServer(credentials, (req, res) => {
@@ -51,6 +77,19 @@ app.prepare().then(() => {
       console.log("Rooms: ", socket.rooms);
     });
 
+    socket.on('login', async (cb) => {
+      try {
+        const { privateKey } = await generateUserKeyPair();
+        // TODO encrypt private key
+        cb({ privateKey }); // callback
+      } catch (error: any) {
+        console.error("Error during login:", error.message);
+        // TODO Handle error?
+      }
+    });
+
+    socket.on('send_message', (message: any, userData: any, conversationId: string, socketId: string, cb) => {
+      const user = userData.user;
     socket.on('send_message', (message, userData, conversationId, socketId, cb) => {
       const user = userData;
       console.log("send_message event");
