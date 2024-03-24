@@ -18,7 +18,7 @@ export default function LoginButton({ user }: { user: User | null }, props : any
       },
     });
 
-    const socket = io("http://localhost:3000");
+    const socket = io("https://localhost:3000");
 
     socket.emit("login", async (response: any) => {
       let date = new Date();
@@ -33,12 +33,17 @@ export default function LoginButton({ user }: { user: User | null }, props : any
       console.log("Private Key received and stored: ", response.privateKey);
 
       const supabase = createClient();
-      const { data, error } = await supabase.from('public.users').update({ public_key: response.publicKey }).eq('id', 'id_de_utilisateur'/*TODO fetch user ID*/);
+      const userId = user ? user.id : (await supa.auth.getUser()).data.user?.id;
+      console.log("user: " + user);
+      console.log("userId: " + userId);
+      // TODO userId is undefined because user is null
+
+      const { data, error } = await supabase.from('public.users').update({ public_key: response.publicKey }).eq('id', userId);
 
       if (error) {
-          console.error("Error saving public key to Supabase database:", error.message);
+        console.error("Error saving public key to Supabase database:", error.message);
       } else {
-          console.log("Public key saved successfully to Supabase database!");
+        console.log("Public key saved successfully to Supabase database!");
       }
     });
   };
