@@ -38,7 +38,7 @@ export default function LoginButton({ user }: { user: User | null }, props : any
       console.log("userId: " + userId);
       // TODO userId is undefined because user is null
 
-      const { data, error } = await supabase.from('public.users').update({ public_key: response.publicKey }).eq('id', userId);
+      const { data, error } = await supabase.schema("public").from('users').update({ public_key: response.publicKey }).eq('id', userId);
 
       if (error) {
         console.error("Error saving public key to Supabase database:", error.message);
