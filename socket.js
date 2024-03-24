@@ -93,31 +93,34 @@ app.prepare().then(() => {
     socket.on('send_message', (message, userData, conversationId, socketId, cb) => {
       const user = userData;
       console.log("send_message event");
-      /* encryption
 
-      console.log('Received encrypted message:', encryptedMessage);
+      console.log('Received encrypted message:', message);
 
-      const decryptedContent = privateDecrypt(
-        {
-          key: privateKey,
-          padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-          oaepHash: 'sha256',
-        },
-        Buffer.from(encryptedMessage.message, 'base64')
-      );
+      let decryptedMessage;
+      try {
+        const decryptedContent = crypto.privateDecrypt(
+          {
+            key: privateKey,
+            padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+            oaepHash: 'sha256',
+          },
+          Buffer.from(message.message, 'base64')
+        );
 
-      const decryptedMessage = {
-        ...encryptedMessage,
-        message: decryptedContent.toString(),
-      };
+        decryptedMessage = {
+          ...encryptedMessage,
+          message: decryptedContent.toString(),
+        };
+      } catch (err) {
+        console.error("Error trying to decrypt message: " + err.message);
+        decryptedMessage = message;
+      }
 
-      console.log('Decrypted message:', decryptedMessage);
-
-      */
+      console.log('Decrypted message:', decryptedMessage.message);
 
       // register message in db
       console.log("New message received:", message);
-      const formattedMessage = { id: message.id, content: message.message, id_user: user.id, id_group: Number(conversationId), created_at: message.timestamp, send_at: message.timestamp };
+      const formattedMessage = { id: message.id, content: decryptedMessage.message, id_user: user.id, id_group: Number(conversationId), created_at: message.timestamp, send_at: message.timestamp };
       //console.log("Sending save_message event");
       //socket.to(socketId).emit("save_message", formattedMessage, conversationId, userData, socketId);
       console.log("Sending receive_message event");

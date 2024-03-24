@@ -62,7 +62,6 @@ const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages })
       console.log("Message registered.");
       console.log(formattedMessage);
       messageHandler(formattedMessage);
-      // TODO Front-end : here, a message has just been received => display new MessageBox with newMessage
     });*/
     socket.on("receive_message", (message) => {
       console.log("receive_message event");
