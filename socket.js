@@ -1,12 +1,8 @@
-//const { Server } = require('socket.io');
-import { Server } from "socket.io";
-import express from 'express';
-//const express = require('express');
-import * as https from "https";
-import next from 'next'
-import { readFileSync } from "fs";
-import { publicEncrypt } from "node:crypto";
-//const http = require('http');
+const socket = require("socket.io");
+const https= require("https");
+const next = require('next');
+const fs = require("node:fs");
+//import { publicEncrypt } from "node:crypto";
 
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev });
@@ -18,8 +14,8 @@ const PORT = process.env.PORT || 3000;
 const privateKeyPath = "./certificates/private-key.pem";
 const certificatePath = "./certificates/certificate.pem";
 
-const privateKey = readFileSync(privateKeyPath, 'utf8');
-const certificate = readFileSync(certificatePath, 'utf8');
+const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
+const certificate = fs.readFileSync(certificatePath, 'utf8');
 const credentials = { key: privateKey, cert: certificate };
 
 app.prepare().then(() => {
@@ -33,7 +29,7 @@ app.prepare().then(() => {
     Utiliser le broadcast pour envoyer le message statique, déjà ecrit en BDD, aux autres utilisateurs sans d'appel BDD supplementaire
     TLD;DR : séparer envoie (pas de broadcast) et reception de message (reception par un broadcast)
     */
-  const io = new Server(server, {
+  const io = new socket.Server(server, {
     cors: {
       origin: ["https://localhost:3000"], // Client URL
     }
@@ -55,8 +51,8 @@ app.prepare().then(() => {
       console.log("Rooms: ", socket.rooms);
     });
 
-    socket.on('send_message', (message: any, userData: any, conversationId: string, socketId: string, cb) => {
-      const user = userData.user;
+    socket.on('send_message', (message, userData, conversationId, socketId, cb) => {
+      const user = userData;
       console.log("send_message event");
       /* encryption
 
@@ -82,7 +78,7 @@ app.prepare().then(() => {
 
       // register message in db
       console.log("New message received:", message);
-      const formattedMessage: any = { id: message.id, content: message.message, id_user: user.id, id_group: Number(conversationId), created_at: message.timestamp, send_at: message.timestamp };
+      const formattedMessage = { id: message.id, content: message.message, id_user: user.id, id_group: Number(conversationId), created_at: message.timestamp, send_at: message.timestamp };
       //console.log("Sending save_message event");
       //socket.to(socketId).emit("save_message", formattedMessage, conversationId, userData, socketId);
       console.log("Sending receive_message event");
@@ -96,6 +92,10 @@ app.prepare().then(() => {
           broadcastMessage(message);
       });*/
 
+    socket.on('save_group',  (newUserGroup, newGroups) => {
+      console.log('save_group received.\nupdate_group sent.');
+      socket.emit("update_group", newUserGroup, newGroups);
+    });
     socket.on('disconnect', () => {
       console.log('WebSocket disconnected');
     });
@@ -107,7 +107,7 @@ app.prepare().then(() => {
     console.log(`Server is running on port ${PORT}`);
   });
 
-  const broadcastMessage = (message: any) => {
+  const broadcastMessage = (message) => {
     if (io) {
       io.to(message.conversationId).emit('message', message);
     }
