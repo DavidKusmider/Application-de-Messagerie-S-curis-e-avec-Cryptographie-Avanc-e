@@ -9,8 +9,6 @@ export default async function LoginPage() {
     const supabase = createClient(cookieStore);
 
     const {data} = await supabase.auth.getUser();
-    console.log("data: "+data);
-    console.log("data.user: "+data.user);
   return (
     <div 
       className="

@@ -58,17 +58,8 @@ export async function GET(request: Request) {
         if (!error) {
             const supabase = createClient(cookieStore);
             const {privateKey, publicKey} = generateUserKeyPair();
-            let date = new Date();
-            const time = date.getTime();
-            const expireTime = time + 30 * 24 * 60 * 60 * 1000; // 1 month
-            date.setTime(expireTime);
-            //console.log("Private Key received and stored: ", privateKey);
-            console.log("Public Key received and stored: ", publicKey);
-            const user = (await supabase.auth.getUser()).data.user;
-            console.log("user: " + user);
-            console.log("userId: " + user?.id);
-            // TODO userId is undefined because user is null
 
+            const user = (await supabase.auth.getUser()).data.user;
             const {error} = await supabase.schema("public").from('users').update({public_key: publicKey}).eq('id', user?.id);
 
             if (error) {
@@ -76,8 +67,13 @@ export async function GET(request: Request) {
             } else {
                 console.log("Public key saved successfully to Supabase database!");
             }
+
             console.log("End of socket call");
             const response = NextResponse.redirect(`${origin}${next}`, {status: 302});
+            let date = new Date();
+            const time = date.getTime();
+            const expireTime = time + 30 * 24 * 60 * 60 * 1000; // 1 month
+            date.setTime(expireTime);
             // @ts-ignore
             response.cookies.set('privateKey', privateKey, {
                 path: "/",
