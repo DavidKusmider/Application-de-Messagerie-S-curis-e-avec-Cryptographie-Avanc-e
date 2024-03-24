@@ -19,7 +19,7 @@ const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
 const certificate = fs.readFileSync(certificatePath, 'utf8');
 const credentials = { key: privateKey, cert: certificate };
 
-const generateUserKeyPair = async () => {
+/*const generateUserKeyPair = () => {
   try {
     const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
       modulusLength: 530,
@@ -41,7 +41,7 @@ const generateUserKeyPair = async () => {
     console.error("Error generating key pair:", error.message);
     throw error;
   }
-};
+};*/
 
 app.prepare().then(() => {
   const server = https.createServer(credentials, (req, res) => {
@@ -76,16 +76,19 @@ app.prepare().then(() => {
       console.log("Rooms: ", socket.rooms);
     });
 
-    socket.on('login', async (cb) => {
+/*
+    socket.on('login',  async (cb) => {
       try {
-        const { privateKey } = await generateUserKeyPair();
+        console.log("Inside socket");
+        const { privateKey, publicKey } = generateUserKeyPair();
         // TODO encrypt private key
-        cb({ privateKey }); // callback
+        await cb({ privateKey, publicKey }); // callback
       } catch (error) {
         console.error("Error during login:", error.message);
         // TODO Handle error?
       }
     });
+*/
 
     socket.on('send_message', (message, userData, conversationId, socketId, cb) => {
       const user = userData;

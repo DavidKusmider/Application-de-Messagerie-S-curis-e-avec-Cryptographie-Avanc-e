@@ -3,9 +3,6 @@ import React from "react";
 import { User } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { generateUserKeyPair } from "@/utils/cryptoUtils";
-import { io } from "socket.io-client";
 
 export default function LoginButton({ user }: { user: User | null }, props : any) {
   const router = useRouter();
@@ -16,35 +13,6 @@ export default function LoginButton({ user }: { user: User | null }, props : any
       options: {
         redirectTo: location.origin + "/auth/callback",
       },
-    });
-
-    const socket = io("https://localhost:3000");
-
-    socket.emit("login", async (response: any) => {
-      let date = new Date();
-      const time = date.getTime();
-      const expireTime = time + 30 * 24 * 60 * 60 * 1000; // 1 month
-      date.setTime(expireTime);
-      document.cookie = `privateKey=${response.privateKey};`
-        +`expires=${date.toUTCString()};`
-        +`path=/;`
-        +`Secure;`
-        +`HttpOnly`;
-      console.log("Private Key received and stored: ", response.privateKey);
-
-      const supabase = createClient();
-      const userId = user ? user.id : (await supa.auth.getUser()).data.user?.id;
-      console.log("user: " + user);
-      console.log("userId: " + userId);
-      // TODO userId is undefined because user is null
-
-      const { data, error } = await supabase.schema("public").from('users').update({ public_key: response.publicKey }).eq('id', userId);
-
-      if (error) {
-        console.error("Error saving public key to Supabase database:", error.message);
-      } else {
-        console.log("Public key saved successfully to Supabase database!");
-      }
     });
   };
   const login = () => {
