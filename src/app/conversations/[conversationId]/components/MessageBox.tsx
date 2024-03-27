@@ -24,8 +24,8 @@ const MessageBox: React.FC<MessageBoxProps> = ({ userMetadata, user, data, isLas
   console.log("data.content ", data.content);
   // const decryptedBuffer = privateDecrypt(privateKey, Buffer.from(data.content, 'base64'));
   const decryptedBuffer = decryptMessageContent(data.content, privateKey);/* encryptMessageContent(data.message, recipientPublicKey) */
-  console.log("decryptedbuffer", decryptedBuffer);
-  setDecryptedContent(decryptedBuffer);
+  // console.log("decryptedbuffer", decryptedBuffer);
+  // setDecryptedContent(decryptedBuffer);
 
   // try {
   //   const decryptedBuffer = privateDecrypt(privateKey, Buffer.from(data.content, 'base64'));

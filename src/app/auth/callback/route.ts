@@ -17,7 +17,6 @@ const generateUserKeyPair = () => {
       privateKeyEncoding: {
         type: 'pkcs8',
         format: 'pem',
-        // passphrase: 'Hertz eats chipolata all night long'
       }
     });
 
