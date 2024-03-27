@@ -12,12 +12,16 @@ interface BodyProps {
   userData: User | null;
   initialMessages: any[];
   usersMetadata: UserMetadata[] | null;
+  privateKeyCookie: String;
 }
 
 // @ts-ignore
-const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages }) => {
+const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages, privateKeyCookie }) => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState(initialMessages);
+
+  console.log("BODY messages : ", messages);
+  console.log("BODY private key : ", privateKeyCookie);
 
   useEffect(() => {
     console.log('useEffect triggered with messages:', messages);
@@ -76,7 +80,7 @@ const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages })
   const [user, setUserData] = useState<User | null>(null);
 
   useEffect(() => {
-      setUserData(userData);
+    setUserData(userData);
   }, [userData]);
 
   return (
@@ -88,6 +92,7 @@ const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages })
           isLast={i === messages.length - 1}
           key={message.id}
           data={message}
+          privateKeyCookie={privateKeyCookie}
         />
       ))}
       <div className="pt-24" ref={bottomRef} />

@@ -1,6 +1,6 @@
 //const http = require('http');
 const socket = require("socket.io");
-const https= require("https");
+const https = require("https");
 const next = require('next');
 const fs = require("node:fs");
 const crypto = require("node:crypto");
@@ -76,36 +76,33 @@ app.prepare().then(() => {
       console.log("Rooms: ", socket.rooms);
     });
 
-/*
-    socket.on('login',  async (cb) => {
-      try {
-        console.log("Inside socket");
-        const { privateKey, publicKey } = generateUserKeyPair();
-        // TODO encrypt private key
-        await cb({ privateKey, publicKey }); // callback
-      } catch (error) {
-        console.error("Error during login:", error.message);
-        // TODO Handle error?
-      }
-    });
-*/
+    /*
+        socket.on('login',  async (cb) => {
+          try {
+            console.log("Inside socket");
+            const { privateKey, publicKey } = generateUserKeyPair();
+            // TODO encrypt private key
+            await cb({ privateKey, publicKey }); // callback
+          } catch (error) {
+            console.error("Error during login:", error.message);
+            // TODO Handle error?
+          }
+        });
+    */
 
     socket.on('send_message', (message, userData, conversationId, socketId, cb) => {
       const user = userData;
       console.log("send_message event");
 
       console.log('Received encrypted message:', message);
-
-      let decryptedMessage;
+      // const decryptedContent = crypto.privateDecrypt(privateKey, message);
+      // console.log('Decrypted message22:', decryptedContent.message);
+      // let decryptedMessage;
       try {
-        const decryptedContent = crypto.privateDecrypt(
-          {
-            key: privateKey,
-            padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-            oaepHash: 'sha256',
-          },
-          Buffer.from(message.message, 'base64')
-        );
+        console.log("privateKey", privateKey);
+        console.log("encry message", message.message);
+        const decryptedContent = crypto.privateDecrypt(privateKey, message.message);
+        console.log('Decrypted message33:', decryptedContent.message);
 
         decryptedMessage = {
           ...encryptedMessage,
@@ -134,7 +131,7 @@ app.prepare().then(() => {
           broadcastMessage(message);
       });*/
 
-    socket.on('save_group',  (newUserGroup, newGroups) => {
+    socket.on('save_group', (newUserGroup, newGroups) => {
       console.log('save_group received.\nupdate_group sent.');
       socket.emit("update_group", newUserGroup, newGroups);
     });
