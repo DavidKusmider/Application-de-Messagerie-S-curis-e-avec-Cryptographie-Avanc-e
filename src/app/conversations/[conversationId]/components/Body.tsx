@@ -12,10 +12,11 @@ interface BodyProps {
   userData: User | null;
   initialMessages: any[];
   usersMetadata: UserMetadata[] | null;
+  conversationId: string;
 }
 
 // @ts-ignore
-const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages }) => {
+const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages, conversationId }) => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState(initialMessages);
 
@@ -42,11 +43,23 @@ const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages })
       console.log('Message handler called:', message);
 
       setMessages((current) => {
-        if (find(current, { id: message.id })) {
+        let newMess: any[] = [];
+        current.forEach(c => {
+          if(message.id_group == conversationId) {
+            if (c.id == message.id) {
+              newMess = current;
+            }
+            newMess = [...current, message];
+          }else{
+            newMess = current;
+          }
+        });
+        return newMess;
+        /*if (find(current, { id: message.id })) {
           return current;
         }
 
-        return [...current, message]
+        return [...current, message]*/
       });
 
       bottomRef?.current?.scrollIntoView();
