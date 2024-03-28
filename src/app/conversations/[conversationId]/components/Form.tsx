@@ -51,7 +51,7 @@ const Form: React.FC<FormProps> = ({ user, usersMetadata, userGroupData }) => {
       const publicKeyOfRecipient: string | undefined = usersMetadata.find(user => user.id === userIdOfConversation)?.public_key;
 
       console.log("PUBLIC key1 : ", publicKeyOfRecipient);
-      setRecipientPublicKey(publicKeyOfRecipient);
+      // setRecipientPublicKey(publicKeyOfRecipient);
 
 
       // setRecipientPublicKey("-----BEGIN RSA PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCub6Mu3Jgs6cczNKlfTR3kXCfRLzQmy0aiPkvLxTHUDYt58n4bq8uFHiCtmFD/AMH53ke8nDViA0po7BGVwjXF8t1pV0raxtpBD6SPM7eIJ3xGEeQ8W3TD2nogbtehkV8xLcpgb82Pao/bLlkmSuOjPSWbKrKhQFCSJPWs5WWDZwIDAQAB\n-----END RSA PUBLIC KEY-----");
