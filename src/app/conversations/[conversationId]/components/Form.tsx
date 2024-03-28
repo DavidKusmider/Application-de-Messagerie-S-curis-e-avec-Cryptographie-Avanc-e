@@ -22,7 +22,7 @@ interface FormProps {
 const Form: React.FC<FormProps> = ({ user, usersMetadata, userGroupData }) => {
   const [userState, setUser] = useState<User | null>(user)
   const { conversationId } = useConversation();
-  const [recipientPublicKey, setRecipientPublicKey] = useState<string | undefined>('');
+  const [recipientPublicKey, setRecipientPublicKey] = useState<String | undefined>('');
 
 
 
@@ -47,10 +47,10 @@ const Form: React.FC<FormProps> = ({ user, usersMetadata, userGroupData }) => {
         send_at: Date.now().toString()
       };*/
 
-      const userIdOfConversation = userGroupData.find(group => String(group.id_group) === conversationId && group.id_user !== user.id)?.id_user;
+      const userIdOfConversation = userGroupData.find(group => String(group.id_group) === conversationId && group.id_user == user.id)?.id_user;
       const publicKeyOfRecipient: string | undefined = usersMetadata.find(user => user.id === userIdOfConversation)?.public_key;
 
-      console.log("PUBLIC key1 : ", publicKeyOfRecipient);
+      // console.log("PUBLIC key1 : ", publicKeyOfRecipient);
       // setRecipientPublicKey(publicKeyOfRecipient);
 
 

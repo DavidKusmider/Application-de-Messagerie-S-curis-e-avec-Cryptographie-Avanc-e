@@ -20,8 +20,8 @@ const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages, p
   const bottomRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState(initialMessages);
 
-  console.log("BODY messages : ", messages);
-  console.log("BODY private key : ", privateKeyCookie);
+  // console.log("BODY messages : ", messages);
+  // console.log("BODY private key : ", privateKeyCookie);
 
   useEffect(() => {
     console.log('useEffect triggered with messages:', messages);

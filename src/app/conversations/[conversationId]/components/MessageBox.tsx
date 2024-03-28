@@ -19,14 +19,17 @@ const MessageBox: React.FC<MessageBoxProps> = ({ userMetadata, user, data, isLas
   const conversationId = "1";// useConversation();
   const [privateKey, setPrivateKey] = useState(privateKeyCookie);
   const isOwn = user?.id === data.id_user;
-  const [decryptedContent, setDecryptedContent] = useState<string | null>();
+  const [decryptedContent, setDecryptedContent] = useState<String | null>();
 
-  // console.log("data.content ", data.content);
-  // console.log("privateKey ", privateKey);
-  // const decryptedBuffer = privateDecrypt(privateKey, Buffer.from(data.content, 'base64'));
-  // const decryptedBuffer = decryptMessageContent(data.content, privateKey);/* encryptMessageContent(data.message, recipientPublicKey) */
-  // console.log("decryptedbuffer", decryptedBuffer);
-  // setDecryptedContent(decryptedBuffer);
+
+  useEffect(() => {
+    // console.log("data.content ", data.content);
+    // console.log("privateKey ", privateKey);
+    // const decryptedBuffer = privateDecryptprivateKey, Buffer.from(data.content, 'base64'));
+    const decryptedBuffer = decryptMessageContent(data.content, privateKey);/* encryptMessageContent(data.message, recipientPublicKey) */
+    console.log("decryptedbuffer", decryptedBuffer);
+    setDecryptedContent(decryptedBuffer);
+  }, [data.content, privateKey]);
 
   // try {
   //   const decryptedBuffer = privateDecrypt(privateKey, Buffer.from(data.content, 'base64'));
@@ -61,7 +64,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ userMetadata, user, data, isLas
           {/*</div>*/}
         </div>
         <div className={message}>
-          <div>{data.content}</div>
+          <div>{decryptedContent}</div>
         </div>
       </div>
     </div>

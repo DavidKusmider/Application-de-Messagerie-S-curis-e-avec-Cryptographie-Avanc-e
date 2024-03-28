@@ -73,7 +73,7 @@ export async function GET(request: Request) {
       const expireTime = time + 30 * 24 * 60 * 60 * 1000; // 1 month
       date.setTime(expireTime);
       // @ts-ignore
-      response.cookies.set('privateKey', privateKey, {
+      response.cookies.set('privateKey', privateKey.toString('utf8'), {
         path: "/",
         expires: date,
         secure: true,

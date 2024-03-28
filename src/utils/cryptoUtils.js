@@ -1,51 +1,29 @@
-const { publicEncrypt, privateDecrypt, constants } = require('crypto');
+import crypto from 'crypto';
 
 const encryptMessageContent = (content, publicKey) => {
-  console.log("je suis dans cryptoOOOOO");
-  publicKey = "-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmDmGwGzAXsEHVSbipJguqzNLrppb5NLmTBm1gTvSsELTRGNePxrxa7HcOeTo5t/W/tq9pmhDN+UehrrA2IQSwrNDhex50yzHoxnglVkuff4d1iWpq+Ow5w0oC7a9Q6ad5T3VAYjK4Bo5tlS3daYX6+FH1X3k5grwDmKmSnK33hbLryqBCfZjMECw4ZrT9knTjCvILZXSvlVXiSPetzLGjtejmOkKWbV/IftfJIwar/qUB97nQl4hv5NIY0Dxenp1HIJp15gdAqbMdUhPwrH3FQO0GeuOhTISklfqpkFoEuo/tZFFnnwB4b2IjkukLaxBGfUj59FpCF3Q+6YhJRU00QIDAQAB-----END PUBLIC KEY-----";
-  console.log(content, publicKey);
-
-  // const encryptedBuffer = publicEncrypt(publicKey, Buffer.from(content));
-  const encryptedBuffer = publicEncrypt(
+  const encryptedBuffer = crypto.publicEncrypt(
     {
       key: publicKey,
-      padding: constants.RSA_PKCS1_PADDING,
+      padding: crypto.constants.RSA_PKCS1_PADDING,
     },
-    Buffer.from(content, "base64")
+    Buffer.from(content, "utf8")
   );
-  console.log("encryptedBuffer : ", encryptedBuffer.toString('base64'));
-  console.log("je suis apres cryP11");
-  // console.log("je suis dans cryptoOOOOO222222");
-  // // privateKey = "-----BEGIN ENCRYPTED PRIVATE KEY-----\nMIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAK5voy7cmCzpxzM0qV9NHeRcJ9EvNCbLRqI+S8vFMdQNi3nyfhury4UeIK2YUP8AwfneR7ycNWIDSmjsEZXCNcXy3WlXStrG2kEPpI8zt4gnfEYR5DxbdMPaeiBu16GRXzEtymBvzY9qj9suWSZK46M9JZsqsqFAUJIk9azlZYNnAgMBAAECgYA6P1UCRO8bsESwOJmGFT4yDwPMujJz8dT4QE0XEhX9dThp1CuAGfGv1cubrAz/2cTsJulVdePtgqPKPWnx1BQYIwr57ZzOROjMZispgkZaZ783lynrByR1bBn6/MoOmMyot4WlxmiCjlmMqsXQEgTMA23pbxTrN8XMggKFNRVqIQJBAPFvR7QfHTvlLOhyUSIaFPyUeYpeGGsE86S6G/Jcolp4Y/nun+fU73/tXwIivr+AXsuETyWXDEUZKKP+UuYZp5MCQQC49aFTi55z5lLp21podoLFiN2IrRe2y3j7mClHf97Y/5VslvPQkOAJAGiQIbBm4TVH0ncmlVrndVCc0aVuTbFdAkEAwrM9/Oj2l126uH2wJjMoZ4SI+2fkgzGMFnSroujHWPQrk9u3Aqt6tQzFCKDieObaC3/Yn/TOxU6DsrSfP8bClwJAXfUJevNWDvJV9E5l4uMxEz+vqhqkDUvXrZdigNvITNupAHy+Zpjx9iCq/Wzfu6Nz+YRE2ujMQQArbz5gl2QIUQJAZghu7jZOREHuIdjNktrIEyEzm/8sUkx4DkoBtKmpjOhsf/LK8nbdwZvDxIbTLdc2J6WjzJgg+cmLIA2+Wo91KQ==\n-----END ENCRYPTED PRIVATE KEY-----"
-  // content = "HhcQZSSufze+l2R5R9p9+bTikmQ5WX8QzFULMF1MMX++OHlD1xlWmfhXtsS8sqfLmwNL1MarbLDtmBwanPjUAkJ8sSXst1dvAdIebAoEoLVZF+ZLKLFp8AlSKW+eHRRDGUmb7QzVQvjvRJMqCORzm81A82F5JtMS9vLUftBAr7qFfYtZh1mudNV3ZIL7rV5FdjwBScgCprIFUlWqoLwS+8o/Vgm0tqLSG739HTw27b/p5JjYWWCMj2ufLcJ7EESZZW0WjQVH/gje0ZiXHZFuHsfFjWM+ek/JFl4X3FCzcD3HVR6ktNxNrzwIayuslioV+xcFJhULPxv+AOU/uxacTg=="
-  // console.log("con", content);
-  // // const privateKey = "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCfMGS/rcptsATKYYNiECpn8Crf84MVgjwhC2Hjl7fRA7dhfHppJtMY0siHXWd3CZFKbTBv7xMvQnlOIgyKGnyfRgR4LbpOTbqgw7zTthqTHfxdxI13kZyX/u8jtd8brz3ZCsN5XTOSSEkCfBt0Sp8Ja/c/TxY7DEw1MZsNgy/YWpqY9oTLWjLayRQ2HaNwKQq2/z0SLaY6cNTWwZ9E2MhDhjtr6+p75yHcH9tc2FHNtwN4MpSuDGL0Lu/Q0WtdJ2On4g/dN1roriLuJDNZc4DSfL4HBU8k6s929t4Gx0HbX7vNz8n3G0IOWLL2vLgPO23IRUD3Tex7DqrKPyeBS2k7AgMBAAECggEAEdQttHoWbeqE3tXFDTqaRUHUy3hOeh439ct8jyzy3Wn5I+X5H8XFZsZUxzRi3iYoK5nHDwJLt8NOKr4NgXot8vi4j20vrI1wFYlWoK+IkmmNVkMpRPb9/tgCmJFKB6O83Y4jDnityfhmlOypdoDVBw0ch+6nor1h26NOpljHBwgRhMNY+xkN7D+Q/m9M8PWXnIVLSb8731UCr3C1Pc7+BphvgmBngSpSeTUVdEb/thXSJjWr82LejER+thsNcLrb2oPoljgcR6EyDzIUVPZbeJ3dgxe0Oe9g/4HqV+zYKMgRxp2vncpuD6iKM8M4owQkROcqQJKW0diezLpa9CWBgQKBgQDPAxC5Pn1+vlifiKSOsYTopY5KlWvR01733J9jKOvFb+rK15EHLVqYxF+Bpi6wxc6Ws4CoiuYe+eg+9S+5gaiqjDdWfHTmIGcYwAn8zOiL0yQaCNZiimLE81dP6KGUwyqP7xGxcbDdhSs3IlsUpapUdYvfcHpB/PKG0ifWMo6CywKBgQDE3C4jxkThr24uJ9AEabsh2tyEB3sub7BGkfD20xf8WpEK6yIKu7iiFNZM1MfnKpekA1dOLPTPy9pT2pfx5l3HSkV4tfnBGmWsRspuG3I/q7vB9DxXRXHBuqC/BXt4uMZze/0ThF4e/L2IPEQwGXYPGj4VgMxuxHE4Au67P2A1UQKBgBLh+rKLCrN29WqH8kq50p/OCi6vdohLOYxuaXOIFgmKbeZWx3naHzt0HiobWILzaCbC9Odq1BbbQN4NS28mbpYv+BRBggBD0GOnkMGoh0XJ2q8tQzD14pCIidxWIfcJ3mYGrpx6/GEYdpqu3ZQCkIjnt/yHq/887XpyzQNy1SEFAoGBAJHhK9vc0CyB6N8RJ6gthbvHyMOaG6FEqNcSzQLLWSnrHzJ9HePgSijp0ghrYZufR3IF+8t1qxDVWnvrL8/VS0ckdajHCUYcvp1UdCv18MrYAzHuQEzXrD3Ig9gqQt4p5v2rMtYkr+68keMD7e/K3l7ArqMWp+epcND1810U0MGRAoGAM+cUa3jEhvnxUAzr+UInX4xF1LfLjjIsWpCpLilb254qy01xQJsatLYq4aviEAs0zcVO98RFMb0YSo4WDnsR97toJp7H6uOMviw7VfTRxGdOs3x62MqJo4f+5JU7Cz0JOjRQCHRXTZJa4yjxmyFDguGMKrQ9zVCBf39TSdEllTI=";
-  // const privateKey = "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCfMGS/rcptsATKYYNiECpn8Crf84MVgjwhC2Hjl7fRA7dhfHppJtMY0siHXWd3CZFKbTBv7xMvQnlOIgyKGnyfRgR4LbpOTbqgw7zTthqTHfxdxI13kZyX/u8jtd8brz3ZCsN5XTOSSEkCfBt0Sp8Ja/c/TxY7DEw1MZsNgy/YWpqY9oTLWjLayRQ2HaNwKQq2/z0SLaY6cNTWwZ9E2MhDhjtr6+p75yHcH9tc2FHNtwN4MpSuDGL0Lu/Q0WtdJ2On4g/dN1roriLuJDNZc4DSfL4HBU8k6s929t4Gx0HbX7vNz8n3G0IOWLL2vLgPO23IRUD3Tex7DqrKPyeBS2k7AgMBAAECggEAEdQttHoWbeqE3tXFDTqaRUHUy3hOeh439ct8jyzy3Wn5I+X5H8XFZsZUxzRi3iYoK5nHDwJLt8NOKr4NgXot8vi4j20vrI1wFYlWoK+IkmmNVkMpRPb9/tgCmJFKB6O83Y4jDnityfhmlOypdoDVBw0ch+6nor1h26NOpljHBwgRhMNY+xkN7D+Q/m9M8PWXnIVLSb8731UCr3C1Pc7+BphvgmBngSpSeTUVdEb/thXSJjWr82LejER+thsNcLrb2oPoljgcR6EyDzIUVPZbeJ3dgxe0Oe9g/4HqV+zYKMgRxp2vncpuD6iKM8M4owQkROcqQJKW0diezLpa9CWBgQKBgQDPAxC5Pn1+vlifiKSOsYTopY5KlWvR01733J9jKOvFb+rK15EHLVqYxF+Bpi6wxc6Ws4CoiuYe+eg+9S+5gaiqjDdWfHTmIGcYwAn8zOiL0yQaCNZiimLE81dP6KGUwyqP7xGxcbDdhSs3IlsUpapUdYvfcHpB/PKG0ifWMo6CywKBgQDE3C4jxkThr24uJ9AEabsh2tyEB3sub7BGkfD20xf8WpEK6yIKu7iiFNZM1MfnKpekA1dOLPTPy9pT2pfx5l3HSkV4tfnBGmWsRspuG3I/q7vB9DxXRXHBuqC/BXt4uMZze/0ThF4e/L2IPEQwGXYPGj4VgMxuxHE4Au67P2A1UQKBgBLh+rKLCrN29WqH8kq50p/OCi6vdohLOYxuaXOIFgmKbeZWx3naHzt0HiobWILzaCbC9Odq1BbbQN4NS28mbpYv+BRBggBD0GOnkMGoh0XJ2q8tQzD14pCIidxWIfcJ3mYGrpx6/GEYdpqu3ZQCkIjnt/yHq/887XpyzQNy1SEFAoGBAJHhK9vc0CyB6N8RJ6gthbvHyMOaG6FEqNcSzQLLWSnrHzJ9HePgSijp0ghrYZufR3IF+8t1qxDVWnvrL8/VS0ckdajHCUYcvp1UdCv18MrYAzHuQEzXrD3Ig9gqQt4p5v2rMtYkr+68keMD7e/K3l7ArqMWp+epcND1810U0MGRAoGAM+cUa3jEhvnxUAzr+UInX4xF1LfLjjIsWpCpLilb254qy01xQJsatLYq4aviEAs0zcVO98RFMb0YSo4WDnsR97toJp7H6uOMviw7VfTRxGdOs3x62MqJo4f+5JU7Cz0JOjRQCHRXTZJa4yjxmyFDguGMKrQ9zVCBf39TSdEllTI=MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCDLW8NTetpCyNUKrNcfnevq/aROWmFtc6W5id9Yg9glUAaG9LnXVWnSM/cNLZ2zXa9rBrayoayzWIGNkjgcSIBLdjRhodew7SU/L9cQzwrYsUlyL7tef1knuc0FMzeIn6zrFy3zQgPqRT/057t3Ua/Y/CZ5REYddPpr6nViGbAYaJ/MJhLhCsbKclSkDPy8YQSLucI1cRy4PXT32gpsuEBMSZ5RA8lU5e4TRWZVxAYhcdWxIF4OTpghqEO3KDy2eXm74lu0ammbK8YKINdgs981FG4b4D0YpjKmUnvWFHBpZ8OqhIjnt3qhbVJooiwIsFKIgYFyhcKF1rjaVJbSacBAgMBAAECggEAOgF5PfTayFR4httq/NefrTrpiUZN9yZx+CBGDheynQ7ijakIFe8b1SFJaSKWHOq2OyFDrsQn1CEl24FdsIHWe5b+bYiDi9AWplstc2r3zGecrhya8QAkoL3zlwArp36xcFojldNAYUxvUMEPYjea9T8IQcUdTiesUYWwIBB0/1SGVgywm/Djnz/yoK6woCCzG6s3r47xonqhF6Y4mpqUEsutLzLFOp+fUUmZIAT+Cvwtm8I6eBUYl8JPn167W5krVO8RPvZ7M/mWN9w/b1xdx5EAZS4CBCGXAcDnyDTNbbG8iBuQM4lV0HuYPTyWJDz9XgFS8aDDyk4vHSnR9cUsAQKBgQDpwNfcV4Ef5/O77X+jyUl70nFqp93nLRcSSo3qQ5wJXEfV3JiVuLX2dIGUpJX2Jo2j/ekQ7vO7HiwX4vLbzpZX+xdl1QZBYgnIVjMlR2EKaJADCpikZJ3aTa06s+SkD6FwghXQ0EfBg7VgmEvgOwWt+7QnGMQcQA52geas7/PF0QKBgQCPqW/j6UHESDQpukfHnQMz2UjH72ogU0i+hVThtkngm2iXOH8OB58h1v3Dgyt52AOUzrMsdg2ggGk9k2NDFt4MFTxCJbjxhVMWYEWDTCAHQv12Kfv4WeL2f9IBFqnL/ZG/lPPeQUVKUhhfNxK3AhJIvcfKDWR8yzf7ElEmZQSqMQKBgEfpnf8ZpI3uTBuqqzP2Pvcq/N11G119j7V+3j4N4rk2fJscrIyTMNfLa/oQ0FnT7otfGA6vlKgiVipbFZ/t5G7YvpADg1MmGCBb9Iwpc39CP9vPrLoWgkGg2ARRR6v5aw8z1gZRrWGpZWl8MQug3NRztS65/cs7IbfvqsnVYEehAoGAE6mzQNSKRd1EFnoCnRWmfJA+3+6q7eW4TStepM4Yan+a3yfCbB8q7qzIatwnNTQVuWZZK7q0vsUUonLr4SDeH3VAnCUhnR0MdEGVAhWHRLcsjeHNNP7Ii8iO68s4Tk1Uh45RmpgAbd2yrEWTcCz+Z6piEAupN1NxRBILvV+SNeECgYBf5z/X2iSe2deGYNvL2O4Q5S63dhUBBQTLtHoT01d8IzBElKN4Q0snggzjDen8MnT05cOLOVHxlS0NoVnAffE2wfs6URmYDw+qd4JJQOhlmj6ScoS8OGcc/Qdb0vwUzPkzYbEr+e1QpXW88XqTHQ/z2dYYwkha6TIXrLOAl00nsw==";
-  // console.log("cryp", privateKey);
-  // // const decryptedBuffer = privateDecrypt(privateKey, content);
-  // const decryptedBuffer = privateDecrypt(privateKey, content);
-  //
-  // console.log("decryptedMEssage : ", decryptedBuffer);
+  //console.log("encryptedBuffer : ", encryptedBuffer.toString('base64'));
   return encryptedBuffer.toString('base64');
 };
 
-// const decryptMessageContent = (content, privateKey) => {
-//   console.log("je suis dans cryptoOOOOO222222");
-//   // privateKey = "-----BEGIN ENCRYPTED PRIVATE KEY-----\nMIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAK5voy7cmCzpxzM0qV9NHeRcJ9EvNCbLRqI+S8vFMdQNi3nyfhury4UeIK2YUP8AwfneR7ycNWIDSmjsEZXCNcXy3WlXStrG2kEPpI8zt4gnfEYR5DxbdMPaeiBu16GRXzEtymBvzY9qj9suWSZK46M9JZsqsqFAUJIk9azlZYNnAgMBAAECgYA6P1UCRO8bsESwOJmGFT4yDwPMujJz8dT4QE0XEhX9dThp1CuAGfGv1cubrAz/2cTsJulVdePtgqPKPWnx1BQYIwr57ZzOROjMZispgkZaZ783lynrByR1bBn6/MoOmMyot4WlxmiCjlmMqsXQEgTMA23pbxTrN8XMggKFNRVqIQJBAPFvR7QfHTvlLOhyUSIaFPyUeYpeGGsE86S6G/Jcolp4Y/nun+fU73/tXwIivr+AXsuETyWXDEUZKKP+UuYZp5MCQQC49aFTi55z5lLp21podoLFiN2IrRe2y3j7mClHf97Y/5VslvPQkOAJAGiQIbBm4TVH0ncmlVrndVCc0aVuTbFdAkEAwrM9/Oj2l126uH2wJjMoZ4SI+2fkgzGMFnSroujHWPQrk9u3Aqt6tQzFCKDieObaC3/Yn/TOxU6DsrSfP8bClwJAXfUJevNWDvJV9E5l4uMxEz+vqhqkDUvXrZdigNvITNupAHy+Zpjx9iCq/Wzfu6Nz+YRE2ujMQQArbz5gl2QIUQJAZghu7jZOREHuIdjNktrIEyEzm/8sUkx4DkoBtKmpjOhsf/LK8nbdwZvDxIbTLdc2J6WjzJgg+cmLIA2+Wo91KQ==\n-----END ENCRYPTED PRIVATE KEY-----"
-//   console.log("con", content);
-//   console.log("cryp", privateKey);
-//   // const decryptedBuffer = privateDecrypt(privateKey, content);
-//   const decryptedBuffer = privateDecrypt(
-//     {
-//       key: privateKey,
-//       padding: constants.RSA_PKCS1_PADDING,
-//       oaepHash: "sha256",
-//     },
-//     Buffer.from(content, "base64")
-//   );
-//   console.log("je suis apres cryptoOOOOO222222");
-//   return decryptedBuffer.toString("utf8");
-// };
+const decryptMessageContent = (content, privateKey) => {
+  const decryptedBuffer = crypto.privateDecrypt(
+    {
+      key: privateKey,
+      padding: crypto.constants.RSA_PKCS1_PADDING,
+      oaepHash: "sha256",
+    },
+    Buffer.from(content, "base64")
+  );
+  console.log(decryptedBuffer.toString("utf8"));
+  return decryptedBuffer.toString("utf8");
+};
 
 
-module.exports = { encryptMessageContent };
+module.exports = { encryptMessageContent, decryptMessageContent };
