@@ -41,7 +41,7 @@ export default async function ChatId({ params }: { params: IParams }) {
       <div className="h-full flex flex-col">
         <Header name={groupData[0].group_name} userGroupData={userGroupData} />
         <Body usersMetadata={usersMetadata} userData={data.user} initialMessages={messages!} privateKeyCookie={privateKeyCookie} />
-        <Form user={data.user} usersMetadata={usersMetadata} userGroupData={userGroupData} />
+        <Form user={data.user} usersMetadata={usersMetadata} userGroupData={userGroupData} privateKeyCookie={privateKeyCookie} />
       </div>
     </div>
   );

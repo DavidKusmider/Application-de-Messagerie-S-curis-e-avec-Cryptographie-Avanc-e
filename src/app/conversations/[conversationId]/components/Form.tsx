@@ -12,14 +12,17 @@ import { encryptMessageContent, } from '@/utils/cryptoUtils';
 import { getAuthUser, insertMessage } from "../../actions";
 import { saveMessageEvent } from "@/app/conversations/[conversationId]/actions";
 import { User } from "@supabase/supabase-js";
+import crypto from 'crypto';
+import { basename } from 'path/posix';
 
 interface FormProps {
   user: User | null,
   usersMetadata: UserMetadata[]
   userGroupData: User_Group[]
+  privateKeyCookie: string;
 }
 
-const Form: React.FC<FormProps> = ({ user, usersMetadata, userGroupData }) => {
+const Form: React.FC<FormProps> = ({ user, usersMetadata, userGroupData, privateKeyCookie }) => {
   const [userState, setUser] = useState<User | null>(user)
   const { conversationId } = useConversation();
   const [recipientPublicKey, setRecipientPublicKey] = useState<String | undefined>('');
@@ -47,17 +50,43 @@ const Form: React.FC<FormProps> = ({ user, usersMetadata, userGroupData }) => {
         send_at: Date.now().toString()
       };*/
 
-      const userIdOfConversation = userGroupData.find(group => String(group.id_group) === conversationId && group.id_user == user.id)?.id_user;
-      const publicKeyOfRecipient: string | undefined = usersMetadata.find(user => user.id === userIdOfConversation)?.public_key;
+      const userIdOfConversation1 = userGroupData.find(group => String(group.id_group) === conversationId && group.id_user == user.id)?.id_user;
+      const publicKeyOfRecipient: string | undefined = usersMetadata.find(user => user.id === userIdOfConversation1)?.public_key;
+      const userIdOfConversation2 = userGroupData.find(group => String(group.id_group) === conversationId && group.id_user != user.id)?.id_user;
+      const publicKeyOfRecipient2: string | undefined = usersMetadata.find(user => user.id === userIdOfConversation2)?.public_key;
 
-      // console.log("PUBLIC key1 : ", publicKeyOfRecipient);
-      // setRecipientPublicKey(publicKeyOfRecipient);
+      const publicKeyWithoutTags = publicKeyOfRecipient
+        .replace('-----BEGIN PUBLIC KEY-----', '')
+        .replace('-----END PUBLIC KEY-----', '')
+        .replace(/\r?\n|\r/g, '');
 
+      const publicKey2WithoutTags = publicKeyOfRecipient2
+        .replace('-----BEGIN PUBLIC KEY-----', '')
+        .replace('-----END PUBLIC KEY-----', '')
+        .replace(/\r?\n|\r/g, '');
 
-      // setRecipientPublicKey("-----BEGIN RSA PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCub6Mu3Jgs6cczNKlfTR3kXCfRLzQmy0aiPkvLxTHUDYt58n4bq8uFHiCtmFD/AMH53ke8nDViA0po7BGVwjXF8t1pV0raxtpBD6SPM7eIJ3xGEeQ8W3TD2nogbtehkV8xLcpgb82Pao/bLlkmSuOjPSWbKrKhQFCSJPWs5WWDZwIDAQAB\n-----END RSA PUBLIC KEY-----");
+      const publicKeyBase64 = Buffer.from(publicKeyWithoutTags, 'base64').toString('base64');
+      const publicKey2Base64 = Buffer.from(publicKey2WithoutTags, 'base64').toString('base64');
 
+      const dh = crypto.createDiffieHellman(100);
+      const dhB = crypto.createDiffieHellman(100);
 
-      console.log("PUBLIC recipient : ", recipientPublicKey);
+      dh.setPublicKey(publicKeyBase64!, 'base64');
+      dhB.setPublicKey(publicKey2Base64!, 'base64');
+
+      const privateKeyWithoutTags = privateKeyCookie
+        .replace('-----BEGIN PRIVATE KEY-----', '')
+        .replace('-----END PRIVATE KEY-----', '')
+        .replace(/\r?\n|\r/g, '');
+
+      const privateKeyBase64 = Buffer.from(privateKeyWithoutTags, 'base64').toString('base64');
+      dh.setPrivateKey(privateKeyBase64, 'base64');
+      const sharedKey = dh.computeSecret(dhB.getPublicKey('base64'), 'base64', 'base64');
+
+      console.log("apres shareKey : ", sharedKey.toString('base64'));
+      console.log("dh shareKey : ", sharedKey);
+
+      console.log("PUBLIC recipient : ", publicKeyOfRecipient);
 
       const newMessage = {
         id: Date.now().toString(),
