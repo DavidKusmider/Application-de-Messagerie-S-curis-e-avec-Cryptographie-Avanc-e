@@ -43,10 +43,7 @@ const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages, c
             if (c.id == message.id) {
               newMess = current;
             }else {
-              console.log("NEW MESSAGE");
-              console.log(message);
               newMess = [...current, message];
-              console.log(newMess);
             }
           } else {
             newMess = current;
@@ -69,8 +66,12 @@ const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages, c
         console.log(message);
         if (message !== undefined) {
           const tempMess = message;
-          tempMess.content = decryptMessageContent(message.content, privateKeyCookie);
-          messageHandler(tempMess);
+          try {
+            tempMess.content = decryptMessageContent(message.content, privateKeyCookie);
+            messageHandler(tempMess);
+          }catch (e) {
+            console.error(e);
+          }
         }
       }
     });
