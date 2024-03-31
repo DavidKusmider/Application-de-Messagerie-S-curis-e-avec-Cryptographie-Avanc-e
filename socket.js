@@ -19,41 +19,11 @@ const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
 const certificate = fs.readFileSync(certificatePath, 'utf8');
 const credentials = { key: privateKey, cert: certificate };
 
-/*const generateUserKeyPair = () => {
-  try {
-    const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
-      modulusLength: 530,
-      publicExponent: 0x10101,
-      publicKeyEncoding: {
-        type: 'pkcs1',
-        format: 'pem'
-      },
-      privateKeyEncoding: {
-        type: 'pkcs8',
-        format: 'pem',
-        cipher: 'aes-192-cbc',
-        passphrase: 'Hertz eats chipolata all night long'
-      }
-    });
-
-    return { publicKey, privateKey };
-  } catch (error) {
-    console.error("Error generating key pair:", error.message);
-    throw error;
-  }
-};*/
-
 app.prepare().then(() => {
   const server = https.createServer(credentials, (req, res) => {
-    // Vos logiques de routage pour Next.js peuvent être ajoutées ici si nécessaire
     handle(req, res);
   });
 
-  /*
-    l'utilisateur dui envoie un message, envoie son message en BDD et l'ajoute à sa liste de message en statique (déjà) => ne plus utilisé le broadcast lors d'envoie de message
-    Utiliser le broadcast pour envoyer le message statique, déjà ecrit en BDD, aux autres utilisateurs sans d'appel BDD supplementaire
-    TLD;DR : séparer envoie (pas de broadcast) et reception de message (reception par un broadcast)
-    */
   const io = new socket.Server(server, {
     cors: {
       origin: ["https://localhost:3000"], // Client URL
@@ -76,60 +46,21 @@ app.prepare().then(() => {
       console.log("Rooms: ", socket.rooms);
     });
 
-    /*
-        socket.on('login',  async (cb) => {
-          try {
-            console.log("Inside socket");
-            const { privateKey, publicKey } = generateUserKeyPair();
-            // TODO encrypt private key
-            await cb({ privateKey, publicKey }); // callback
-          } catch (error) {
-            console.error("Error during login:", error.message);
-            // TODO Handle error?
-          }
-        });
-    */
-
-    socket.on('send_message', (message, userData, conversationId, socketId, cb) => {
+    socket.on('send_message', (message, userData, conversationId, idUserEncryptedMessage, cb) => {
       const user = userData;
+      const mapTemp = new Map(idUserEncryptedMessage);
       console.log("send_message event");
-
-      console.log('Received encrypted message:', message);
-      // const decryptedContent = crypto.privateDecrypt(privateKey, message);
-      // console.log('Decrypted message22:', decryptedContent.message);
-      // let decryptedMessage;
-      try {
-        console.log("privateKey", privateKey);
-        console.log("encry message", message.message);
-        const decryptedContent = crypto.privateDecrypt(privateKey, message.message);
-        console.log('Decrypted message33:', decryptedContent.message);
-
-        decryptedMessage = {
-          ...encryptedMessage,
-          message: decryptedContent.toString(),
-        };
-      } catch (err) {
-        console.error("Error trying to decrypt message: " + err.message);
-        decryptedMessage = message;
-      }
-
-      console.log('Decrypted message:', decryptedMessage.message);
 
       // register message in db
       console.log("New message received:", message);
-      const formattedMessage = { id: message.id, content: decryptedMessage.message, id_user: user.id, id_group: Number(conversationId), created_at: message.timestamp, send_at: message.timestamp };
-      //console.log("Sending save_message event");
-      //socket.to(socketId).emit("save_message", formattedMessage, conversationId, userData, socketId);
+      const formattedMessage = { id: message.id, content: message.message, id_user: user.id, id_group: Number(conversationId), created_at: message.timestamp, send_at: message.timestamp };
       console.log("Sending receive_message event");
-      socket.broadcast.emit("receive_message", formattedMessage);
+      console.log(mapTemp);
+      socket.emit("receive_message", Array.from(mapTemp));
+      socket.broadcast.emit("receive_message", Array.from(mapTemp));
       console.log("receive_message event finished");
       cb(formattedMessage);
     });
-
-    /*socket.on('message', (message) => {
-          console.log('Received message:', message);
-          broadcastMessage(message);
-      });*/
 
     socket.on('save_group', (newUserGroup, newGroups) => {
       console.log('save_group received.\nupdate_group sent.');

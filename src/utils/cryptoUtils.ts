@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-const encryptMessageContent = (content, publicKey) => {
+export const encryptMessageContent = (content: any, publicKey : any) => {
   const encryptedBuffer = crypto.publicEncrypt(
     {
       key: publicKey,
@@ -12,7 +12,11 @@ const encryptMessageContent = (content, publicKey) => {
   return encryptedBuffer.toString('base64');
 };
 
-const decryptMessageContent = (content, privateKey) => {
+export const decryptMessageContent = (content:any, privateKey:any) => {
+    console.log("IN DECRYPT");
+    console.log(privateKey);
+    console.log(content);
+    console.log("==============================================================================================================================");
   const decryptedBuffer = crypto.privateDecrypt(
     {
       key: privateKey,
@@ -26,4 +30,3 @@ const decryptMessageContent = (content, privateKey) => {
 };
 
 
-module.exports = { encryptMessageContent, decryptMessageContent };

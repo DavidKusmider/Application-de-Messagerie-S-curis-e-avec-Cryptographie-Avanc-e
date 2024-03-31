@@ -1,25 +1,27 @@
 'use client';
 
-import { useEffect, useRef, useState } from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 
 import MessageBox from "./MessageBox";
-import { find } from "lodash";
-import { User } from '@supabase/supabase-js';
-import { Message, UserMetadata } from "@/types/databases.types"
-import { io } from "socket.io-client";
+import {find} from "lodash";
+import {User} from '@supabase/supabase-js';
+import {Message, UserMetadata} from "@/types/databases.types"
+import {SocketContext} from "@/app/conversations/socketContext";
+import {decryptMessageContent} from "@/utils/cryptoUtils";
 
 interface BodyProps {
   userData: User | null;
   initialMessages: any[];
   usersMetadata: UserMetadata[] | null;
-  privateKeyCookie: String;
+  conversationId: string;
+  privateKeyCookie: String | undefined;
 }
 
-// @ts-ignore
-const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages, privateKeyCookie }) => {
+const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages, conversationId,  privateKeyCookie }) => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState(initialMessages);
 
+  const socket = useContext(SocketContext);
   // console.log("BODY messages : ", messages);
   // console.log("BODY private key : ", privateKeyCookie);
 
@@ -29,53 +31,48 @@ const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages, p
 
     const messageHandler = (message: any) => {
 
-      /*
-      console.log("New message received:", newMessage);
-      const data = await insertMessage(newMessage, conversationId, userData);
-      console.log("Message registered.");
-      console.log(data);
-      console.log('Message handler called');
-      const messagesFromDB = await getAllMessages(userData, conversationId);
-      console.log(messagesFromDB?.length);
-      if(messagesFromDB) {
-        setMessages(messagesFromDB!);
-      }else{
-        setMessages([]);
-      }
-       */
       console.log('Message handler called:', message);
 
       setMessages((current) => {
-        if (find(current, { id: message.id })) {
-          return current;
-        }
-
-        return [...current, message]
+        let newMess: any[] = [];
+        current.forEach(c => {
+          if (message.id_group == conversationId) {
+            if (c.id == message.id) {
+              newMess = current;
+            }else {
+              console.log("NEW MESSAGE");
+              console.log(message);
+              newMess = [...current, message];
+              console.log(newMess);
+            }
+          } else {
+            newMess = current;
+          }
+        });
+        return newMess;
       });
 
       bottomRef?.current?.scrollIntoView();
     };
 
-    const socket = io("https://localhost:3000");
-    //socket.emit("joinRoom", conversationId);
-    /*socket.on("message", (newMessage) => {
-
-      console.log("New message received:", newMessage);
-      insertMessage(newMessage, conversationId, userData);
-      const formattedMessage: Message = {id: newMessage.id, content:newMessage.message, id_user: userData?.id!, id_group: Number(conversationId), created_at: newMessage.timestamp, send_at: newMessage.timestamp};
-      console.log("Message registered.");
-      console.log(formattedMessage);
-      messageHandler(formattedMessage);
-    });*/
-    socket.on("receive_message", (message) => {
+    socket.on("receive_message", (idUserEncryptedMessage) => {
+      console.log("in receive_message");
+      const mapTemp : Map<string,Message> = new Map(idUserEncryptedMessage);
+      console.log(mapTemp);
       console.log("receive_message event");
-      messageHandler(message);
+      if(userData !== null) {
+        const message = mapTemp.get(userData.id);
+        console.log("Message extracted:");
+        console.log(message);
+        if (message !== undefined) {
+          const tempMess = message;
+          tempMess.content = decryptMessageContent(message.content, privateKeyCookie);
+          messageHandler(tempMess);
+        }
+      }
     });
 
-    return () => {
-      socket.disconnect();
-    };
-  }, [messages]);
+  }, []);
 
   const [user, setUserData] = useState<User | null>(null);
 

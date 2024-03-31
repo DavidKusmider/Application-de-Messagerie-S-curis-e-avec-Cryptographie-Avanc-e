@@ -5,14 +5,14 @@ import { User } from '@supabase/supabase-js'
 import { Message, UserMetadata } from "@/types/databases.types";
 import Avatar from "@/app/components/Avatar";
 import { useEffect, useState } from "react";
-import { decryptMessageContent } from "@/utils/cryptoUtils";
+//import { decryptMessageContent } from "@/utils/cryptoUtils";
 
 interface MessageBoxProps {
   userMetadata: UserMetadata | undefined;
   user: User | null;
   data: Message;
   isLast?: boolean;
-  privateKeyCookie: String;
+  privateKeyCookie: String | undefined;
 }
 
 const MessageBox: React.FC<MessageBoxProps> = ({ userMetadata, user, data, isLast, privateKeyCookie }) => {
@@ -22,14 +22,14 @@ const MessageBox: React.FC<MessageBoxProps> = ({ userMetadata, user, data, isLas
   const [decryptedContent, setDecryptedContent] = useState<String | null>();
 
 
-  useEffect(() => {
-    // console.log("data.content ", data.content);
-    // console.log("privateKey ", privateKey);
-    // const decryptedBuffer = privateDecryptprivateKey, Buffer.from(data.content, 'base64'));
-    const decryptedBuffer = decryptMessageContent(data.content, privateKey);/* encryptMessageContent(data.message, recipientPublicKey) */
-    console.log("decryptedbuffer", decryptedBuffer);
-    setDecryptedContent(decryptedBuffer);
-  }, [data.content, privateKey]);
+  // useEffect(() => {
+  //   // console.log("data.content ", data.content);
+  //   // console.log("privateKey ", privateKey);
+  //   // const decryptedBuffer = privateDecryptprivateKey, Buffer.from(data.content, 'base64'));
+  //   const decryptedBuffer = decryptMessageContent(data.content, privateKey);/* encryptMessageContent(data.message, recipientPublicKey) */
+  //   console.log("decryptedbuffer", decryptedBuffer);
+  //   setDecryptedContent(decryptedBuffer);
+  // }, [data.content, privateKey]);
 
   // try {
   //   const decryptedBuffer = privateDecrypt(privateKey, Buffer.from(data.content, 'base64'));
@@ -64,7 +64,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ userMetadata, user, data, isLas
           {/*</div>*/}
         </div>
         <div className={message}>
-          <div>{decryptedContent}</div>
+          <div>{data.content}</div>
         </div>
       </div>
     </div>
