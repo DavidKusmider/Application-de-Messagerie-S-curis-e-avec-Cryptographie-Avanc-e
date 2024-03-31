@@ -42,8 +42,14 @@ app.prepare().then(() => {
     console.log(io.engine.clientsCount);
     socket.on('joinRoom', (room) => {
       console.log("Joining room:", room);
-      socket.join(room);
-      console.log("Rooms: ", socket.rooms);
+      socket.rooms.forEach((value, value2, set) => {
+          if(!socket.rooms.has(room)){
+            socket.leave(value);
+            socket.join(room);
+            console.log("Rooms: ");
+            console.log(socket.rooms);
+          }
+      });
     });
 
     socket.on('send_message', (message, userData, conversationId, socketId, idUserEncryptedMessage, cb) => {
@@ -58,7 +64,7 @@ app.prepare().then(() => {
       console.log("Sending receive_message event");
       console.log(mapTemp);
       //socket.emit("receive_message", Array.from(mapTemp));
-      socket.broadcast.emit("receive_message", Array.from(mapTemp));
+      socket.to(conversationId).emit("receive_message", Array.from(mapTemp));
       console.log("receive_message event finished");
       cb(formattedMessage);
     });

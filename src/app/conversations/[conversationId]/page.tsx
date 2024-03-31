@@ -22,8 +22,8 @@ interface IParams {
 }
 
 export default async function ChatId({ params }: { params: IParams }) {
-  const socket = io("https://localhost:3000");
-  joinRoomSocket(params?.conversationId, socket);
+  /*const socket = io("https://localhost:3000");
+  joinRoomSocket(params?.conversationId, socket);*/
 
   const data = await getAuthUser();
   const userGroupData : User_Group[] = await getUserGroupFromIdGroup(params.conversationId);

@@ -3,7 +3,7 @@ import {Message} from "@/types/databases.types";
 import {insertMessage} from "@/app/conversations/actions";
 
 export function joinRoomSocket(conversationId: string, socket:any){
-    socket.emit('joinRoom', conversationId!);
+    socket.emit('joinRoom', conversationId);
 }
 
 export function saveMessageEvent(socket : any){
