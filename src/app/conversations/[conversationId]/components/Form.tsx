@@ -8,7 +8,7 @@ import { CldUploadButton } from "next-cloudinary";
 import useConversation from "@/app/hooks/useConversation";
 import { Message, UserMetadata, User_Group } from "@/types/databases.types"
 import { encryptMessageContent } from '@/utils/cryptoUtils';
-import { getAuthUser, insertMessage } from "../../actions";
+import {getAuthUser, insertMessage, insertMessageBis} from "../../actions";
 import { saveMessageEvent } from "@/app/conversations/[conversationId]/actions";
 import { User } from "@supabase/supabase-js";
 import {SocketContext} from "@/app/conversations/socketContext";
@@ -65,14 +65,15 @@ const Form: React.FC<FormProps> = ({ user, usersMetadata, userGroupData, private
         idUserEncryptedMessage.set(key, formattedMessage);
       });
 
-      idUserEncryptedMessage.forEach((value, key, map) => {
+      /*idUserEncryptedMessage.forEach((value, key, map) => {
         console.log(`id_user: ${key} ; encryptedMessage : ${value.content} \n`);
-      });
+      });*/
 
-      socket.emit('send_message', newMessage, userState, conversationId, Array.from(idUserEncryptedMessage), async (formattedMessage: any) => {
+      socket.emit('send_message', newMessage, userState, conversationId, socket.id, Array.from(idUserEncryptedMessage), async (formattedMessage: any) => {
         console.log("save_message event");
         //console.log(formattedMessage, conversationId);
-        await insertMessage(formattedMessage, conversationId, userState);
+        //await insertMessage(formattedMessage, conversationId, userState);
+        await insertMessageBis(formattedMessage, conversationId, userState);
       });
 
     } catch (error: any) {

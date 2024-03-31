@@ -38,6 +38,38 @@ export async function insertMessage(nMessage:  Message, conversationId: string, 
     }
 }
 
+export async function insertMessageBis(nMessage:  Message, conversationId: string, user: User | null) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  console.log("Inserting messageBis", nMessage);
+
+  if (user !== null) {
+    console.log("With user");
+    const { error } = await supabase.from("message_bis").insert({
+      content: nMessage.content,
+      id_user: user.id,
+      id_group: conversationId,
+    });
+    if (error !== null) {
+      console.log("insertMessageBis with user id:\n");
+      console.log(error);
+    }
+  } else {
+    console.log("Without user");
+    const { error } = await supabase
+        .from("message_bis")
+        .insert({
+          content: nMessage.content,
+          id_group: conversationId,
+        });
+    if (error !== null) {
+      console.log("insertMessage without user id:\n");
+      console.log(error);
+    }
+  }
+}
+
 export async function getGroupsUserByUserId(user: User | null) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
@@ -179,6 +211,21 @@ export async function getAllMessages(user: User | null, conversationId: any) {
     return [];
   }
   return [];
+}
+
+// Fetch all of 'message_bis' table
+export async function getAllMessagesBis(conversationId: any) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+    const { data, error } = await supabase.from("message_bis").select().eq("id_group", conversationId).order("id");
+    if (error != null) {
+      console.log("getAllMessagesBis:\n" + error);
+    }
+    if(data) {
+      return data;
+    }
+    return [];
 }
 
 export async function getAuthUser() {

@@ -8,6 +8,7 @@ import {User} from '@supabase/supabase-js';
 import {Message, UserMetadata} from "@/types/databases.types"
 import {SocketContext} from "@/app/conversations/socketContext";
 import {decryptMessageContent} from "@/utils/cryptoUtils";
+//import {joinRoomSocket} from "@/app/conversations/[conversationId]/actions";
 
 interface BodyProps {
   userData: User | null;
@@ -22,6 +23,8 @@ const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages, c
   const [messages, setMessages] = useState(initialMessages);
 
   const socket = useContext(SocketContext);
+  //joinRoomSocket(conversationId, socket);
+
   // console.log("BODY messages : ", messages);
   // console.log("BODY private key : ", privateKeyCookie);
 

@@ -46,17 +46,18 @@ app.prepare().then(() => {
       console.log("Rooms: ", socket.rooms);
     });
 
-    socket.on('send_message', (message, userData, conversationId, idUserEncryptedMessage, cb) => {
+    socket.on('send_message', (message, userData, conversationId, socketId, idUserEncryptedMessage, cb) => {
       const user = userData;
-      const mapTemp = new Map(idUserEncryptedMessage);
+      const mapTemp= new Map(idUserEncryptedMessage);
+      console.log(mapTemp);
       console.log("send_message event");
-
+      let formattedContent = JSON.stringify(Array.from(mapTemp.entries()));
       // register message in db
       console.log("New message received:", message);
-      const formattedMessage = { id: message.id, content: message.message, id_user: user.id, id_group: Number(conversationId), created_at: message.timestamp, send_at: message.timestamp };
+      const formattedMessage = { id: message.id, content: formattedContent, id_user: user.id, id_group: Number(conversationId), created_at: message.timestamp, send_at: message.timestamp };
       console.log("Sending receive_message event");
       console.log(mapTemp);
-      socket.emit("receive_message", Array.from(mapTemp));
+      //socket.emit("receive_message", Array.from(mapTemp));
       socket.broadcast.emit("receive_message", Array.from(mapTemp));
       console.log("receive_message event finished");
       cb(formattedMessage);
@@ -76,12 +77,6 @@ app.prepare().then(() => {
   server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
-
-  const broadcastMessage = (message) => {
-    if (io) {
-      io.to(message.conversationId).emit('message', message);
-    }
-  };
 });
 
 

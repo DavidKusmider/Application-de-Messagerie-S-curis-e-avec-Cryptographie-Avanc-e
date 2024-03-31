@@ -15,7 +15,6 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ user, groups, userGroups, userRelations, userMetadata, children }) => {
 
-  console.log(userRelations);
   return (
     <SocketContext.Provider value={socket}>
       <div className="h-full">
