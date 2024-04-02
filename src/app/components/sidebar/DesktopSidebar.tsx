@@ -170,6 +170,12 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
               />
             </div>
           </div>
+        ) : (pathname === '/notifications') ? (
+          <div className="absolute top-20 left-5">
+            <div className="text-2xl font-bold text-neutral-800">
+              Notifications
+            </div>
+          </div>
         ) :
           (
             <div className="absolute top-20 left-5">
