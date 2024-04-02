@@ -166,8 +166,16 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
                   <h3 className="text-sm font-medium text-gray-900">Search results:</h3>
                   <ul className="mt-2 divide-y divide-gray-200">
                     {searchResults.map((user) => (
-                      <li key={user.id} className="py-2">
-                        <span className="block text-sm font-medium text-gray-900"><input className="ml-5 mr-5" type="checkbox" name="usersChecked" value={user.id} onChange={handleCheckboxChange} checked={userChecked.response.includes(user.id)}/><label>{user.user_pseudo}</label></span>
+                      <li key={user.id} className="flex items-center py-2">
+                        <input
+                          className="mr-2 rounded border-gray-300 w-5 h-5 checked:bg-blue-600 checked:border-transparent focus:outline-none"
+                          type="checkbox"
+                          name="usersChecked"
+                          value={user.id}
+                          onChange={handleCheckboxChange}
+                          checked={userChecked.response.includes(user.id)}
+                        />
+                        <label className="text-sm font-medium text-gray-900">{user.user_pseudo}</label>
                       </li>
                     ))}
                   </ul>
