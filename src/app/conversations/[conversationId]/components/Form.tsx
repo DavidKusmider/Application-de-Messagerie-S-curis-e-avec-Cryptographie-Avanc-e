@@ -84,17 +84,6 @@ const Form: React.FC<FormProps> = ({ user, usersMetadata, userGroupData, private
     };*/
   };
 
-
-  const handleUpload = (result: any) => {
-    const newMessage = {
-      id: Date.now().toString(),
-      image: result.info.secure_url,
-      conversationId: conversationId,
-      timestamp: new Date().toISOString(),
-    };
-
-    socket.emit('send_message', newMessage);
-  }
   return (
     <div
       className="
@@ -109,13 +98,6 @@ const Form: React.FC<FormProps> = ({ user, usersMetadata, userGroupData, private
         w-full
       "
     >
-      <CldUploadButton
-        options={{ maxFiles: 1 }}
-        onUpload={handleUpload}
-        uploadPreset="pgc9ehd5"
-      >
-        <HiPhoto size={30} className="text-sky-500" />
-      </CldUploadButton>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex items-center gap-2 lg:gap-4 w-full"
