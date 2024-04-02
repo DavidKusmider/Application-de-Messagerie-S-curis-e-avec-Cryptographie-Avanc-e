@@ -11,9 +11,9 @@ import {
   getUserGroupFromIdGroup,
   getUsersMetadata
 } from "../actions"
-import { UserMetadata,Group, Message, User_Group } from "@/types/databases.types";
+import { UserMetadata, Group, Message, User_Group } from "@/types/databases.types";
 import { cookies } from "next/headers";
-import {decryptMessageContent} from "@/utils/cryptoUtils";
+import { decryptMessageContent } from "@/utils/cryptoUtils";
 
 interface IParams {
   conversationId: string;
@@ -29,11 +29,11 @@ export default async function ChatId({ params }: { params: IParams }) {
    */
 
   const data = await getAuthUser();
-  const userGroupData : User_Group[] = await getUserGroupFromIdGroup(params.conversationId);
-  const groupData : Group[] = await getGroupFromIdGroup(params.conversationId);
-  const messages : Message[] = await getAllMessages(data.user, params.conversationId);
+  const userGroupData: User_Group[] = await getUserGroupFromIdGroup(params.conversationId);
+  const groupData: Group[] = await getGroupFromIdGroup(params.conversationId);
+  const messages: Message[] = await getAllMessages(data.user, params.conversationId);
   const messagesBis: Message[] = await getAllMessagesBis(params.conversationId);
-  const usersMetadata: UserMetadata[] | null = await getUsersMetadata();
+  const usersMetadata: UserMetadata[] = await getUsersMetadata();
   const privateKeyCookie = cookies().get('privateKey')?.value;
 
   let messBis: Message[] = [];
@@ -42,7 +42,7 @@ export default async function ChatId({ params }: { params: IParams }) {
     const mapTemp = new Map(JSON.parse(b.content));
     console.log(mapTemp);
     mapTemp.forEach((value, key, map) => {
-      if(key === data.user?.id){
+      if (key === data.user?.id) {
         try {
           // @ts-ignore
           const decryptedMess = decryptMessageContent(value.content, privateKeyCookie);
@@ -50,7 +50,7 @@ export default async function ChatId({ params }: { params: IParams }) {
           value.content = decryptedMess
           // @ts-ignore
           messBis.push(value);
-        }catch (e) {
+        } catch (e) {
           //console.error(e);
         }
       }
@@ -72,7 +72,7 @@ export default async function ChatId({ params }: { params: IParams }) {
     <div className="lg:pl-80 h-full">
       <div className="h-full flex flex-col">
         <Header name={groupData[0].group_name} userGroupData={userGroupData} />
-        <Body usersMetadata={usersMetadata} userData={data.user} initialMessages={messBis} conversationId={params?.conversationId} privateKeyCookie={privateKeyCookie} />
+        <Body usersMetadata={usersMetadata!} userData={data.user} initialMessages={messBis} conversationId={params?.conversationId} privateKeyCookie={privateKeyCookie} />
         <Form user={data.user} usersMetadata={usersMetadata} userGroupData={userGroupData} privateKeyCookie={privateKeyCookie} />
       </div>
     </div>

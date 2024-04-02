@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 //import { decryptMessageContent } from "@/utils/cryptoUtils";
 
 interface MessageBoxProps {
-  userMetadata: UserMetadata | undefined;
+  userMetadata: UserMetadata;
   user: User | null;
   data: Message;
   isLast?: boolean;

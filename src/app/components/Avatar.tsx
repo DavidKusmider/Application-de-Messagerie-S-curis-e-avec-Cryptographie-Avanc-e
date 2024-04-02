@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import { User } from "@supabase/supabase-js";
-import {UserMetadata} from "@/types/databases.types";
+import { UserMetadata } from "@/types/databases.types";
 
 interface AvatarProps {
-  user: UserMetadata | undefined;
+  user: UserMetadata;
 }
 
 const Avatar: React.FC<AvatarProps> = ({ user }) => {
@@ -31,7 +31,7 @@ const Avatar: React.FC<AvatarProps> = ({ user }) => {
         />
       </div>
       {isActive ? (
-        <span 
+        <span
           className="
             absolute 
             block 
@@ -45,7 +45,7 @@ const Avatar: React.FC<AvatarProps> = ({ user }) => {
             w-2 
             md:h-3 
             md:w-3
-          " 
+          "
         />
       ) : null}
     </div>
