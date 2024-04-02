@@ -13,7 +13,7 @@ import { usePathname } from "next/navigation";
 import FriendList from "@/app/friends/components/FriendList";
 import { SocketContext } from "@/app/conversations/socketContext";
 
-interface DesktopSidebarProps {
+interface MobileHeaderProps {
   currentUser: User | null;
   groups: Group[];
   friends: User_Relation[],
@@ -21,7 +21,7 @@ interface DesktopSidebarProps {
   userGroupsData: User_Group[],
 }
 
-const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
+const MobileHeader: React.FC<MobileHeaderProps> = ({
   currentUser,
   groups,
   friends,
@@ -49,26 +49,6 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
     users = [user];
   }
 
-  //console.log("conversations before fetchGroups() : ", conversations);
-
-  /*try {
-      let userGroups: Group[] = [];
-      groups.forEach((g) => {
-          userGroupsData.forEach((m) => {
-              if (m.id_user === user?.id && !userGroups.includes(g)) {
-                  userGroups.push(g);
-              }
-          })
-      }) //await getGroupsUserByUserId(data.user);
-      console.log(userGroups);
-      if (userGroups) {
-          console.log("userGroups value : ", userGroups);
-          setConversations(userGroups);
-      }
-  } catch (error) {
-      console.error('Error fetching user groups:', error);
-  }
-  console.log("conversations AFTER fetchGroups() : ", conversations);*/
   socket.on("update_group", (newUserGroup: User_Group[], newGroups: Group[]) => {
     setGroupsTemp(newGroups);
     setUserGroups(newUserGroup);
@@ -89,46 +69,32 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
     }
   }, [groupsTemp, user?.id, userGroupsLink]);
 
-  /*console.log("relations before fetchRelations() : ", relations);
-  try {
-      //setUser(user);
-      const userRelations = friends.filter((f) => f.id_user === user?.id); //await getRelationsUser(data.user);
-      if (userRelations) {
-          console.log("userRelations value : ", userRelations);
-          setRelations(userRelations);
-      }
-  } catch (error) {
-      console.error('Error fetching user relations:', error);
-  }
-  console.log("relations AFTER fetchRelations() : ", relations);*/
-
   useEffect(() => {
     const userRelations = friends.filter((f) => f.id_user === user?.id);
     if (userRelations.length > 0) {
       setRelations(userRelations);
     }
   }, [friends, user]);
-  //console.log("currentUser: ", {currentUser});
-
+  
   return (
     <>
       {/* <SettingsModal currentUser={currentUser} isOpen={isOpen} onClose={() => setIsOpen(false)} /> */}
       <div className="
-        hidden
-        lg:fixed
-        lg:inset-y-0
-        lg:left-0
-        lg:z-40
-        lg:w-[25rem]
+        lg:hidden
+        fixed
+        inset-y-0
+        left-0
+        z-40
+        w-[25rem]
         xl:px-6
-        lg:overflow-y-auto
-        lg:pb-4
-        lg:flex
+        overflow-y-auto
+        pb-4
+        flex
         lg:flex-col
         justify-between
       ">
         <nav className="mt-4 flex flex-row justify-between">
-          <div className="flex flex-row items-center space-y-1 space-x-10 m-auto">
+          {/* <div className="flex flex-row items-center space-y-1 space-x-10 m-auto">
             {routes.map((item) => (
               <DesktopItem
                 key={item.label}
@@ -139,8 +105,8 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
                 onClick={item.onClick}
               />
             ))}
-          </div>
-        </nav>
+          </div>*/}
+        </nav> 
         {(pathname === '/conversations' || !!conversationId) ? (
           <div className="absolute top-20 left-5">
             <div>
@@ -170,12 +136,6 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
               />
             </div>
           </div>
-        ) : (pathname === '/notifications') ? (
-          <div className="absolute top-20 left-5">
-            <div className="text-2xl font-bold text-neutral-800">
-              Notifications
-            </div>
-          </div>
         ) :
           (
             <div className="absolute top-20 left-5">
@@ -201,7 +161,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
             onClick={() => setIsOpen(true)}
             className="cursor-pointer hover:opacity-75 transition"
           >
-            <Avatar user={userMeta} />
+            {/* <Avatar user={userMeta} /> */}
 
           </div>
         </div>
@@ -209,4 +169,4 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
     </>
   );
 }
-export default DesktopSidebar;
+export default MobileHeader;

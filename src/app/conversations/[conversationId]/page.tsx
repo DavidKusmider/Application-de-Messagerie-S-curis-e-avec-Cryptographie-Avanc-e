@@ -7,6 +7,7 @@ import {getAllMessages, getAuthUser, getGroupFromIdGroup, getUserGroupFromIdGrou
 import {UserMetadata} from "@/types/databases.types";
 import {io} from "socket.io-client";
 import {joinRoomSocket} from "@/app/conversations/[conversationId]/actions";
+import {redirect} from 'next/navigation';
 
 interface IParams {
     conversationId: string;
@@ -18,7 +19,8 @@ export default async function ChatId({params}: { params: IParams }) {
 
     const data = await getAuthUser();
     const userGroupData = await getUserGroupFromIdGroup(params.conversationId);
-    const groupData = await getGroupFromIdGroup(params.conversationId);
+    // console.log("User : ",data.user);
+    const groupData = await getGroupFromIdGroup(params.conversationId, data.user?.id);
     const messages = await getAllMessages(data.user, params.conversationId);
     const usersMetadata: UserMetadata[] | null = await getUsersMetadata();
 
@@ -30,6 +32,10 @@ export default async function ChatId({params}: { params: IParams }) {
                 </div>
             </div>
         )
+    }
+
+    if (groupData[0] === undefined) {
+        redirect("/conversations");
     }
 
     return (

@@ -4,6 +4,7 @@ import MobileFooter from "./MobileFooter";
 import {User} from "@supabase/supabase-js";
 import {Group, User_Group, User_Relation, UserMetadata} from "@/types/databases.types";
 import {SocketContext, socket} from "@/app/conversations/socketContext";
+import MobileHeader from "./MobileHeader";
 interface SidebarProps{
     user: User | null,
     groups: Group[],
@@ -20,7 +21,8 @@ const Sidebar : React.FC<SidebarProps> = ({user, groups, userGroups, userRelatio
       <SocketContext.Provider value={socket}>
     <div className="h-full">
       <DesktopSidebar currentUser={user} groups={groups} friends={userRelations} usersMetadata={userMetadata} userGroupsData={userGroups}/>
-      {/*<MobileFooter />*/}
+      <MobileHeader currentUser={user} groups={groups} friends={userRelations} usersMetadata={userMetadata} userGroupsData={userGroups}/>
+      <MobileFooter />
       <main className="lg:pl-20 h-full">
         {children}
       </main>

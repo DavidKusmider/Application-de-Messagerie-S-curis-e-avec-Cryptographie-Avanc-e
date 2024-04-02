@@ -97,12 +97,11 @@ const ConversationList: React.FC<ConversationListProps> = ({
         lg:top-16 
         lg:w-[25rem] 
         lg:block
-        overflow-y-auto 
         border-r 
         border-gray-200 
         max-h-[80%]
       `, isOpen ? 'hidden' : 'block w-full left-0')}>
-        <div className="px-5">
+        <div className="px-5 h-[100%]">
           <div className="flex justify-between mb-4 pt-4">
             <div className="text-2xl font-bold text-neutral-800">
               Groups
@@ -122,25 +121,27 @@ const ConversationList: React.FC<ConversationListProps> = ({
               <MdOutlineGroupAdd size={20} />
             </div>
           </div>
-          {items.map((item) => {
-            const groupUsers = userGroupsData
-              .filter((userGroup) => userGroup.id_group === item.id)
-              .map((userGroup) => userGroup.id_user);
+          <div className="overflow-y-auto lg:h-[90%] h-[120%]">
+            {items.map((item) => {
+              const groupUsers = userGroupsData
+                .filter((userGroup) => userGroup.id_group === item.id)
+                .map((userGroup) => userGroup.id_user);
 
-            const groupUsersMetadata: UserMetadata[] = usersMetadata.filter((userMetadata) =>
-              groupUsers.includes(userMetadata.id)
-            );
+              const groupUsersMetadata: UserMetadata[] = usersMetadata.filter((userMetadata) =>
+                groupUsers.includes(userMetadata.id)
+              );
 
-            return (
-              <ConversationBox
-                name={item.group_name}
-                key={item.id}
-                data={item}
-                selected={conversationId === item.id}
-                usersM={groupUsersMetadata}
-              />
-            );
-          })}
+              return (
+                <ConversationBox
+                  name={item.group_name}
+                  key={item.id}
+                  data={item}
+                  selected={conversationId === item.id}
+                  usersM={groupUsersMetadata}
+                />
+              );
+            })}
+          </div>
         </div>
       </aside>
     </>

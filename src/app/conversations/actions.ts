@@ -272,10 +272,10 @@ export async function getAllUsers() {
   return [];
 }
 
-export async function getGroupFromIdGroup(id:string){
+export async function getGroupFromIdGroup(idGroup : string, idUser : string){
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
-  const { data, error } = await supabase.schema("public").from("group").select().eq("id", id);
+  const { data, error } = await supabase.schema("public").from("group").select('*, user_group ( id_user, id_group)').eq('id', idGroup).eq('user_group.id_group',idGroup).eq('user_group.id_user', idUser);
   if (error !== null) {
     console.log(error);
   }
