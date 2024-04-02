@@ -26,7 +26,7 @@ app.prepare().then(() => {
 
   const io = new socket.Server(server, {
     cors: {
-      origin: ["https://localhost:3000"], // Client URL
+      origin: ["https://hertz-gh9dmsfjf-davidkusmiders-projects.vercel.app:3000"], // Client URL
     }
   });
 
@@ -43,17 +43,17 @@ app.prepare().then(() => {
     socket.on('joinRoom', (room) => {
       console.log("Joining room:", room);
       socket.rooms.forEach((value, value2, set) => {
-          if(!socket.rooms.has(room)){
-            socket.leave(value);
-            socket.join(room);
-            console.log("Rooms: ", socket.rooms);
-          }
+        if (!socket.rooms.has(room)) {
+          socket.leave(value);
+          socket.join(room);
+          console.log("Rooms: ", socket.rooms);
+        }
       });
     });
 
     socket.on('send_message', (message, userData, conversationId, socketId, idUserEncryptedMessage, cb) => {
       const user = userData;
-      const mapTemp= new Map(idUserEncryptedMessage);
+      const mapTemp = new Map(idUserEncryptedMessage);
       console.log(mapTemp);
       console.log("send_message event");
       let formattedContent = JSON.stringify(Array.from(mapTemp.entries()));
