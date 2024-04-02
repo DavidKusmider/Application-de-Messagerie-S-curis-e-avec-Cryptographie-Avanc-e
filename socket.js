@@ -46,8 +46,7 @@ app.prepare().then(() => {
           if(!socket.rooms.has(room)){
             socket.leave(value);
             socket.join(room);
-            console.log("Rooms: ");
-            console.log(socket.rooms);
+            console.log("Rooms: ", socket.rooms);
           }
       });
     });

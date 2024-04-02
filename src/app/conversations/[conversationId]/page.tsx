@@ -12,8 +12,6 @@ import {
   getUsersMetadata
 } from "../actions"
 import { UserMetadata,Group, Message, User_Group } from "@/types/databases.types";
-import { io } from "socket.io-client";
-import { joinRoomSocket } from "@/app/conversations/[conversationId]/actions";
 import { cookies } from "next/headers";
 import {decryptMessageContent} from "@/utils/cryptoUtils";
 
@@ -22,8 +20,13 @@ interface IParams {
 }
 
 export default async function ChatId({ params }: { params: IParams }) {
-  /*const socket = io("https://localhost:3000");
-  joinRoomSocket(params?.conversationId, socket);*/
+
+  /*
+  CHeck si conversationId valide:
+  1. Recup tous les relations entre user et group pour un user
+  2. Verifie si conversationId correspond à un des groups, tu autorise la redirection
+  3. Sinon, redirige sur /conversations/
+   */
 
   const data = await getAuthUser();
   const userGroupData : User_Group[] = await getUserGroupFromIdGroup(params.conversationId);
@@ -40,9 +43,16 @@ export default async function ChatId({ params }: { params: IParams }) {
     console.log(mapTemp);
     mapTemp.forEach((value, key, map) => {
       if(key === data.user?.id){
+        try {
+          // @ts-ignore
           const decryptedMess = decryptMessageContent(value.content, privateKeyCookie);
+          // @ts-ignore
           value.content = decryptedMess
+          // @ts-ignore
           messBis.push(value);
+        }catch (e) {
+          //console.error(e);
+        }
       }
     });
   });
