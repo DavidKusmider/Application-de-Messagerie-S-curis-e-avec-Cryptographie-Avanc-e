@@ -10,21 +10,21 @@ export async function insertMessage(nMessage:  Message, conversationId: string, 
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
 
-  console.log("Inserting message", nMessage);
+  //console.log("Inserting message", nMessage);
 
   if (user !== null) {
-    console.log("With user");
+    //console.log("With user");
     const { error } = await supabase.from("message").insert({
         content: nMessage.content,
         id_user: user.id,
         id_group: conversationId,
     });
     if (error !== null) {
-      console.log("insertMessage with user id:\n");
+      //console.log("insertMessage with user id:\n");
       console.log(error);
     }
     } else {
-        console.log("Without user");
+        //console.log("Without user");
         const { error } = await supabase
             .from("message")
             .insert({
@@ -32,7 +32,7 @@ export async function insertMessage(nMessage:  Message, conversationId: string, 
                 id_group: conversationId,
             });
         if (error !== null) {
-            console.log("insertMessage without user id:\n");
+            //console.log("insertMessage without user id:\n");
             console.log(error);
         }
     }
@@ -42,21 +42,21 @@ export async function insertMessageBis(nMessage:  Message, conversationId: strin
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  console.log("Inserting messageBis", nMessage);
+  //console.log("Inserting messageBis", nMessage);
 
   if (user !== null) {
-    console.log("With user");
+    //console.log("With user");
     const { error } = await supabase.from("message_bis").insert({
       content: nMessage.content,
       id_user: user.id,
       id_group: conversationId,
     });
     if (error !== null) {
-      console.log("insertMessageBis with user id:\n");
+      //console.log("insertMessageBis with user id:\n");
       console.log(error);
     }
   } else {
-    console.log("Without user");
+    //console.log("Without user");
     const { error } = await supabase
         .from("message_bis")
         .insert({
@@ -64,7 +64,7 @@ export async function insertMessageBis(nMessage:  Message, conversationId: strin
           id_group: conversationId,
         });
     if (error !== null) {
-      console.log("insertMessage without user id:\n");
+      //console.log("insertMessage without user id:\n");
       console.log(error);
     }
   }
@@ -105,7 +105,7 @@ export async function getUsersByUsername(username: string): Promise<User[]> {
       throw new Error(error.message);
     }
 
-    console.log("DATA USERNAME SEARCH: ", data);
+    //console.log("DATA USERNAME SEARCH: ", data);
     return data || [];
   } catch (error) {
     console.error('Error fetching users by username:', error);

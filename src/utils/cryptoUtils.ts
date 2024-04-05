@@ -13,10 +13,6 @@ export const encryptMessageContent = (content: any, publicKey : any) => {
 };
 
 export const decryptMessageContent = (content:any, privateKey:any) => {
-    /*console.log("IN DECRYPT");
-    console.log(privateKey);
-    console.log(content);
-    console.log("==============================================================================================================================");*/
   const decryptedBuffer = crypto.privateDecrypt(
     {
       key: privateKey,
@@ -25,9 +21,6 @@ export const decryptMessageContent = (content:any, privateKey:any) => {
     },
     Buffer.from(content, "base64")
   );
-  /*console.log("RESULT");
-  console.log(decryptedBuffer.toString("utf8"));
-  console.log("==============================================================================================================================");*/
     return decryptedBuffer.toString("utf8");
 };
 

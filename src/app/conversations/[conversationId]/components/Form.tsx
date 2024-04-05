@@ -49,7 +49,7 @@ const Form: React.FC<FormProps> = ({ user, usersMetadata, userGroupData, private
         }
       });
 
-      console.log(idUserEncryptedMessage);
+      //console.log(idUserEncryptedMessage);
 
       const newMessage = {
         id: Date.now().toString(),
@@ -65,15 +65,12 @@ const Form: React.FC<FormProps> = ({ user, usersMetadata, userGroupData, private
         idUserEncryptedMessage.set(key, formattedMessage);
       });
 
-      /*idUserEncryptedMessage.forEach((value, key, map) => {
-        console.log(`id_user: ${key} ; encryptedMessage : ${value.content} \n`);
-      });*/
 
       socket.emit('send_message', newMessage, userState, conversationId, socket.id, Array.from(idUserEncryptedMessage), async (formattedMessage: any) => {
-        console.log("save_message event");
+        //console.log("save_message event");
         //console.log(formattedMessage, conversationId);
-        //await insertMessage(formattedMessage, conversationId, userState);
-        await insertMessageBis(formattedMessage, conversationId, userState);
+        await insertMessage(formattedMessage, conversationId, userState);
+        //await insertMessageBis(formattedMessage, conversationId, userState);
       });
 
     } catch (error: any) {

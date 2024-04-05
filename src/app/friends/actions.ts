@@ -37,7 +37,7 @@ export async function removeFriend(otherUserId : string) {
       if (error) {
         throw new Error(error.message);
       }
-      console.log('Void',{id1: userId, id2: otherUserId})
+      //console.log('Void',{id1: userId, id2: otherUserId})
       return {id1: userId, id2: otherUserId};
     } catch(error) {
       console.error('Error deleting relation between:',userId,' and ',otherUserId);
@@ -60,7 +60,7 @@ export async function removeFriend(otherUserId : string) {
       if (error) {
         throw new Error(error.message);
       }
-      console.log("DATA relation: ", data);
+      //console.log("DATA relation: ", data);
   
       return data;
     } catch (error) {

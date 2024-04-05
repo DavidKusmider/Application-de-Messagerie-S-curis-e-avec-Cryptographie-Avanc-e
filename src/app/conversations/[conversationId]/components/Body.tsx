@@ -23,22 +23,22 @@ const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages, c
   //setMessages(initialMessages);
   const socket = useContext(SocketContext);
   joinRoomSocket(conversationId, socket);
-  console.log(messages);
+  //console.log(messages);
 
 
   useEffect(() => {
-    console.log('useEffect triggered with messages:', messages);
+    //console.log('useEffect triggered with messages:', messages);
     bottomRef?.current?.scrollIntoView();
     const messageHandler = (message: any) => {
-      console.log('Message handler called:', message);
+      //console.log('Message handler called:', message);
       setMessages(currentMessages => [...currentMessages, message]);
       bottomRef?.current?.scrollIntoView();
     };
 
     socket.on("receive_message", (idUserEncryptedMessage) => {
-      console.log("in receive_message", idUserEncryptedMessage);
+      //console.log("in receive_message", idUserEncryptedMessage);
       const mapTemp: Map<string, Message> = new Map(idUserEncryptedMessage);
-      console.log("receive_message event");
+      //console.log("receive_message event");
       if (userData !== null) {
         const message = mapTemp.get(userData.id);
         if (message !== undefined) {

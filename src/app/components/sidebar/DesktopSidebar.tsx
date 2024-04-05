@@ -49,26 +49,6 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
     users = [user];
   }
 
-  //console.log("conversations before fetchGroups() : ", conversations);
-
-  /*try {
-      let userGroups: Group[] = [];
-      groups.forEach((g) => {
-          userGroupsData.forEach((m) => {
-              if (m.id_user === user?.id && !userGroups.includes(g)) {
-                  userGroups.push(g);
-              }
-          })
-      }) //await getGroupsUserByUserId(data.user);
-      console.log(userGroups);
-      if (userGroups) {
-          console.log("userGroups value : ", userGroups);
-          setConversations(userGroups);
-      }
-  } catch (error) {
-      console.error('Error fetching user groups:', error);
-  }
-  console.log("conversations AFTER fetchGroups() : ", conversations);*/
   socket.on("update_group", (newUserGroup: User_Group[], newGroups: Group[]) => {
     setGroupsTemp(newGroups);
     setUserGroups(newUserGroup);
@@ -89,18 +69,6 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
     }
   }, [groupsTemp, user?.id, userGroupsLink]);
 
-  /*console.log("relations before fetchRelations() : ", relations);
-  try {
-      //setUser(user);
-      const userRelations = friends.filter((f) => f.id_user === user?.id); //await getRelationsUser(data.user);
-      if (userRelations) {
-          console.log("userRelations value : ", userRelations);
-          setRelations(userRelations);
-      }
-  } catch (error) {
-      console.error('Error fetching user relations:', error);
-  }
-  console.log("relations AFTER fetchRelations() : ", relations);*/
 
   useEffect(() => {
     const userRelations = friends.filter((f) => f.id_user === user?.id);

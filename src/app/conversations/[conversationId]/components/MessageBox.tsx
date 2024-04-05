@@ -21,26 +21,6 @@ const MessageBox: React.FC<MessageBoxProps> = ({ userMetadata, user, data, isLas
   const isOwn = user?.id === data.id_user;
   const [decryptedContent, setDecryptedContent] = useState<String | null>();
 
-
-  // useEffect(() => {
-  //   // console.log("data.content ", data.content);
-  //   // console.log("privateKey ", privateKey);
-  //   // const decryptedBuffer = privateDecryptprivateKey, Buffer.from(data.content, 'base64'));
-  //   const decryptedBuffer = decryptMessageContent(data.content, privateKey);/* encryptMessageContent(data.message, recipientPublicKey) */
-  //   console.log("decryptedbuffer", decryptedBuffer);
-  //   setDecryptedContent(decryptedBuffer);
-  // }, [data.content, privateKey]);
-
-  // try {
-  //   const decryptedBuffer = privateDecrypt(privateKey, Buffer.from(data.content, 'base64'));
-  //   console.log("decryptedbuffer", decryptedBuffer);
-  //   const decryptedText = decryptedBuffer.toString('utf-8');
-  //   setDecryptedContent(decryptedText);
-  // } catch (error) {
-  //   console.error('Error decrypting message:', error);
-  //   setDecryptedContent(null);
-  // }
-
   const container = clsx('flex gap-3 p-4', isOwn && 'justify-end');
   const avatar = clsx(isOwn && 'order-2');
   const body = clsx('flex flex-col gap-2', isOwn && 'items-end');

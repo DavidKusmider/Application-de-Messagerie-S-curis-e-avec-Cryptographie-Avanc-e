@@ -40,7 +40,7 @@ export default async function ChatId({ params }: { params: IParams }) {
 
   messagesBis.forEach(b => {
     const mapTemp = new Map(JSON.parse(b.content));
-    console.log(mapTemp);
+    //console.log(mapTemp);
     mapTemp.forEach((value, key, map) => {
       if (key === data.user?.id) {
         try {
@@ -56,7 +56,7 @@ export default async function ChatId({ params }: { params: IParams }) {
       }
     });
   });
-  console.log(messBis);
+  //console.log(messBis);
 
   if (!groupData) {
     return (

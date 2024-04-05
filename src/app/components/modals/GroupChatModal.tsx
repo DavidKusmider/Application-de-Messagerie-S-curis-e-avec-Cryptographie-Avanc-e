@@ -56,7 +56,7 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
     setIsLoading(true);
     try {
       const groupName = data.name; // Récupérer la valeur du champ "Name" du formulaire
-      console.log("data.groupName : ", groupName);
+      //console.log("data.groupName : ", groupName);
 
       // Envoyer la requête à la base de données Supabase avec les données du formulaire
       //const data2 = await getAuthUser();
@@ -93,11 +93,10 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       // Envoyer une requête pour récupérer les utilisateurs correspondant à la saisie de l'utilisateur
-      console.log("je rentre dnas handle input change");
       const results = usersMetadata.filter( m => m.user_pseudo.toLowerCase().includes(e.target.value.toLowerCase()));//await getUsersByUsername(e.target.value);
       setSearchResults(results);
       setUsers(results);
-      console.log("users : ", users);
+      //console.log("users : ", users);
 
     } catch (error) {
       console.error('Error fetching users:', error);

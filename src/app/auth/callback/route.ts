@@ -63,10 +63,10 @@ export async function GET(request: Request) {
       if (error) {
         console.error("Error saving public key to Supabase database:", error.message);
       } else {
-        console.log("Public key saved successfully to Supabase database!");
+        //console.log("Public key saved successfully to Supabase database!");
       }
 
-      console.log("End of socket call");
+      //console.log("End of socket call");
       const response = NextResponse.redirect(`${origin}${next}`, { status: 302 });
       let date = new Date();
       const time = date.getTime();
