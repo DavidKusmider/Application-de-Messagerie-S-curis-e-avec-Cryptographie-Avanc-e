@@ -1,106 +1,78 @@
 'use client';
 
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import MessageBox from "./MessageBox";
-import { find } from "lodash";
 import { User } from '@supabase/supabase-js';
 import { Message, UserMetadata } from "@/types/databases.types"
-import { io } from "socket.io-client";
+import { SocketContext } from "@/app/conversations/socketContext";
+import { decryptMessageContent } from "@/utils/cryptoUtils";
+import { joinRoomSocket } from "@/app/conversations/[conversationId]/actions";
 
 interface BodyProps {
   userData: User | null;
   initialMessages: any[];
-  usersMetadata: UserMetadata[] | null;
+  usersMetadata: UserMetadata[];
   conversationId: string;
+  privateKeyCookie: String | undefined;
 }
 
-// @ts-ignore
-const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages, conversationId }) => {
+const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages, conversationId, privateKeyCookie }) => {
   const bottomRef = useRef<HTMLDivElement>(null);
-  const [messages, setMessages] = useState(initialMessages);
+  const [messages, setMessages] = useState<any[]>(initialMessages);
+  //setMessages(initialMessages);
+  const socket = useContext(SocketContext);
+  joinRoomSocket(conversationId, socket);
+  //console.log(messages);
+
 
   useEffect(() => {
-    console.log('useEffect triggered with messages:', messages);
+    //console.log('useEffect triggered with messages:', messages);
     bottomRef?.current?.scrollIntoView();
-
     const messageHandler = (message: any) => {
-
-      /*
-      console.log("New message received:", newMessage);
-      const data = await insertMessage(newMessage, conversationId, userData);
-      console.log("Message registered.");
-      console.log(data);
-      console.log('Message handler called');
-      const messagesFromDB = await getAllMessages(userData, conversationId);
-      console.log(messagesFromDB?.length);
-      if(messagesFromDB) {
-        setMessages(messagesFromDB!);
-      }else{
-        setMessages([]);
-      }
-       */
-      console.log('Message handler called:', message);
-
-      setMessages((current) => {
-        let newMess: any[] = [];
-        current.forEach(c => {
-          if(message.id_group == conversationId) {
-            if (c.id == message.id) {
-              newMess = current;
-            }
-            newMess = [...current, message];
-          }else{
-            newMess = current;
-          }
-        });
-        return newMess;
-        /*if (find(current, { id: message.id })) {
-          return current;
-        }
-
-        return [...current, message]*/
-      });
-
+      //console.log('Message handler called:', message);
+      setMessages(currentMessages => [...currentMessages, message]);
       bottomRef?.current?.scrollIntoView();
     };
 
-    const socket = io("https://localhost:3000");
-    //socket.emit("joinRoom", conversationId);
-    /*socket.on("message", (newMessage) => {
-
-      console.log("New message received:", newMessage);
-      insertMessage(newMessage, conversationId, userData);
-      const formattedMessage: Message = {id: newMessage.id, content:newMessage.message, id_user: userData?.id!, id_group: Number(conversationId), created_at: newMessage.timestamp, send_at: newMessage.timestamp};
-      console.log("Message registered.");
-      console.log(formattedMessage);
-      messageHandler(formattedMessage);
-    });*/
-    socket.on("receive_message", (message) => {
-      console.log("receive_message event");
-      messageHandler(message);
+    socket.on("receive_message", (idUserEncryptedMessage) => {
+      //console.log("in receive_message", idUserEncryptedMessage);
+      const mapTemp: Map<string, Message> = new Map(idUserEncryptedMessage);
+      //console.log("receive_message event");
+      if (userData !== null) {
+        const message = mapTemp.get(userData.id);
+        if (message !== undefined) {
+          const tempMess = message;
+          try {
+            tempMess.content = decryptMessageContent(message.content, privateKeyCookie);
+            messageHandler(tempMess);
+          } catch (e) {
+            //console.error(e);
+          }
+        }
+      }
     });
-
     return () => {
-      socket.disconnect();
-    };
-  }, [messages]);
+      socket.off("receive_message");
+    }
+  }, []);
 
-  const [user, setUserData] = useState<User | null>(null);
+  const [user, setUserData] = useState<User | null>(userData);
 
   useEffect(() => {
-      setUserData(userData);
+    setUserData(userData);
   }, [userData]);
 
   return (
     <div className="flex-1 overflow-y-auto">
       {messages && messages.map((message, i) => (
         <MessageBox
-          userMetadata={usersMetadata?.find(m => m.id === message.id_user)}
+          userMetadata={usersMetadata.find((m: UserMetadata) => m.id === message.id_user)!}
           user={user}
           isLast={i === messages.length - 1}
           key={message.id}
           data={message}
+          privateKeyCookie={privateKeyCookie}
         />
       ))}
       <div className="pt-24" ref={bottomRef} />

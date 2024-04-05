@@ -2,7 +2,6 @@ import Sidebar from "../components/sidebar/Sidebar";
 import {
     getAllGroups,
     getAllUserGroup,
-    getAllUserRelation,
     getAuthUser,
     getRelationsUser,
     getUsersMetadata

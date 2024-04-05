@@ -2,7 +2,6 @@ import { createClient } from "@/utils/supabase/server";
 import LoginButton from '../components/LoginButton';
 import LogoutButton from '../components/LogoutButton';
 import { cookies } from 'next/headers';
-import Link from 'next/link';
 
 export default async function LoginPage() {
     const cookieStore = cookies();

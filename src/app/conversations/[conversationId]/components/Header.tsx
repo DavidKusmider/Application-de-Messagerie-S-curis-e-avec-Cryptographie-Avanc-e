@@ -5,12 +5,7 @@ import { HiEllipsisHorizontal } from 'react-icons/hi2';
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
 
-import Avatar from "@/app/components/Avatar";
-import AvatarGroup from "@/app/components/AvatarGroup";
 import ProfileDrawer from "./ProfileDrawer";
-import { Conversation, User } from '@/app/types';
-import useActiveList from '@/app/hooks/useActiveList';
-import useOtherUser from '@/app/hooks/useOtherUser';
 import {User_Group} from "@/types/databases.types";
 
 interface HeaderProps {

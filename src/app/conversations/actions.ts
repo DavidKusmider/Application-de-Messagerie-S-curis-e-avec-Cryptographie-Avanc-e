@@ -10,21 +10,21 @@ export async function insertMessage(nMessage:  Message, conversationId: string, 
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
 
-  console.log("Inserting message", nMessage);
+  //console.log("Inserting message", nMessage);
 
   if (user !== null) {
-    console.log("With user");
+    //console.log("With user");
     const { error } = await supabase.from("message").insert({
         content: nMessage.content,
         id_user: user.id,
         id_group: conversationId,
     });
     if (error !== null) {
-      console.log("insertMessage with user id:\n");
+      //console.log("insertMessage with user id:\n");
       console.log(error);
     }
     } else {
-        console.log("Without user");
+        //console.log("Without user");
         const { error } = await supabase
             .from("message")
             .insert({
@@ -32,10 +32,42 @@ export async function insertMessage(nMessage:  Message, conversationId: string, 
                 id_group: conversationId,
             });
         if (error !== null) {
-            console.log("insertMessage without user id:\n");
+            //console.log("insertMessage without user id:\n");
             console.log(error);
         }
     }
+}
+
+export async function insertMessageBis(nMessage:  Message, conversationId: string, user: User | null) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  //console.log("Inserting messageBis", nMessage);
+
+  if (user !== null) {
+    //console.log("With user");
+    const { error } = await supabase.from("message_bis").insert({
+      content: nMessage.content,
+      id_user: user.id,
+      id_group: conversationId,
+    });
+    if (error !== null) {
+      //console.log("insertMessageBis with user id:\n");
+      console.log(error);
+    }
+  } else {
+    //console.log("Without user");
+    const { error } = await supabase
+        .from("message_bis")
+        .insert({
+          content: nMessage.content,
+          id_group: conversationId,
+        });
+    if (error !== null) {
+      //console.log("insertMessage without user id:\n");
+      console.log(error);
+    }
+  }
 }
 
 export async function getGroupsUserByUserId(user: User | null) {
@@ -73,7 +105,7 @@ export async function getUsersByUsername(username: string): Promise<User[]> {
       throw new Error(error.message);
     }
 
-    console.log("DATA USERNAME SEARCH: ", data);
+    //console.log("DATA USERNAME SEARCH: ", data);
     return data || [];
   } catch (error) {
     console.error('Error fetching users by username:', error);
@@ -179,6 +211,21 @@ export async function getAllMessages(user: User | null, conversationId: any) {
     return [];
   }
   return [];
+}
+
+// Fetch all of 'message_bis' table
+export async function getAllMessagesBis(conversationId: any) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+    const { data, error } = await supabase.from("message_bis").select().eq("id_group", conversationId).order("id");
+    if (error != null) {
+      console.log("getAllMessagesBis:\n" + error);
+    }
+    if(data) {
+      return data;
+    }
+    return [];
 }
 
 export async function getAuthUser() {

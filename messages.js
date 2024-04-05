@@ -10,7 +10,7 @@ router.use(cors());
 // API endpoint for posting a new message
 router.post('/', (req, res) => {
     const { message, conversationId } = req.body;
-    console.log("received message: " + message);
+    //console.log("received message: " + message);
 
     if (!message) {
         return res.status(400).json({ error: 'Message is required' });

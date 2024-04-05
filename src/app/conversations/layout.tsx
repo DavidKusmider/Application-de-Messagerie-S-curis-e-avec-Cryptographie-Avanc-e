@@ -1,10 +1,10 @@
 import Sidebar from "../components/sidebar/Sidebar";
 import {
-    getAllGroups,
-    getAllUserGroup,
-    getAllUserRelation,
-    getAuthUser,
-    getUsersMetadata
+  getAllGroups,
+  getAllUserGroup,
+  getAllUserRelation,
+  getAuthUser,
+  getUsersMetadata
 } from "@/app/conversations/actions";
 
 export default async function ConversationsLayout({
@@ -12,18 +12,18 @@ export default async function ConversationsLayout({
 }: {
   children: React.ReactNode,
 }) {
-    const data = await getAuthUser();
-    const groups = await getAllGroups();
-    const userGroups = await getAllUserGroup();
-    const userRelations = await getAllUserRelation();
-    const usersMetadata = await getUsersMetadata();
+  const data = await getAuthUser();
+  const groups = await getAllGroups();
+  const userGroups = await getAllUserGroup();
+  const userRelations = await getAllUserRelation();
+  const usersMetadata = await getUsersMetadata();
 
-    return (
-            <Sidebar user={data.user} groups={groups} userGroups={userGroups} userRelations={userRelations}
-                     userMetadata={usersMetadata}>
-                <div className="h-full">
-                    {children}
-                </div>
-            </Sidebar>
-    );
+  return (
+    <Sidebar user={data.user} groups={groups} userGroups={userGroups} userRelations={userRelations}
+      userMetadata={usersMetadata}>
+      <div className="h-full">
+        {children}
+      </div>
+    </Sidebar>
+  );
 }

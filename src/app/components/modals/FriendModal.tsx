@@ -3,10 +3,10 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation';
-import { 
-  FieldValues, 
-  SubmitHandler, 
-  useForm 
+import {
+  FieldValues,
+  SubmitHandler,
+  useForm
 } from 'react-hook-form';
 
 import Select from '../inputs/Select';
@@ -24,9 +24,9 @@ interface FriendModalProps {
   onAdd: (idsRelation: any) => void;
 }
 
-const FriendModal: React.FC<FriendModalProps> = ({ 
-  isOpen, 
-  onClose, 
+const FriendModal: React.FC<FriendModalProps> = ({
+  isOpen,
+  onClose,
   users = [],
   onAdd
 }) => {
@@ -65,7 +65,7 @@ const FriendModal: React.FC<FriendModalProps> = ({
       setIsLoading(false);
     }
   }
-  
+
   useEffect(() => {
     const fetchOtherUser = async () => {
       const otherUsers = await getAllUsers();
@@ -79,28 +79,28 @@ const FriendModal: React.FC<FriendModalProps> = ({
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-12">
           <div className="border-b border-gray-900/10 pb-12">
-            <h2 
+            <h2
               className="
                 text-base 
                 font-semibold 
                 leading-7 
                 text-gray-900
               "
-              >
-                Add a new friend
-              </h2>
+            >
+              Add a new friend
+            </h2>
             <div className="mt-10 flex flex-col gap-y-8">
               <Select
                 multi={false}
                 disabled={isLoading}
-                label="New friend user name" 
-                options={usersOtherThanFriends.map((user) => ({ 
+                label="New friend user name"
+                options={usersOtherThanFriends.map((user) => ({
                   value: user.id,
-                  label: user.user_pseudo,
-                }))} 
-                onChange={(value) => setValue('members', value, { 
-                  shouldValidate: true 
-                })} 
+                  // label: user.user_pseudo,
+                }))}
+                onChange={(value) => setValue('members', value, {
+                  shouldValidate: true
+                })}
                 value={members}
               />
             </div>
@@ -109,7 +109,7 @@ const FriendModal: React.FC<FriendModalProps> = ({
         <div className="mt-6 flex items-center justify-end gap-x-6">
           <Button
             disabled={isLoading}
-            onClick={onClose} 
+            onClick={onClose}
             type="button"
             secondary
           >
