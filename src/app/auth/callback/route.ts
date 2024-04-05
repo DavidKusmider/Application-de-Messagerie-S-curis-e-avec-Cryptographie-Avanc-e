@@ -54,31 +54,34 @@ export async function GET(request: Request) {
     )
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      const supabase = createClient(cookieStore);
-      const { privateKey, publicKey } = generateUserKeyPair();
-
-      const user = (await supabase.auth.getUser()).data.user;
-      const { error } = await supabase.schema("public").from('users').update({ public_key: publicKey }).eq('id', user?.id);
-
-      if (error) {
-        console.error("Error saving public key to Supabase database:", error.message);
-      } else {
-        //console.log("Public key saved successfully to Supabase database!");
-      }
-
-      //console.log("End of socket call");
       const response = NextResponse.redirect(`${origin}${next}`, { status: 302 });
-      let date = new Date();
-      const time = date.getTime();
-      const expireTime = time + 30 * 24 * 60 * 60 * 1000; // 1 month
-      date.setTime(expireTime);
-      // @ts-ignore
-      response.cookies.set('privateKey', privateKey.toString('utf8'), {
-        path: "/",
-        expires: date,
-        secure: true,
-        httpOnly: true,
-      })
+      const privateCookie = cookieStore.get("privateKey");
+      if (privateCookie === undefined) {
+        const supabase = createClient(cookieStore);
+        const { privateKey, publicKey } = generateUserKeyPair();
+
+        const user = (await supabase.auth.getUser()).data.user;
+        const { error } = await supabase.schema("public").from('users').update({ public_key: publicKey }).eq('id', user?.id);
+
+        if (error) {
+          console.error("Error saving public key to Supabase database:", error.message);
+        } else {
+          //console.log("Public key saved successfully to Supabase database!");
+        }
+
+        //console.log("End of socket call");
+        let date = new Date();
+        const time = date.getTime();
+        const expireTime = time + 30 * 24 * 60 * 60 * 1000; // 1 month
+        date.setTime(expireTime);
+        // @ts-ignore
+        response.cookies.set('privateKey', privateKey.toString('utf8'), {
+          path: "/",
+          expires: date,
+          secure: true,
+          httpOnly: true,
+        })
+      }
       return response;
     }
   }

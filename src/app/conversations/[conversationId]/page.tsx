@@ -2,6 +2,7 @@ import Header from "./components/Header";
 import Body from "./components/Body";
 import Form from "./components/Form";
 import EmptyState from "@/app/components/EmptyState";
+import * as router from "next/navigation"
 
 import {
   getAllMessages,
@@ -39,7 +40,7 @@ export default async function ChatId({ params }: { params: IParams }) {
 
   let messBis: Message[] = [];
 
-  messagesBis.forEach(b => {
+  messages.forEach(b => {
     const mapTemp = new Map(JSON.parse(b.content));
     //console.log(mapTemp);
     mapTemp.forEach((value, key, map) => {

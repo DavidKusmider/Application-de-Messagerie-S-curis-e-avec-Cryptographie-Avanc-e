@@ -55,7 +55,7 @@ const Body: React.FC<BodyProps> = ({ usersMetadata, userData, initialMessages, c
     return () => {
       socket.off("receive_message");
     }
-  }, []);
+  }, [initialMessages]);
 
   const [user, setUserData] = useState<User | null>(userData);
 
