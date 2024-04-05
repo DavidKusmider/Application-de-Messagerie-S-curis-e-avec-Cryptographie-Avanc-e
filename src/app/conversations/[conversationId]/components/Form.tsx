@@ -1,26 +1,23 @@
 'use client';
 
-import {useContext, useState} from 'react';
-import { HiPaperAirplane, HiPhoto } from 'react-icons/hi2';
+import { useContext, useState } from 'react';
+import { HiPaperAirplane } from 'react-icons/hi2';
 import MessageInput from "./MessageInput";
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
-import { CldUploadButton } from "next-cloudinary";
 import useConversation from "@/app/hooks/useConversation";
 import { Message, UserMetadata, User_Group } from "@/types/databases.types"
 import { encryptMessageContent } from '@/utils/cryptoUtils';
-import {getAuthUser, insertMessage, insertMessageBis} from "../../actions";
-import { saveMessageEvent } from "@/app/conversations/[conversationId]/actions";
+import { insertMessage } from "../../actions";
 import { User } from "@supabase/supabase-js";
-import {SocketContext} from "@/app/conversations/socketContext";
+import { SocketContext } from "@/app/conversations/socketContext";
 
 interface FormProps {
   user: User | null,
   usersMetadata: UserMetadata[]
   userGroupData: User_Group[]
-  privateKeyCookie: string | undefined;
 }
 
-const Form: React.FC<FormProps> = ({ user, usersMetadata, userGroupData, privateKeyCookie }) => {
+const Form: React.FC<FormProps> = ({ user, usersMetadata, userGroupData }) => {
   const [userState, setUser] = useState<User | null>(user)
   const { conversationId } = useConversation();
 
@@ -31,20 +28,20 @@ const Form: React.FC<FormProps> = ({ user, usersMetadata, userGroupData, private
     }
   });
 
-  if(user === undefined){
+  if (user === undefined) {
     return (<div><strong>LOG IN !!!!</strong></div>);
   }
 
-  let idUserEncryptedMessage : Map<string,Message> = new Map<string, Message>();
+  let idUserEncryptedMessage: Map<string, Message> = new Map<string, Message>();
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     try {
       setValue('message', '', { shouldValidate: true });
 
       userGroupData.forEach(g => {
-        if(String(g.id_group) === conversationId){
+        if (String(g.id_group) === conversationId) {
           // @ts-ignore
-          const formattedMessage : Message = { id: Number(Date.now().toString()), content: "", id_user: user.id, id_group: Number(conversationId), created_at: Date.now().toString(), send_at: Date.now().toString() };
+          const formattedMessage: Message = { id: Number(Date.now().toString()), content: "", id_user: user.id, id_group: Number(conversationId), created_at: Date.now().toString(), send_at: Date.now().toString() };
           idUserEncryptedMessage.set(g.id_user, formattedMessage);
         }
       });
@@ -53,7 +50,7 @@ const Form: React.FC<FormProps> = ({ user, usersMetadata, userGroupData, private
 
       const newMessage = {
         id: Date.now().toString(),
-        message: data.message,/* encryptMessageContent(data.message, recipientPublicKey) */
+        message: data.message,
         conversationId: conversationId,
         timestamp: new Date().toISOString(),
       };
@@ -61,7 +58,7 @@ const Form: React.FC<FormProps> = ({ user, usersMetadata, userGroupData, private
         const pubKey = usersMetadata.find(m => m.id === key)?.public_key;
         const date = Date.now().toString();
         // @ts-ignore
-        const formattedMessage : Message = { id: Number(date), content: encryptMessageContent(newMessage.message, pubKey), id_user: user.id, id_group: Number(conversationId), created_at: date, send_at: date };
+        const formattedMessage: Message = { id: Number(date), content: encryptMessageContent(newMessage.message, pubKey), id_user: user.id, id_group: Number(conversationId), created_at: date, send_at: date };
         idUserEncryptedMessage.set(key, formattedMessage);
       });
 

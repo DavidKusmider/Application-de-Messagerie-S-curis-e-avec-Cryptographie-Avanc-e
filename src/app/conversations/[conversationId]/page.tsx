@@ -14,7 +14,7 @@ import {
 import { UserMetadata, Group, Message, User_Group } from "@/types/databases.types";
 import { cookies } from "next/headers";
 import { decryptMessageContent } from "@/utils/cryptoUtils";
-import {redirect} from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 interface IParams {
   conversationId: string;
@@ -31,7 +31,7 @@ export default async function ChatId({ params }: { params: IParams }) {
 
   const data = await getAuthUser();
   const userGroupData: User_Group[] = await getUserGroupFromIdGroup(params.conversationId);
-  const groupData: Group[] = await getGroupFromIdGroup(params.conversationId);
+  const groupData: Group[] = await getGroupFromIdGroup(params.conversationId, data.user?.id!);
   const messages: Message[] = await getAllMessages(data.user, params.conversationId);
   const messagesBis: Message[] = await getAllMessagesBis(params.conversationId);
   const usersMetadata: UserMetadata[] = await getUsersMetadata();
@@ -70,15 +70,15 @@ export default async function ChatId({ params }: { params: IParams }) {
   }
 
   if (groupData[0] === undefined) {
-        redirect("/conversations");
-    }
+    redirect("/conversations");
+  }
 
-    return (
-        <div className="lg:pl-80 h-full">
-            <div className="h-full flex flex-col">
-                <Header name={groupData[0].group_name} userGroupData={userGroupData}/>
-                <Body usersMetadata={usersMetadata!} userData={data.user} initialMessages={messBis} conversationId={params?.conversationId} privateKeyCookie={privateKeyCookie} />
-        <Form user={data.user} usersMetadata={usersMetadata} userGroupData={userGroupData} privateKeyCookie={privateKeyCookie} />
+  return (
+    <div className="lg:pl-80 h-full">
+      <div className="h-full flex flex-col">
+        <Header name={groupData[0].group_name} userGroupData={userGroupData} />
+        <Body usersMetadata={usersMetadata!} userData={data.user} initialMessages={messBis} conversationId={params?.conversationId} privateKeyCookie={privateKeyCookie} />
+        <Form user={data.user} usersMetadata={usersMetadata} userGroupData={userGroupData} />
       </div>
     </div>
   );

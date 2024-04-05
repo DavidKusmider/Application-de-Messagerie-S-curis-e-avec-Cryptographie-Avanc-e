@@ -3,8 +3,6 @@
 import React, { useCallback, useState } from 'react'
 import { Dialog } from '@headlessui/react'
 import { FiAlertTriangle } from 'react-icons/fi'
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
 import Modal from '@/app/components/modals/Modal';
 import Button from '@/app/components/Button';
 
@@ -17,9 +15,8 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   isOpen,
   onClose
 }) => {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const onDelete = useCallback(() => {
     setIsLoading(true);
   }, []);

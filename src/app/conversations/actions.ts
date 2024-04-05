@@ -4,41 +4,41 @@ import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import { User } from '@supabase/supabase-js';
 import { Group, User_Group, UserMetadata } from '@/types/databases.types';
-import { Message} from '@/types/databases.types';
+import { Message } from '@/types/databases.types';
 
-export async function insertMessage(nMessage:  Message, conversationId: string, user: User | null) {
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
+export async function insertMessage(nMessage: Message, conversationId: string, user: User | null) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
 
   //console.log("Inserting message", nMessage);
 
   if (user !== null) {
     //console.log("With user");
     const { error } = await supabase.from("message").insert({
-        content: nMessage.content,
-        id_user: user.id,
-        id_group: conversationId,
+      content: nMessage.content,
+      id_user: user.id,
+      id_group: conversationId,
     });
     if (error !== null) {
       //console.log("insertMessage with user id:\n");
       console.log(error);
     }
-    } else {
-        //console.log("Without user");
-        const { error } = await supabase
-            .from("message")
-            .insert({
-                content: nMessage.content,
-                id_group: conversationId,
-            });
-        if (error !== null) {
-            //console.log("insertMessage without user id:\n");
-            console.log(error);
-        }
+  } else {
+    //console.log("Without user");
+    const { error } = await supabase
+      .from("message")
+      .insert({
+        content: nMessage.content,
+        id_group: conversationId,
+      });
+    if (error !== null) {
+      //console.log("insertMessage without user id:\n");
+      console.log(error);
     }
+  }
 }
 
-export async function insertMessageBis(nMessage:  Message, conversationId: string, user: User | null) {
+export async function insertMessageBis(nMessage: Message, conversationId: string, user: User | null) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
@@ -58,11 +58,11 @@ export async function insertMessageBis(nMessage:  Message, conversationId: strin
   } else {
     //console.log("Without user");
     const { error } = await supabase
-        .from("message_bis")
-        .insert({
-          content: nMessage.content,
-          id_group: conversationId,
-        });
+      .from("message_bis")
+      .insert({
+        content: nMessage.content,
+        id_group: conversationId,
+      });
     if (error !== null) {
       //console.log("insertMessage without user id:\n");
       console.log(error);
@@ -205,7 +205,7 @@ export async function getAllMessages(user: User | null, conversationId: any) {
     if (error != null) {
       console.log("getAllMessages:\n" + error);
     }
-    if(data) {
+    if (data) {
       return data;
     }
     return [];
@@ -218,23 +218,21 @@ export async function getAllMessagesBis(conversationId: any) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-    const { data, error } = await supabase.from("message_bis").select().eq("id_group", conversationId).order("id");
-    if (error != null) {
-      console.log("getAllMessagesBis:\n" + error);
-    }
-    if(data) {
-      return data;
-    }
-    return [];
+  const { data, error } = await supabase.from("message_bis").select().eq("id_group", conversationId).order("id");
+  if (error != null) {
+    console.log("getAllMessagesBis:\n" + error);
+  }
+  if (data) {
+    return data;
+  }
+  return [];
 }
 
 export async function getAuthUser() {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
-  const { data, error } = await supabase.auth.getUser();
-  if (error !== null) {
-    console.log(error);
-  }
+  const { data } = await supabase.auth.getUser();
+
   return data;
 }
 
@@ -246,61 +244,61 @@ export async function getUsersMetadata() {
   if (error !== null) {
     console.log(error);
   }
-  if(data) {
+  if (data) {
     return data;
   }
   return [];
 }
 
 // Fetch all of 'group' table
-export async function getAllGroups(){
+export async function getAllGroups() {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
-    const { data, error } = await supabase.from("group").select();
-    if (error != null) {
-      console.log("getAllGroups:\n" + error);
-    }
-    if(data) {
-      return data;
-    }
-    return [];
+  const { data, error } = await supabase.from("group").select();
+  if (error != null) {
+    console.log("getAllGroups:\n" + error);
+  }
+  if (data) {
+    return data;
+  }
+  return [];
 }
 
 // Fetch all of 'user_group' table
-export async function getAllUserGroup(){
+export async function getAllUserGroup() {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   const { data, error } = await supabase.from("user_group").select();
   if (error != null) {
     console.log("getAllUserGroup:\n" + error);
   }
-  if(data) {
+  if (data) {
     return data;
   }
   return [];
 }
 
 // Fetch all of 'user_relation' table
-export async function getAllUserRelation(){
+export async function getAllUserRelation() {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
-    const { data, error } = await supabase.from("user_relation").select();
+  const { data, error } = await supabase.from("user_relation").select();
   if (error != null) {
     console.log("getAllUserRelation:\n" + error);
   }
-  if(data) {
+  if (data) {
     return data;
   }
   return [];
 }
-export async function getUserGroupFromIdGroup(id:string){
+export async function getUserGroupFromIdGroup(id: string) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   const { data, error } = await supabase.schema("public").from("user_group").select().eq("id_group", id);
   if (error !== null) {
     console.log(error);
   }
-  if(data) {
+  if (data) {
     return data;
   }
   return [];
@@ -319,14 +317,14 @@ export async function getAllUsers() {
   return [];
 }
 
-export async function getGroupFromIdGroup(idGroup : string, idUser : string){
+export async function getGroupFromIdGroup(idGroup: string, idUser: string) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
-  const { data, error } = await supabase.schema("public").from("group").select('*, user_group ( id_user, id_group)').eq('id', idGroup).eq('user_group.id_group',idGroup).eq('user_group.id_user', idUser);
+  const { data, error } = await supabase.schema("public").from("group").select('*, user_group ( id_user, id_group)').eq('id', idGroup).eq('user_group.id_group', idGroup).eq('user_group.id_user', idUser);
   if (error !== null) {
     console.log(error);
   }
-  if(data) {
+  if (data) {
     return data;
   }
   return [];
