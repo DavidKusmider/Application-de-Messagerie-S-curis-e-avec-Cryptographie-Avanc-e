@@ -2,7 +2,7 @@
 
 import DesktopItem from "./DesktopItem";
 import useRoutes from "@/app/hooks/useRoutes";
-import SettingsModal from "./SettingsModal";
+//import SettingsModal from "./SettingsModal";
 import { useContext, useEffect, useState } from "react";
 import Avatar from "../Avatar";
 import ConversationList from "@/app/conversations/components/ConversationList";

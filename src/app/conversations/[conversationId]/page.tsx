@@ -31,7 +31,7 @@ export default async function ChatId({ params }: { params: IParams }) {
 
   const data = await getAuthUser();
   const userGroupData: User_Group[] = await getUserGroupFromIdGroup(params.conversationId);
-  const groupData: Group[] = await getGroupFromIdGroup(params.conversationId);
+  const groupData: Group[] = await getGroupFromIdGroup(params.conversationId, data.user?.id!);
   const messages: Message[] = await getAllMessages(data.user, params.conversationId);
   const messagesBis: Message[] = await getAllMessagesBis(params.conversationId);
   const usersMetadata: UserMetadata[] = await getUsersMetadata();
