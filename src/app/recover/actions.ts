@@ -14,7 +14,7 @@ export async function recoverPassword(formData: FormData) {
   }
 
   const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
-    redirectTo: "https://hertz-gh9dmsfjf-davidkusmiders-projects.vercel.app/updatePassword"
+    redirectTo: "https://localhost:3000/updatePassword"
   })
   if (error) {
     console.log(error);

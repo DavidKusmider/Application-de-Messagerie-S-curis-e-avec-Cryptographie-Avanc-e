@@ -26,7 +26,7 @@ app.prepare().then(() => {
 
   const io = new socket.Server(server, {
     cors: {
-      origin: ["https://hertz-gh9dmsfjf-davidkusmiders-projects.vercel.app:3000"], // Client URL
+      origin: ["https://localhost:3000"], // Client URL
     }
   });
 
