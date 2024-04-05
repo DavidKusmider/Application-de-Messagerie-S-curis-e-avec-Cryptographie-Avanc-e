@@ -1,7 +1,6 @@
 import { User } from '@supabase/supabase-js';
 import { User_Relation, UserMetadata } from '@/types/databases.types';
 import { useEffect, useState } from 'react';
-import { getAuthUser, getUserById } from '@/app/conversations/actions';
 import clsx from 'clsx';
 import Avatar from '@/app/components/Avatar';
 import { removeFriend } from '../actions';

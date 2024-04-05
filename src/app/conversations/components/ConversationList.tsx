@@ -1,8 +1,6 @@
 'use client';
 
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdOutlineGroupAdd } from 'react-icons/md';
 import clsx from "clsx";
 
@@ -42,36 +40,6 @@ const ConversationList: React.FC<ConversationListProps> = ({
   useEffect(() => {
 
     setItems(initialItems);
-
-    // const updateHandler = (conversation: FullConversationType) => {
-    //   setItems((current) => current.map((currentConversation) => {
-    //     if (currentConversation.id === conversation.id) {
-    //       return {
-    //         ...currentConversation,
-    //         messages: conversation.messages
-    //       };
-    //     }
-    //
-    //     return currentConversation;
-    //   }));
-    // }
-    //
-    // const newHandler = (conversation: FullConversationType) => {
-    //   setItems((current) => {
-    //     if (find(current, { id: conversation.id })) {
-    //       return current;
-    //     }
-    //
-    //     return [conversation, ...current]
-    //   });
-    // }
-    //
-    // const removeHandler = (conversation: FullConversationType) => {
-    //   setItems((current) => {
-    //     return [...current.filter((convo) => convo.id !== conversation.id)]
-    //   });
-    // }
-
   }, [initialItems]);
 
   const closeModal = () => {

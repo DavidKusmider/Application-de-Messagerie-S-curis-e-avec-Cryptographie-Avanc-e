@@ -3,14 +3,11 @@
 import { useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
-import { useSession } from "next-auth/react";
 import clsx from "clsx";
 
 import Avatar from "@/app/components/Avatar";
-import useOtherUser from "@/app/hooks/useOtherUser";
 import AvatarGroup from "@/app/components/AvatarGroup";
-import { FullConversationType } from "@/app/types";
-import { UserMetadata, User_Group } from "@/types/databases.types";
+import { UserMetadata } from "@/types/databases.types";
 
 interface ConversationBoxProps {
   name: string,
