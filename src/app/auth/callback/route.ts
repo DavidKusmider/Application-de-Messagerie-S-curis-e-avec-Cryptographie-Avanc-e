@@ -55,8 +55,6 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
       const response = NextResponse.redirect(`${origin}${next}`, { status: 302 });
-      const privateCookie = cookieStore.get("privateKey");
-      if (privateCookie === undefined) {
         const supabase = createClient(cookieStore);
         const { privateKey, publicKey } = generateUserKeyPair();
 
@@ -81,7 +79,6 @@ export async function GET(request: Request) {
           secure: true,
           httpOnly: true,
         })
-      }
       return response;
     }
   }

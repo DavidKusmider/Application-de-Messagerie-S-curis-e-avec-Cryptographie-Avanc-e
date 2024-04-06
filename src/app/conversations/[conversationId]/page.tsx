@@ -23,18 +23,10 @@ interface IParams {
 
 export default async function ChatId({ params }: { params: IParams }) {
 
-  /*
-  CHeck si conversationId valide:
-  1. Recup tous les relations entre user et group pour un user
-  2. Verifie si conversationId correspond à un des groups, tu autorise la redirection
-  3. Sinon, redirige sur /conversations/
-   */
-
   const data = await getAuthUser();
   const userGroupData: User_Group[] = await getUserGroupFromIdGroup(params.conversationId);
   const groupData: Group[] = await getGroupFromIdGroup(params.conversationId, data.user?.id!);
   const messages: Message[] = await getAllMessages(data.user, params.conversationId);
-  const messagesBis: Message[] = await getAllMessagesBis(params.conversationId);
   const usersMetadata: UserMetadata[] = await getUsersMetadata();
   const privateKeyCookie = cookies().get('privateKey')?.value;
 
