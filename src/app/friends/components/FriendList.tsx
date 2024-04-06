@@ -45,7 +45,8 @@ const FriendList: React.FC<FriendListProps> = ({
   return (
     <>
       <FriendModal 
-        users={users} 
+        users={users}
+        user={user}
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)}
         onAdd={handleAddFriend}

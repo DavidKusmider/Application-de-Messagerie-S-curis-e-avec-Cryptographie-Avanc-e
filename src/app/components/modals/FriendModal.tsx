@@ -21,6 +21,7 @@ interface FriendModalProps {
   isOpen?: boolean;
   onClose: () => void;
   users: User[];
+  user: User | undefined;
   onAdd: (idsRelation: any) => void;
 }
 
@@ -28,6 +29,7 @@ const FriendModal: React.FC<FriendModalProps> = ({
   isOpen,
   onClose,
   users = [],
+    user,
   onAdd
 }) => {
   const router = useRouter();
@@ -69,7 +71,7 @@ const FriendModal: React.FC<FriendModalProps> = ({
   useEffect(() => {
     const fetchOtherUser = async () => {
       const otherUsers = await getAllUsers();
-      setUsers(otherUsers);
+      setUsers(otherUsers.filter(e => e.id !== user?.id));
     };
     fetchOtherUser();
   }, []);
@@ -96,7 +98,7 @@ const FriendModal: React.FC<FriendModalProps> = ({
                 label="New friend user name"
                 options={usersOtherThanFriends.map((user) => ({
                   value: user.id,
-                  // label: user.user_pseudo,
+                  label: user.user_pseudo,
                 }))}
                 onChange={(value) => setValue('members', value, {
                   shouldValidate: true

@@ -39,7 +39,7 @@ const Select: React.FC<SelectProps> = ({
         <ReactSelect
           isDisabled={disabled}
           value={value}
-          // onChange={onChange}
+          onChange={onChange}
           isMulti={multi}
           options={options}
           menuPortalTarget={document.body}
