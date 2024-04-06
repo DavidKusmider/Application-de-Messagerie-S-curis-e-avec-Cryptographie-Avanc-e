@@ -24,24 +24,21 @@ Le code lié à la cryptographie est situé dans [cryptoUtils.js](./src/utils/cr
 
 - [friends](./src/app/friends) : Dossier contenant les composants et les actions liés à la gestion des amis.
 
-## Construction et Exécution
+## Clonage du repository et initialisation
 
-Pour compiler le fichier `socket.ts`, exécutez :
+- Cloner le repository localement (HTTPS ou SSH)
+- Télécharger les paquetages nodes. Pour ceci, utiliser cette commande à la racine du projet (à l'emplacement du dossier node_modules) :
 
 ```bash
-npx tsc --esModuleInterop true socket.ts
+npm install
 ```
 
-Pour exécuter le serveur, utilisez la commande :
+## Construction et Exécution
+
+Pour exécuter l'instance Next (serveur et client), utilisez la commande :
 
 ```bash
 node socket.js
-```
-
-Pour exécuter le client, utilisez la commande :
-
-```bash
-npm run dev
 ```
 
 ## Contributeurs
