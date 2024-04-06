@@ -5,12 +5,12 @@ Hertz est une application de messagerie sécurisée avec une cryptographie avanc
 
 ## Cryptographie
 
-Le code lié à la cryptographie est situé dans [cryptoUtils.js](./src/utils/cryptoUtils.js). Il utilise des règles de chiffrement asymétrique avec des paires de clés privées/publiques, ainsi que les algorithmes RSA, AES et SHA256.
+Le code lié à la cryptographie est situé dans [cryptoUtils.ts](./src/utils/cryptoUtils.ts). Il utilise des règles de chiffrement asymétrique avec des paires de clés privées/publiques, ainsi que les algorithmes RSA, AES et SHA256.
 
 ## Fonctionnalités Principales
 
 - [socket.js](./socket.js) : Fichier contenant le code serveur et le code lié à socket.io pour la gestion des sockets.
-- [cryptoUtils.js](./src/utils/cryptoUtils.js) : Fichier contenant le code lié à la cryptographie.
+- [cryptoUtils.ts](./src/utils/cryptoUtils.ts) : Fichier contenant le code lié à la cryptographie.
 
 ### Authentification
 
