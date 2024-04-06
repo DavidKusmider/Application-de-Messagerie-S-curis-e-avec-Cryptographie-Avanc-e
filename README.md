@@ -14,15 +14,15 @@ Le code lié à la cryptographie est situé dans [cryptoUtils.ts](./src/utils/cr
 
 ### Authentification
 
-- [conversations](./src/app/page.tsx) : Page d'accueil de la plateforme, fonctionnalités d'authentification
+- [Accueil](./src/app/page.tsx) : Page d'accueil de la plateforme, fonctionnalités d'authentification
 
 ### Conversations
 
-- [conversations](./src/app/conversations) : Dossier contenant les composants et les actions liés aux conversations.
+- [Conversations](./src/app/conversations) : Dossier contenant les composants et les actions liés aux conversations.
 
 ### Amis
 
-- [friends](./src/app/friends) : Dossier contenant les composants et les actions liés à la gestion des amis.
+- [Friends](./src/app/friends) : Dossier contenant les composants et les actions liés à la gestion des amis.
 
 ## Clonage du repository et initialisation
 
