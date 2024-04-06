@@ -23,12 +23,12 @@ const FriendBox: React.FC<FriendBoxProps> = ({
   useEffect(() => {
     const fetchOtherUser = () => {
       try {
-        /*const dataUser = await getAuthUser();
-        let otherU = await getUserById(data.id_other_user);*/
-        let otherU = usersMetadata.filter((m) => m.id === data.id_other_user)[0]; //await getUserById(data.id_other_user);
-        /*if (data.id_user!==user?.id) {
-          otherU = await getUserById(data.id_user);
-        }*/
+        const dataUser = user;
+        let otherU = usersMetadata.filter(e => e.id ===data.id_other_user)[0];
+        //let otherU = usersMetadata.filter((m) => m.id === data.id_other_user)[0]; //await getUserById(data.id_other_user);
+        if (data.id_user!==user?.id) {
+          otherU = usersMetadata.filter(e => e.id === data.id_user)[0];
+        }
         if (otherU) {
           setOtherUser(otherU);
         }
