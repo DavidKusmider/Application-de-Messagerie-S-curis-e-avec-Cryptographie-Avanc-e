@@ -9,12 +9,12 @@ Le code lié à la cryptographie est situé dans [cryptoUtils.js](./src/utils/cr
 
 ## Fonctionnalités Principales
 
-- [socket.ts](./socket.ts) : Fichier contenant le code serveur et le code lié à socket.io pour la gestion des sockets.
+- [socket.js](./socket.js) : Fichier contenant le code serveur et le code lié à socket.io pour la gestion des sockets.
 - [cryptoUtils.js](./src/utils/cryptoUtils.js) : Fichier contenant le code lié à la cryptographie.
 
 ### Authentification
 
-- [connexion](./src/app/connexion) : Dossier contenant les composants et les actions liés à l'authentification des utilisateurs.
+- [conversations](./src/app/page.tsx) : Page d'accueil de la plateforme, fonctionnalités d'authentification
 
 ### Conversations
 
